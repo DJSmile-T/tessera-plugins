@@ -67,7 +67,8 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 - **A feature is a promise.** A plugin that `provides` a speaker makes `speaker:` with `id: ts_speaker`; one that needs
   it uses `ts_speaker` and never makes it. Ids that start with `ts_` are Tessera's, for nothing else.
 - **plugin.yaml adds, it never takes over**: no `wifi`, `api`, `ota`, `logger`, `esphome`, `http_request`,
-  `web_server`, `packages`, `external_components` or the other keys of `docs/LIMITS.md`, "plugin.yaml".
+  `web_server`, `packages`, `external_components` or the other keys of `docs/LIMITS.md`, "plugin.yaml" (whose one
+  exception is ESPHome's update of an ESP32-P4's Wi-Fi co-processor, in a file of its own).
 - **The id is the same everywhere, and for ever**: the folder in `plugins/`, `id:` in the manifest, the component
   folder `components/<id>/`, the YAML key in `plugin.yaml` and the C++ namespace `esphome::<id>`. Lowercase letters,
   digits and `_`, starting with a letter, at most 32. Screens, layouts and secrets know the plugin by it: never rename

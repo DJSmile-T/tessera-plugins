@@ -64,6 +64,12 @@ OWNED_KEYS = ('esphome', 'esp32', 'esp8266', 'rp2040', 'psram', 'wifi', 'etherne
               'improv_serial', 'esp32_improv', 'external_components', 'packages', 'substitutions')
 NETWORK_KEYS = ('web_server', 'captive_portal', 'mqtt', 'http_request', 'online_image', 'socket', 'udp',
                 'packet_transport', 'wireguard')
+# One exception to NETWORK_KEYS: ESPHome's own update of the Wi-Fi co-processor beside an ESP32-P4 (esp32_hosted), from
+# ESPHome's own firmware site, which needs http_request. Only in a file that holds that update and nothing else, and it
+# installs only when someone presses Install in Home Assistant (docs/LIMITS.md, "plugin.yaml").
+COPROCESSOR_SOURCE = 'https://esphome.github.io/esp-hosted-firmware/manifest/'
+COPROCESSOR_KEYS = {'platform', 'type', 'source', 'name', 'id', 'icon', 'update_interval', 'entity_category',
+                    'disabled_by_default'}
 # Under these keys an ESPHome configuration does something (an automation), and an `id:` there names a part that
 # exists, it does not make one.
 ACTION_KEYS = re.compile(r'^(on_.+|.+_action|then|else)$')
@@ -334,6 +340,18 @@ def made_ids(node):
             yield from made_ids(item)
 
 
+def coprocessor_update(data):
+    """Whether an ESPHome file is only the update of the Wi-Fi co-processor (COPROCESSOR_SOURCE): `http_request:` without
+    settings and `update:` entries of platform esp32_hosted, type http, from ESPHome's firmware site."""
+    if set(data) != {'http_request', 'update'} or data['http_request'] not in (None, {}):
+        return False
+    raw = data['update'] if isinstance(data['update'], list) else [data['update']]
+    updates = entries_of(data['update'])
+    return bool(updates) and len(updates) == len(raw) and all(
+        u.get('platform') == 'esp32_hosted' and u.get('type') == 'http' and set(u) <= COPROCESSOR_KEYS
+        and isinstance(u.get('source'), str) and u['source'].startswith(COPROCESSOR_SOURCE) for u in updates)
+
+
 def check_esphome(folder, name, file, provides):
     """The rules for an ESPHome file of a plugin: no key the core owns or that opens the screen, and an id with
     Tessera's prefix only for a feature the plugin brings. Returns the file as data."""
@@ -341,7 +359,7 @@ def check_esphome(folder, name, file, provides):
     for key in data:
         if key in OWNED_KEYS:
             fail(name, f'{file}: "{key}" belongs to the core and the screen\'s own YAML; a plugin never sets it')
-        if key in NETWORK_KEYS:
+        if key in NETWORK_KEYS and not (key == 'http_request' and coprocessor_update(data)):
             fail(name, f'{file}: "{key}" opens the screen to the network or fetches from it; data comes through the app')
     promised = {pm().FEATURES[feature][1] for feature in provides}
     for made in made_ids(data):

@@ -1,0 +1,13 @@
+# The update of the ESP32-C6 beside the P4, the Wi-Fi co-processor that also runs Bluetooth: ESPHome's own, from
+# ESPHome's own firmware site. Bluetooth needs a recent C6 firmware, and many boards come with one too old for it. This
+# only adds the update to Home Assistant (on the screen's device, with the version on the C6 and the newest): nothing
+# installs until someone presses Install. Every ESP32-P4 board of Tessera has a C6 (the feature bluetooth), so it fits
+# each of them. The name is the one of the Override YAML block Tessera gave before, so a screen that moves from that
+# block to this part keeps its entity; remove that block first, or the build finds the update twice.
+http_request:
+
+update:
+  - platform: esp32_hosted
+    type: http
+    name: "Wi-Fi co-processor firmware"
+    source: https://esphome.github.io/esp-hosted-firmware/manifest/esp32c6.json

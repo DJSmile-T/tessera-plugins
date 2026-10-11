@@ -32,57 +32,52 @@ op de CYD en andere schermen met 4 MB: daar is geen ruimte voor.
 ## Wat je nodig hebt
 
 - Een scherm met een ESP32-P4.
-- Een recente firmware op de ESP32-C6. De C6 komt vaak met een firmware die te oud is voor Bluetooth (een reTerminal
-  D1001 kwam met 2.3.2); zie "De C6 bijwerken" hieronder. Met de oude firmware werkt het scherm zoals altijd en blijft
-  Bluetooth uit.
+- Een recente firmware op de ESP32-C6, de chip naast de P4 die wifi en Bluetooth doet. Veel schermen komen met een
+  firmware die te oud is voor Bluetooth (een reTerminal D1001 kwam met 2.3.2). De plugin brengt de update mee, zie "De
+  C6 bijwerken" hieronder. Met de oude firmware werkt het scherm zoals altijd en blijft Bluetooth uit.
 
 ## Instellen
 
-1. Open in Tessera **Plugins**, kies **Bluetooth-proxy** en vink je scherm aan.
+1. Open in Tessera **Plugins**, kies **Bluetooth-proxy** en vink je scherm aan. Laat **Update van de wifichip**
+   aangevinkt.
 2. Voeg hem toe. Het scherm bouwt één keer.
-3. Open in Home Assistant **Instellingen**, **Apparaten & diensten**, **Bluetooth**: het scherm staat er als proxy,
-   genoemd naar het scherm en het Bluetooth-adres van zijn C6 (niet het wifi-adres van het scherm), en apparaten die
-   het hoort verschijnen zodra Home Assistant ze vindt.
-4. Na een paar minuten geen apparaten? Kijk in het log van het scherm in ESPHome. `BT controller init failed;
-   co-processor firmware ... may lack BT support` betekent dat de C6-firmware te oud is: werk hem bij (hieronder). Home
-   Assistant kan de proxy dan toch tonen, maar hij scant pas na de update van de C6.
+3. Open in Home Assistant het apparaat van het scherm. **Bluetooth status** zegt wat de proxy doet. **Luistert**: klaar.
+   **Werk de wifichip bij**: de C6-firmware is te oud, volg "De C6 bijwerken" hieronder.
+4. In Home Assistant toont **Instellingen**, **Apparaten & diensten**, **Bluetooth** het scherm als proxy, genoemd naar
+   het scherm en het Bluetooth-adres van zijn C6 (niet het wifi-adres van het scherm), met de apparaten die het hoort
+   zodra Home Assistant ze vindt.
 
-## De instelling
+## Op het scherm en in de app
 
-**Bluetooth-proxy** zet Bluetooth aan en uit. Hij staat in Home Assistant bij het apparaat van het scherm, in de details
-van de plugin op het tabblad Plugins van het scherm in Tessera, en op het scherm zelf: houd de bovenbalk vast, dan
-**Instellingen**, **Plugins**, **Bluetooth**. Uit geeft de radio alleen aan wifi; het scherm houdt hem ook na een
-herstart uit tot je hem weer aanzet.
+**Bluetooth-proxy** zet Bluetooth aan en uit, en **Bluetooth status** zegt wat hij doet: luistert, uit, start op, of dat
+de wifichip zijn update nodig heeft. Beide staan in Home Assistant bij het apparaat van het scherm, en op het scherm zelf:
+houd de bovenbalk vast, dan **Instellingen**, **Plugins**, **Bluetooth**. De schakelaar staat ook in de details van de
+plugin op het tabblad Plugins van het scherm in Tessera. Uit geeft de radio alleen aan wifi; het scherm houdt hem ook na
+een herstart uit tot je hem weer aanzet.
 
 ## De C6 bijwerken
 
-De ESP32-C6 heeft een eigen firmware, en ESPHome brengt nieuwere uit. Tessera werkt hem nooit vanzelf bij: een update
-die misgaat laat de C6 steeds opnieuw starten, en alleen zijn downloadmodus haalt hem terug, wat bij sommige schermen
-betekent dat de behuizing open moet. Het is dus een stap die je bewust zet, één keer, voor je eigen scherm:
+De ESP32-C6 heeft een eigen firmware, en ESPHome brengt nieuwere uit. Met **Update van de wifichip** aangevinkt heeft het
+apparaat van het scherm in Home Assistant **Wi-Fi co-processor firmware**, met de versie op de C6 en de nieuwste. Hij
+installeert nooit vanzelf: een update die misgaat laat de C6 steeds opnieuw starten, en alleen zijn downloadmodus haalt
+hem terug, wat bij sommige schermen betekent dat de behuizing open moet. Hij wacht dus op jou:
 
-1. Open in Tessera het scherm, dan **Meer**, **Override YAML**, en voeg toe:
+1. Open in Home Assistant het apparaat van het scherm en **Wi-Fi co-processor firmware**.
+2. Druk op **Installeren**, en laat het scherm aan tot hij klaar is (een paar minuten). Het scherm herstart, en
+   **Bluetooth status** zegt **Luistert**.
 
-   ```yaml
-   http_request:
-
-   update:
-     - platform: esp32_hosted
-       type: http
-       name: "Wi-Fi co-processor firmware"
-       source: https://esphome.github.io/esp-hosted-firmware/manifest/esp32c6.json
-   ```
-
-2. Sla op en laat het scherm bouwen.
-3. In Home Assistant heeft het apparaat van het scherm nu **Wi-Fi co-processor firmware**. Die toont de versie op de C6
-   en de nieuwste. Druk op **Installeren** als je zover bent, en laat het scherm aan tot hij klaar is. Het scherm
-   herstart daarna, en Bluetooth start.
-4. Daarna mag het blok er weer uit, of laat het staan om van nieuwere versies te horen (hij kijkt elke zes uur en
-   installeert pas als je op Installeren drukt).
+Hij kijkt elke zes uur of er een nieuwere versie is en toont die daar; installeren blijft jouw keus. Wil je hem niet?
+Vink **Update van de wifichip** uit in de details van de plugin op het tabblad Plugins van het scherm en kies **Opslaan
+en bouwen**.
 
 ## Goed om te weten
 
-- Hij voegt ongeveer 370 KB toe aan de firmware. Elk P4-scherm heeft daar ruimte voor.
+- Hij voegt ongeveer 370 KB toe aan de firmware, en de update van de wifichip ongeveer 200 KB meer. Elk P4-scherm heeft
+  daar ruimte voor.
 - De proxy is die van ESPHome zelf: wat Home Assistant ermee doet staat in de
   [ESPHome-documentatie over de Bluetooth-proxy](https://esphome.io/components/bluetooth_proxy/).
-- Eerder een Bluetooth-proxy toegevoegd via de **Override YAML** van het scherm? Haal die blokken (`esp32_ble_tracker:`,
-  `bluetooth_proxy:`) eerst weg, anders vindt de build ze twee keer. Het blok voor de C6-update mag blijven.
+- Eerder een Bluetooth-proxy of de C6-update toegevoegd via de **Override YAML** van het scherm? Haal die blokken
+  (`esp32_ble_tracker:`, `bluetooth_proxy:`, `http_request:` en de `esp32_hosted`-update) eerst weg, anders vindt de
+  build ze twee keer. De update houdt zijn naam, dus Home Assistant houdt zijn entiteit.
+- Geprobeerd op een reTerminal D1001: zijn C6 ging met Installeren van 2.3.2 naar 2.12.12, en de proxy hoorde in de
+  eerste minuut 51 apparaten.

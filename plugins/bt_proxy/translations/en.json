@@ -2,12 +2,19 @@
   "_meta": { "name": "English" },
   "screen": {
     "name": "Bluetooth",
-    "proxy": "Bluetooth proxy"
+    "proxy": "Bluetooth proxy",
+    "status": "Status",
+    "status_on": "Listening",
+    "status_off": "Off",
+    "status_starting": "Starting",
+    "status_old": "Update the Wi-Fi chip"
   },
   "app": {
     "name": "Bluetooth proxy",
     "summary": "Home Assistant reaches Bluetooth devices near the screen. Shares the radio with Wi-Fi.",
     "setting_proxy": "Bluetooth proxy",
-    "setting_proxy_hint": "Off gives the radio to Wi-Fi alone, for smoother pictures and camera streams. No build needed."
+    "setting_proxy_hint": "Off gives the radio to Wi-Fi alone, for smoother pictures and camera streams. No build needed.",
+    "part_c6": "Wi-Fi chip update",
+    "part_c6_hint": "Adds an Install button in Home Assistant for the firmware of the Wi-Fi chip. Bluetooth needs a recent one. Nothing installs until you press it."
   }
 }

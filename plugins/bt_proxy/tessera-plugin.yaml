@@ -4,7 +4,7 @@
 # follows the board's hardware, so a new P4 board fits without this file changing. The C6 does Wi-Fi and Bluetooth on
 # one radio: a setting turns the proxy off without a build.
 id: bt_proxy
-version: 0.1.0
+version: 0.2.0
 api: "0.8"
 icon: bluetooth
 maintainer: MaxGramser
@@ -20,3 +20,8 @@ flash_kb: 380
 # The switch of plugin.yaml, also in the plugin's details on the screen's Plugins tab and on the screen's settings page.
 settings:
   - { key: bluetooth_proxy, label: setting_proxy, hint: setting_proxy_hint }
+
+# The C6's firmware update in Home Assistant, ticked by default: Bluetooth needs a recent C6 firmware. Nothing installs
+# until someone presses Install.
+parts:
+  - { id: c6_update, file: parts/c6_update.yaml, label: part_c6, hint: part_c6_hint, flash_kb: 200, default: true }

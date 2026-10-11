@@ -56,7 +56,7 @@ file that sets one of these keys at its top level:
 | `api`, `ota`, `logger` | Home Assistant's connection, updates and the log belong to the screen's own YAML and the core. |
 | `external_components`, `packages`, `substitutions` | The app writes these for every plugin; a plugin's inputs reach `plugin.yaml` as substitutions already. |
 | `web_server`, `captive_portal`, `mqtt`, `wireguard`, `socket`, `udp`, `packet_transport` | They open the screen to the network. |
-| `http_request`, `online_image` | They fetch from the screen; data comes through the app's `fetch`. |
+| `http_request`, `online_image` | They fetch from the screen; data comes through the app's `fetch`. One exception: a file that holds only ESPHome's update of the Wi-Fi co-processor of an ESP32-P4 (`update:` with `platform: esp32_hosted`, `type: http` and a `source` on `https://esphome.github.io/esp-hosted-firmware/manifest/`) and `http_request:` without settings. It installs only when someone presses Install in Home Assistant. |
 
 Two more rules for the ids it makes: one that starts with `ts_` only for a feature the plugin provides, and for each
 feature it provides, that feature's component with exactly its id ([MANIFEST.md](MANIFEST.md), "Features").

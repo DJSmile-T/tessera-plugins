@@ -32,55 +32,49 @@ and other 4 MB screens either: there is no room for it.
 ## What you need
 
 - A screen with an ESP32-P4.
-- A recent firmware on its ESP32-C6. The C6 often comes with a firmware too old for Bluetooth (a reTerminal D1001 came
-  with 2.3.2); see "Updating the C6" below. With the old firmware the screen works as before and Bluetooth stays off.
+- A recent firmware on its ESP32-C6, the chip beside the P4 that does Wi-Fi and Bluetooth. Many screens come with one
+  too old for Bluetooth (a reTerminal D1001 came with 2.3.2). The plugin brings the update with it, see "Updating the
+  C6" below. With the old firmware the screen works as before and Bluetooth stays off.
 
 ## Set up
 
-1. In Tessera, open **Plugins**, choose **Bluetooth proxy** and tick your screen.
+1. In Tessera, open **Plugins**, choose **Bluetooth proxy** and tick your screen. Leave **Wi-Fi chip update** ticked.
 2. Add it. The screen builds once.
-3. In Home Assistant, open **Settings**, **Devices & services**, **Bluetooth**: the screen shows up as a proxy, named
-   after the screen and the Bluetooth address of its C6 (not the Wi-Fi address of the screen), and devices it hears
-   appear as Home Assistant finds them.
-4. No devices after a few minutes? Look at the screen's log in ESPHome. `BT controller init failed; co-processor
-   firmware ... may lack BT support` means the C6 firmware is too old: update it (below). Home Assistant may list the
-   proxy anyway, but it does not scan until the C6 is updated.
+3. In Home Assistant, open the screen's device. **Bluetooth status** says what the proxy does. **Listening**: done.
+   **Update the Wi-Fi chip**: the C6 firmware is too old, follow "Updating the C6" below.
+4. In Home Assistant, **Settings**, **Devices & services**, **Bluetooth** shows the screen as a proxy, named after the
+   screen and the Bluetooth address of its C6 (not the Wi-Fi address of the screen), and the devices it hears as Home
+   Assistant finds them.
 
-## The setting
+## On the screen and in the app
 
-**Bluetooth proxy** turns Bluetooth on and off. It is in Home Assistant on the screen's device, in the plugin's details
-on the screen's Plugins tab in Tessera, and on the screen itself: hold the top bar, then **Settings**, **Plugins**,
-**Bluetooth**. Off gives the radio to Wi-Fi alone; the screen keeps it off across a restart until you turn it on.
+**Bluetooth proxy** turns Bluetooth on and off, and **Bluetooth status** says what it does: listening, off, starting, or
+that the Wi-Fi chip needs its update. Both are in Home Assistant on the screen's device, and on the screen itself: hold
+the top bar, then **Settings**, **Plugins**, **Bluetooth**. The switch is also in the plugin's details on the screen's
+Plugins tab in Tessera. Off gives the radio to Wi-Fi alone; the screen keeps it off across a restart until you turn it
+on.
 
 ## Updating the C6
 
-The ESP32-C6 has a firmware of its own, and ESPHome publishes newer ones. Tessera never updates it by itself: an update
-that goes wrong leaves the C6 starting over and over, and only its download mode brings it back, which on some screens
-means opening the case. So it is a step you take on purpose, once, for your own screen:
+The ESP32-C6 has a firmware of its own, and ESPHome publishes newer ones. With **Wi-Fi chip update** ticked, the screen's
+device in Home Assistant has **Wi-Fi co-processor firmware**, with the version on the C6 and the newest one. It never
+installs by itself: an update that goes wrong leaves the C6 starting over and over, and only its download mode brings it
+back, which on some screens means opening the case. So it waits for you:
 
-1. In Tessera, open the screen, then **More**, **Override YAML**, and add:
+1. In Home Assistant, open the screen's device and **Wi-Fi co-processor firmware**.
+2. Press **Install**, and leave the screen powered until it is done (a few minutes). The screen restarts, and
+   **Bluetooth status** says **Listening**.
 
-   ```yaml
-   http_request:
-
-   update:
-     - platform: esp32_hosted
-       type: http
-       name: "Wi-Fi co-processor firmware"
-       source: https://esphome.github.io/esp-hosted-firmware/manifest/esp32c6.json
-   ```
-
-2. Save and let the screen build.
-3. In Home Assistant, the screen's device now has **Wi-Fi co-processor firmware**. It shows the version on the C6 and
-   the newest one. Press **Install** when you are ready, and leave the screen powered until it is done. The screen
-   restarts afterwards, and Bluetooth starts.
-4. Afterwards you may remove the block again, or keep it to hear of newer versions (it checks every six hours and
-   installs only when you press Install).
+It checks for a newer version every six hours and shows it there; installing stays your choice. Do not want it? Untick
+**Wi-Fi chip update** in the plugin's details on the screen's Plugins tab and choose **Save and build**.
 
 ## Good to know
 
-- It adds about 370 KB to the firmware. Every P4 screen has room for that.
+- It adds about 370 KB to the firmware, and the Wi-Fi chip update about 200 KB more. Every P4 screen has room for that.
 - The proxy follows ESPHome's own: what Home Assistant does with it is in the
   [ESPHome Bluetooth proxy docs](https://esphome.io/components/bluetooth_proxy/).
-- Added a Bluetooth proxy through the screen's **Override YAML** before? Remove those blocks (`esp32_ble_tracker:`,
-  `bluetooth_proxy:`) first, or the build finds them twice. The C6 update block may stay.
+- Added a Bluetooth proxy or the C6 update through the screen's **Override YAML** before? Remove those blocks
+  (`esp32_ble_tracker:`, `bluetooth_proxy:`, `http_request:` and the `esp32_hosted` update) first, or the build finds
+  them twice. The update keeps its name, so Home Assistant keeps its entity.
+- Tried on a reTerminal D1001: its C6 went from 2.3.2 to 2.12.12 with Install, and the proxy heard 51 devices in its
+  first minute.

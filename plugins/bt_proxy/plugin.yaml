@@ -30,5 +30,15 @@ switch:
     turn_off_action:
       - ble.disable:
 
+# What the proxy is doing, in the screen's language: listening, off, starting, or that Bluetooth did not start because
+# the C6 firmware is too old (ESPHome marks its Bluetooth failed then). On the screen's settings page too.
+text_sensor:
+  - platform: template
+    id: bt_proxy_status
+    name: "Bluetooth status"
+    icon: mdi:bluetooth-settings
+    entity_category: diagnostic
+
 bt_proxy:
   proxy_on: bt_proxy_on
+  status: bt_proxy_status

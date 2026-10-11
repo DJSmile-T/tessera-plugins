@@ -2,12 +2,19 @@
   "_meta": { "name": "Nederlands" },
   "screen": {
     "name": "Bluetooth",
-    "proxy": "Bluetooth-proxy"
+    "proxy": "Bluetooth-proxy",
+    "status": "Status",
+    "status_on": "Luistert",
+    "status_off": "Uit",
+    "status_starting": "Start op",
+    "status_old": "Werk de wifichip bij"
   },
   "app": {
     "name": "Bluetooth-proxy",
     "summary": "Home Assistant bereikt Bluetooth-apparaten bij het scherm. Deelt de radio met wifi.",
     "setting_proxy": "Bluetooth-proxy",
-    "setting_proxy_hint": "Uit geeft de radio alleen aan wifi, voor vlottere plaatjes en camerabeelden. Zonder opnieuw bouwen."
+    "setting_proxy_hint": "Uit geeft de radio alleen aan wifi, voor vlottere plaatjes en camerabeelden. Zonder opnieuw bouwen.",
+    "part_c6": "Update van de wifichip",
+    "part_c6_hint": "Zet een knop Installeren in Home Assistant voor de firmware van de wifichip. Bluetooth vraagt een recente. Er wordt niets geïnstalleerd tot je erop drukt."
   }
 }
