@@ -109,6 +109,7 @@ class NextTile : public tessera::Tile {
 
   void on_theme() override {
     ui::set_color(what_, theme::INK);
+    ui::set_color(when_, theme::INK);
     ui::set_color(date_, theme::MUTED);
     on_tick(0);
   }

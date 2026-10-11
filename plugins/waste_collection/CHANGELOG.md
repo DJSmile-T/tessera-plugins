@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.7 - 2026-10-11
+- In Dark mode the tile's "Tomorrow" or "In 3 days" is readable again, also after switching between light and dark. On most screens it stayed dark on a dark tile.
+
 ## 1.0.6 - 2026-10-09
 - Listed under the topics Home and Calendar & tasks on the Plugins page.
 - Needs a Tessera with plugin API 0.7: update the app and the screen first.

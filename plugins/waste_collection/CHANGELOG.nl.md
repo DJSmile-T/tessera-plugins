@@ -1,5 +1,8 @@
 # Wijzigingen
 
+## 1.0.7 - 2026-10-11
+- In de donkere modus is "Morgen" of "Over 3 dagen" op de tegel weer leesbaar, ook na wisselen tussen licht en donker. Op de meeste schermen bleef het donker op een donkere tegel.
+
 ## 1.0.6 - 2026-10-09
 - Staat onder de onderwerpen Thuis en Agenda & taken op de pagina Plugins.
 - Vraagt een Tessera met plugin-API 0.7: werk eerst de app en het scherm bij.
