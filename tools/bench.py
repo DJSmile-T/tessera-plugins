@@ -356,7 +356,7 @@ CODE = {
 }
 SETTINGS_ROWS = re.compile(r'\bbool\s+(?:\w+::)?settings\s*\(\s*(?:tessera::)?SettingsPage\s*&')
 ACTION = re.compile(r'tessera::action\(\s*"([\w.]+)"')
-LARGE_DIGITS = re.compile(r'Font::DIGITS|ui::covers\(')
+API_0_9 = re.compile(r'Font::DIGITS|ui::covers\(|Tone::GOOD|ui::set_fill\(|ui::tone_color\(')
 
 
 def adds(entry, folder):
@@ -374,7 +374,7 @@ def adds(entry, folder):
            'settings_rows': bool(SETTINGS_ROWS.search(code)),
            'questions': manifest['permissions']['ha_commands'],
            'actions': sorted(set(ACTION.findall(code))),
-           'large_digits': bool(LARGE_DIGITS.search(code)), 'mismatches': []}
+           'api_0_9': bool(API_0_9.search(code)), 'mismatches': []}
     for part, pattern in CODE.items():
         named = {item['id'] for item in manifest[part]}
         found = set(pattern.findall(code))
@@ -388,8 +388,8 @@ def adds(entry, folder):
         if action not in allowed:
             out['mismatches'].append(f'the code calls {action}, which permissions.home_assistant_actions does not name')
     api = tuple(int(n) for n in str(manifest['api']).split('.'))
-    if out['large_digits'] and api < (0, 9):
-        out['mismatches'].append(f'the code uses Font::DIGITS or ui::covers, which came with plugin API 0.9: the manifest '
+    if out['api_0_9'] and api < (0, 9):
+        out['mismatches'].append(f'the code uses a part of plugin API 0.9 (Font::DIGITS, ui::covers, Tone::GOOD, ui::set_fill, ui::tone_color): the manifest '
                                  f'says api "{manifest["api"]}"')
     return out
 
@@ -1010,7 +1010,7 @@ def index_page(out, entry, screens, findings, started, parts_of):
                                             ', '.join(e(s) for s in parts_of['settings_entities'])])))
     row('Asks Home Assistant', ', '.join(e(q) for q in parts_of['questions']))
     row('Actions in Home Assistant', ', '.join(e(a) for a in parts_of['actions']))
-    row('Large digits (0.9)', 'yes' if parts_of['large_digits'] else '')
+    row('Parts of plugin API 0.9', 'yes' if parts_of['api_0_9'] else '')
     parts.append('</table></div>')
     # The screens
     parts.append('<h2>Screens</h2><div class="scroll"><table><tr><th>Screen</th><th>Glass</th><th>Look</th><th>Grids</th></tr>')

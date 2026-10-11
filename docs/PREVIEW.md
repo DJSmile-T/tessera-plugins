@@ -142,7 +142,7 @@ python3 tools/preview.py plugins/<id> --strict    # or from the plugin's folder:
 | Field | What |
 |---|---|
 | `plugin`, `version`, `rendered` | The plugin and when the bench ran. |
-| `adds` | What the plugin adds: `tiles` (id, name, sizes, data, memory), `cards`, `bar_items`, `tap_actions`, `settings_entities`, `settings_rows`, `questions`, `actions`, `large_digits`, and `mismatches` between manifest and code. |
+| `adds` | What the plugin adds: `tiles` (id, name, sizes, data, memory: the manifest's), `cards`, `bar_items`, `tap_actions`, `settings_entities`, `settings_rows`, `questions`, `actions`, `api_0_9` (it uses a part of plugin API 0.9), and `mismatches` between manifest and code. |
 | `screens[]` | Each screen: `key`, `title`, `width`, `height`, `dpi`, `look`, `error` when it failed, and its `views`. |
 | `screens[].views[]` | Each grid of it: `grid`, `folder` (empty for its own grid), `tiles[]` (`name`, `span` as `2x1`, `size`, `px`, the `light` and `dark` file), `cards[]`, `taps[]` (with the `actions` a tap asked Home Assistant for), `bar`, `bar_icon`, `settings[]`, `pages[]`. |
 | `findings[]` | `level` (`error`, `warning` or `info`), `screen`, `where` and `text`. Fix every `error` and `warning`; an `info` says what was not shown and why. |

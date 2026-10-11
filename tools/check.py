@@ -54,7 +54,8 @@ SCREEN_RULES = [
 SCREEN_CODE = re.compile(r'plugin_api\.h|\btessera::|\blv_')
 # Parts of the C++ API by the minor that brought them (docs/FIRMWARE_API.md, "Versions"): a plugin that uses one names
 # at least that minor in `api`, or a core before it stops its build with a compiler error.
-API_PARTS = [((0, 9), re.compile(r'Font::DIGITS|\bui::covers\s*\('), 'Font::DIGITS and ui::covers')]
+API_PARTS = [((0, 9), re.compile(r'Font::DIGITS|\bui::covers\s*\(|Tone::GOOD|\bui::set_fill\s*\(|\bui::tone_color\s*\('),
+               'Font::DIGITS, ui::covers, Tone::GOOD, ui::set_fill and ui::tone_color')]
 
 # What plugin.yaml (and a part's file) never sets at its top level (docs/LIMITS.md, "plugin.yaml"). It is merged into
 # the screen's own configuration, so these would change what the core and the screen's own YAML hold, or open the

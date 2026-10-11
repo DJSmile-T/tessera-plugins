@@ -331,8 +331,10 @@ The screen's look is the same on every tile, so a plugin draws with the core's s
 | `ui::font(Font)` | The screen's font. |
 | `ui::line_height(Font)`, `ui::text_width(text, Font)` | To lay out before setting. |
 | `ui::covers(text, Font)` (0.9) | Whether the font has every character of the text; a character it lacks draws as nothing. |
-| `ui::label(parent, Font, Role)` | A one-line label, cut with dots when too long. |
+| `ui::label(parent, Font, Role)` | A one-line label, cut with dots when too long. From 0.9 it is one line of its font high, and `ui::set_font` keeps it so; before, give it that height yourself (`lv_obj_set_size(label, width, ui::line_height(font))`), or a long text wraps onto a second line under the tile. |
 | `ui::set_text(label, text)`, `ui::set_font(label, Font)`, `ui::set_color(label, Role)`, `ui::set_tone(label, Tone, Role)` | Change it only when it differs: call them on every tick for free. |
+| `ui::set_fill(block, Tone, Role)` (0.9) | A block's fill (a bar, a dot) in a tone's colour, or the role for `NORMAL`; only when it differs. |
+| `ui::tone_color(Tone, Role)` (0.9) | A tone's colour in this look, for a part the two above do not reach. |
 | `ui::block(parent, Role)` | A rounded block with the radius of a key (a badge, a bar). |
 | `ui::color(Role)` | A colour by its role. |
 | `ui::icon(codepoint)` | An icon of Tessera's set as text, for a label in `Font::ICON` or `ICON_SMALL`. |
@@ -361,10 +363,11 @@ screen's look. The ones a tile needs most:
 | `theme::CARD`, `theme::RAISED`, `theme::LINE`, `theme::TRACK` | Surfaces and lines inside a card. |
 | `theme::MARK_GREEN`, `MARK_AMBER`, `MARK_BLUE`, `MARK_PURPLE` | The four colours of the Tessera mark, the same in light and dark: for a dot or a block that names a kind (a bin, a line). |
 
-A label can also take a colour by what it means, in both looks: `ui::set_tone(label, Tone::ALERT, theme::INK)` for
-red, `BUSY` for amber, `ACCENT` for the look's accent. A block (a bar, a dot) has no colour by meaning yet: there is no
-role for good, moderate and bad, and no red for a block. Until there is, use `TRACK` and `ACCENT`, or the mark's
-colours where a kind fits, and never a colour as a number.
+A part can take a colour by what it means, in both looks: a tone (`tessera::Tone`). `GOOD` (0.9) is Home Assistant's
+green, `BUSY` its amber, `ALERT` its red, `ACCENT` the look's accent, each made readable on the card. A label takes it
+with `ui::set_tone(label, tone, normal)`, a block (a bar, a dot) with `ui::set_fill(block, tone, normal)` (0.9); `normal`
+is the role for `NORMAL`. A level that is good, moderate or bad is `GOOD`, `BUSY` and `ALERT`. Never a colour as a
+number. Before 0.9 a block has no colour by meaning: `TRACK` and `ACCENT`, or the mark's colours where a kind fits.
 
 ## The rest of the core
 
@@ -472,7 +475,7 @@ brought:
 | 0.6 | The app's side only: settings of kind text and button, a button's `status`, settings found by their name in the entity registry, and each plugin's settings in its details on the screen's Plugins tab. |
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
-| 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
+| 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
 knows it ([MANIFEST.md](MANIFEST.md), "Which minor brought a field").
