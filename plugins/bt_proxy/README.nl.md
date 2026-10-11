@@ -32,17 +32,20 @@ op de CYD en andere schermen met 4 MB: daar is geen ruimte voor.
 ## Wat je nodig hebt
 
 - Een scherm met een ESP32-P4.
-- Een recente firmware op de ESP32-C6. De C6 komt vaak met een firmware die te oud is voor Bluetooth; zie "De C6
-  bijwerken" hieronder. Wifi werkt hoe dan ook.
+- Een recente firmware op de ESP32-C6. De C6 komt vaak met een firmware die te oud is voor Bluetooth (een reTerminal
+  D1001 kwam met 2.3.2); zie "De C6 bijwerken" hieronder. Met de oude firmware werkt het scherm zoals altijd en blijft
+  Bluetooth uit.
 
 ## Instellen
 
 1. Open in Tessera **Plugins**, kies **Bluetooth-proxy** en vink je scherm aan.
 2. Voeg hem toe. Het scherm bouwt één keer.
-3. Open in Home Assistant **Instellingen**, **Apparaten & diensten**, **ESPHome**: het scherm staat er nu als
-   Bluetooth-proxy, en apparaten die het hoort verschijnen onder **Bluetooth** zodra Home Assistant ze vindt.
-4. Na een paar minuten geen apparaten, en zegt het log van het scherm dat Bluetooth niet startte? Werk de C6 bij
-   (hieronder).
+3. Open in Home Assistant **Instellingen**, **Apparaten & diensten**, **Bluetooth**: het scherm staat er als proxy,
+   genoemd naar het scherm en het Bluetooth-adres van zijn C6 (niet het wifi-adres van het scherm), en apparaten die
+   het hoort verschijnen zodra Home Assistant ze vindt.
+4. Na een paar minuten geen apparaten? Kijk in het log van het scherm in ESPHome. `BT controller init failed;
+   co-processor firmware ... may lack BT support` betekent dat de C6-firmware te oud is: werk hem bij (hieronder). Home
+   Assistant kan de proxy dan toch tonen, maar hij scant pas na de update van de C6.
 
 ## De instelling
 
@@ -71,7 +74,8 @@ betekent dat de behuizing open moet. Het is dus een stap die je bewust zet, éé
 
 2. Sla op en laat het scherm bouwen.
 3. In Home Assistant heeft het apparaat van het scherm nu **Wi-Fi co-processor firmware**. Die toont de versie op de C6
-   en de nieuwste. Druk op **Installeren** als je zover bent, en laat het scherm aan tot hij klaar is.
+   en de nieuwste. Druk op **Installeren** als je zover bent, en laat het scherm aan tot hij klaar is. Het scherm
+   herstart daarna, en Bluetooth start.
 4. Daarna mag het blok er weer uit, of laat het staan om van nieuwere versies te horen (hij kijkt elke zes uur en
    installeert pas als je op Installeren drukt).
 

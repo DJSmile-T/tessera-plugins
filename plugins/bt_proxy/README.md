@@ -32,16 +32,19 @@ and other 4 MB screens either: there is no room for it.
 ## What you need
 
 - A screen with an ESP32-P4.
-- A recent firmware on its ESP32-C6. The C6 often comes with a firmware too old for Bluetooth; see "Updating the C6"
-  below. Wi-Fi works either way.
+- A recent firmware on its ESP32-C6. The C6 often comes with a firmware too old for Bluetooth (a reTerminal D1001 came
+  with 2.3.2); see "Updating the C6" below. With the old firmware the screen works as before and Bluetooth stays off.
 
 ## Set up
 
 1. In Tessera, open **Plugins**, choose **Bluetooth proxy** and tick your screen.
 2. Add it. The screen builds once.
-3. In Home Assistant, open **Settings**, **Devices & services**, **ESPHome**: the screen now shows up as a Bluetooth
-   proxy, and devices it hears appear under **Bluetooth** as Home Assistant finds them.
-4. No devices after a few minutes, and the log of the screen says Bluetooth did not start? Update the C6 (below).
+3. In Home Assistant, open **Settings**, **Devices & services**, **Bluetooth**: the screen shows up as a proxy, named
+   after the screen and the Bluetooth address of its C6 (not the Wi-Fi address of the screen), and devices it hears
+   appear as Home Assistant finds them.
+4. No devices after a few minutes? Look at the screen's log in ESPHome. `BT controller init failed; co-processor
+   firmware ... may lack BT support` means the C6 firmware is too old: update it (below). Home Assistant may list the
+   proxy anyway, but it does not scan until the C6 is updated.
 
 ## The setting
 
@@ -69,7 +72,8 @@ means opening the case. So it is a step you take on purpose, once, for your own 
 
 2. Save and let the screen build.
 3. In Home Assistant, the screen's device now has **Wi-Fi co-processor firmware**. It shows the version on the C6 and
-   the newest one. Press **Install** when you are ready, and leave the screen powered until it is done.
+   the newest one. Press **Install** when you are ready, and leave the screen powered until it is done. The screen
+   restarts afterwards, and Bluetooth starts.
 4. Afterwards you may remove the block again, or keep it to hear of newer versions (it checks every six hours and
    installs only when you press Install).
 
