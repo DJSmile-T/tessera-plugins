@@ -4,6 +4,7 @@
 - De firmware-update van de wifichip komt mee met de plugin (**Update van de wifichip**, standaard aan): Home Assistant toont hem bij het apparaat van het scherm, en jij drukt op Installeren. Bluetooth vraagt een recente; veel schermen komen met een te oude.
 - **Bluetooth status** zegt wat de proxy doet, in Home Assistant en op de instellingenpagina van het scherm: luistert, uit, start op, of dat de wifichip zijn update nodig heeft.
 - De update in de Override YAML gehad? Haal dat blok eerst weg; de entiteit houdt zijn naam.
+- Bijgewerkt vanaf 0.1.0? Een update houdt de onderdelen die je had, dus vink **Update van de wifichip** aan in de details van de plugin op het tabblad Plugins van het scherm en kies **Opslaan en bouwen**.
 
 ## 0.1.0 - 2026-10-11
 - Eerste versie: de Bluetooth-proxy van ESPHome op elk scherm met een ESP32-P4, met een instelling om hem zonder opnieuw bouwen uit te zetten.
