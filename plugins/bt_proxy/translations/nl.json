@@ -1,0 +1,13 @@
+{
+  "_meta": { "name": "Nederlands" },
+  "screen": {
+    "name": "Bluetooth",
+    "proxy": "Bluetooth-proxy"
+  },
+  "app": {
+    "name": "Bluetooth-proxy",
+    "summary": "Home Assistant bereikt Bluetooth-apparaten bij het scherm. Deelt de radio met wifi.",
+    "setting_proxy": "Bluetooth-proxy",
+    "setting_proxy_hint": "Uit geeft de radio alleen aan wifi, voor vlottere plaatjes en camerabeelden. Zonder opnieuw bouwen."
+  }
+}

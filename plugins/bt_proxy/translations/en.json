@@ -1,0 +1,13 @@
+{
+  "_meta": { "name": "English" },
+  "screen": {
+    "name": "Bluetooth",
+    "proxy": "Bluetooth proxy"
+  },
+  "app": {
+    "name": "Bluetooth proxy",
+    "summary": "Home Assistant reaches Bluetooth devices near the screen. Shares the radio with Wi-Fi.",
+    "setting_proxy": "Bluetooth proxy",
+    "setting_proxy_hint": "Off gives the radio to Wi-Fi alone, for smoother pictures and camera streams. No build needed."
+  }
+}
