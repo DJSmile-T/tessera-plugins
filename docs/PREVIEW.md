@@ -93,6 +93,44 @@ The page `index.html` has buttons for light, dark or both, and for the size of t
 picture as large as it is on its glass (by the glass's density), **Pixels** one pixel of the glass as one pixel of
 yours, **Fit** everything small enough to compare at a glance.
 
+## For an assistant (Claude Code and others)
+
+The bench is how an assistant sees what it draws. Run it after every change to the plugin's C++, its manifest or its
+`preview.yaml`, before saying a plugin is done:
+
+```sh
+python3 tools/preview.py --setup                  # once; it says what to install when something lacks
+python3 tools/preview.py plugins/<id> --strict    # or from the plugin's folder: python3 <plugins repo>/tools/preview.py . --strict
+```
+
+- **It takes a while.** The first build of each of the four default screens takes a few minutes, later runs about half
+  a minute each. Give the command a timeout of 20 minutes, or run it in the background and wait for it. A single
+  `--board cyd` is the quickest round while the C++ still changes; the four defaults (or `--all`) before you are done.
+- **Never `--window` or `--watch`.** Both wait for a person and never end on their own.
+- **The exit code says it.** 0: every screen built and nothing to fix. 1: a build failed or the plugin cannot be
+  benched (its reason is printed). 2 (with `--strict`): it built, and a finding is a warning.
+- **Read the findings first.** They are printed at the end, one line each (`warning: guition, Waste 2x1, page 1,
+  dark: 1 too faint to read on its ground: faint[Tomorrow]`), and are in `.preview/summary.json`.
+- **Then look.** `.preview/overview.png` has every tile at every size on every screen on one picture. Each picture is
+  also its own file: `.preview/<screen>/tile-<example>-<size>-<light|dark>.png`, `card-<id>-<theme>.png`,
+  `tap-<example>-<size>.png`, `bar-<theme>.png`, `bar-icon-<theme>.png`, `settings-<n>.png`, `page-<n>-<theme>.png`; a
+  grid of `--grid` has a folder of its own under the screen (`.preview/guition/4x5/`). Look at the smallest screen
+  (`cyd`) and the largest, light and dark: a finding only catches what can be measured, a picture shows what looks wrong.
+- **Give it real data.** Without a `preview.yaml` the tiles wait for data and the pictures show nothing of what the
+  plugin does. Copy a real answer of the web service into `answers`, real attributes into `states`.
+- **Say what was not benched.** A plugin with audio or a camera does not build there (exit 1 with a sentence); say so,
+  and that it needs a test on a screen.
+
+`summary.json`:
+
+| Field | What |
+|---|---|
+| `plugin`, `version`, `rendered` | The plugin and when the bench ran. |
+| `adds` | What the plugin adds: `tiles` (id, name, sizes, data, memory), `cards`, `bar_items`, `tap_actions`, `settings_entities`, `settings_rows`, `questions`, `actions`, `large_digits`, and `mismatches` between manifest and code. |
+| `screens[]` | Each screen: `key`, `title`, `width`, `height`, `dpi`, `look`, `error` when it failed, and its `views`. |
+| `screens[].views[]` | Each grid of it: `grid`, `folder` (empty for its own grid), `tiles[]` (`name`, `span` as `2x1`, `size`, `px`, the `light` and `dark` file), `cards[]`, `taps[]` (with the `actions` a tap asked Home Assistant for), `bar`, `bar_icon`, `settings[]`, `pages[]`, `memory` (`used` and `room` of the layout memory, in bytes). |
+| `findings[]` | `level` (`error`, `warning` or `info`), `screen`, `where` and `text`. Fix every `error` and `warning`; an `info` says what was not shown and why. |
+
 ## preview.yaml: the data your plugin is shown with
 
 Without one, every tile type is shown once, with its options' defaults and no data: the waiting state. Put a

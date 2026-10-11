@@ -56,7 +56,9 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 
 ## Rules that are never optional
 
-- **Start from the template**: `python3 tools/new_plugin.py <id>`. Do not write the folder from memory.
+- **Start from the template**: `python3 tools/new_plugin.py <id>`. Do not write the folder from memory. For a
+  repository of its own, `python3 tools/new_plugin.py <id> ../<repo>`: it adds an AGENTS.md and CLAUDE.md there that
+  point back to this repository's rules and tools.
 - **Topics say what it is about**: one or two of the list in `docs/MANIFEST.md`, "What it is about", always. Never a topic of your own; ask for a new one in an issue. What the plugin adds (tiles, a function, hardware)
   is no topic: the app reads it from the manifest.
 - **A feature is a promise.** A plugin that `provides` a speaker makes `speaker:` with `id: ts_speaker`; one that needs
@@ -102,13 +104,18 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 ```sh
 pip install pyyaml                      # once: the check reads YAML
 python3 tools/check.py plugins/<id>     # must print "<id>: ok"
-python3 tools/preview.py plugins/<id>   # the bench: no warning in its findings (docs/PREVIEW.md)
+python3 tools/preview.py plugins/<id> --strict   # the bench: exit 0, no warning in its findings (docs/PREVIEW.md)
 ```
 
-Read the bench's `.preview/summary.json` (its findings, what the plugin adds) and look at `.preview/overview.png`, one
-picture of every tile at every size on every screen. Give the plugin a `preview.yaml` with data it really gets, so the
-pictures show the plugin working, not waiting. A plugin whose `plugin.yaml` brings hardware does not build on the bench:
-say so.
+**The bench is how you see what you draw.** Run it after every change to the C++, the manifest or `preview.yaml`, not
+only at the end, and with `--strict` (exit 2 while a finding is a warning). The first build of a screen takes minutes:
+give it a timeout of 20 minutes or run it in the background; `--board cyd` alone is the quick round while the C++
+changes. Never pass `--window` or `--watch`, which wait for a person. Read the findings it prints (also in
+`.preview/summary.json`), then look at `.preview/overview.png` and the pictures of the smallest and the largest screen,
+light and dark (`.preview/<screen>/tile-...png`, `card-...png`): a finding catches what can be measured, a picture what
+looks wrong. Give the plugin a `preview.yaml` with data it really gets, so the pictures show it working, not waiting. A
+plugin that needs or brings audio or a camera does not build on the bench: say so. docs/PREVIEW.md, "For an
+assistant", has the exit codes, the files and the fields of `summary.json`.
 
 The check also fails while the folder still has the template's placeholders: `maintainer: your-github-name`, the
 LICENSE's `<year> <your name>`, and the README's line that it is the template.

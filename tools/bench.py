@@ -29,8 +29,13 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import logging
+
 import yaml
 from PIL import Image, ImageDraw
+
+# The API driver says every refused try out loud; the bench says itself what went wrong.
+logging.getLogger('aioesphomeapi').setLevel(logging.CRITICAL)
 
 HERE = Path(__file__).resolve().parent
 if not os.environ.get('TESSERA_TREE'):
@@ -500,6 +505,10 @@ class Bench(run.Run):
         for _ in range(240):
             if self.process.poll() is not None:
                 raise RuntimeError(f'the program exited with {self.process.returncode}; see {self.out / "program.log"}')
+            # The port first: until the program listens, a try to connect only fills the output with refusals.
+            if run.free(self.item.port):
+                await asyncio.sleep(0.5)
+                continue
             try:
                 await self.client.connect(login=True)
                 break
@@ -1087,12 +1096,12 @@ def once(args, folder, screens, esphome, watch=None):
         entry = app_plugins.read_folder(folder)
     except Exception as error:
         print(f'{folder}: the manifest does not read: {error}', flush=True)
-        return len(screens)
+        return len(screens), 0
     hardware = sorted(set(entry.manifest['requires']['features']) | set(entry.manifest['provides']))
     if hardware:
         print(f'{entry.id} needs or brings {", ".join(hardware)}: hardware of a screen, which the firmware built for this '
               'computer does not have, so the bench cannot build it. Try it on a screen (docs/TESTING.md).', flush=True)
-        return 1
+        return 1, 0
     boards = entry.manifest['boards']
     if boards != 'any':
         kept = [s for s in screens if not s.glass and s.variant.board in boards]
@@ -1101,7 +1110,7 @@ def once(args, folder, screens, esphome, watch=None):
                 print(f'{s.key}: left out, {entry.id} is for {", ".join(boards)} only', flush=True)
         if not kept:
             print(f'no screen to build: name one of {", ".join(boards)} with --board', flush=True)
-            return 1
+            return 1, 0
         screens = kept
     spec = read_preview(folder)
     started = time.strftime('%Y-%m-%d %H:%M')
@@ -1151,8 +1160,12 @@ def once(args, folder, screens, esphome, watch=None):
     (args.out / 'summary.json').write_text(json.dumps({'plugin': entry.id, 'version': entry.version, 'rendered': started,
                                                        'adds': parts_of, 'screens': results, 'findings': findings}, indent=1) + '\n')
     warnings = sum(f['level'] in ('warning', 'error') for f in findings)
+    # The findings that need a change, on the output too: who runs the bench from a terminal (or an assistant) reads
+    # them without opening a file.
+    for f in [f for f in findings if f['level'] in ('error', 'warning')][:30]:
+        print(f'  {f["level"]}: {f["screen"]}, {f["where"]}: {f["text"]}', flush=True)
     print(f'{len(screens) - failed} of {len(screens)} screens rendered, {warnings} warnings; open {args.out / "index.html"}', flush=True)
-    return failed
+    return failed, warnings
 
 
 def main():
@@ -1172,6 +1185,8 @@ def main():
     parser.add_argument('--window', action='store_true', help='keep the screen open in its window afterwards, to tap and '
                         'swipe with the mouse (one screen)')
     parser.add_argument('--watch', action='store_true', help='build and render again whenever a file of the plugin changes')
+    parser.add_argument('--strict', action='store_true', help='exit with 2 when a finding is a warning, so a script or an '
+                        'assistant knows the plugin is not done')
     parser.add_argument('--list', action='store_true', help='list the boards and stop')
     args = parser.parse_args()
     if args.list:
@@ -1197,18 +1212,23 @@ def main():
     esphome = shlex.split(os.environ.get('ESPHOME', 'esphome'))
     watch = Watch(folder) if args.watch else None
     try:
-        failed = once(args, folder, screens, esphome, watch)
+        failed, warnings = once(args, folder, screens, esphome, watch)
         while watch:
             if not watch.changed():
                 print('watching the plugin\'s files; Ctrl-C to stop', flush=True)
                 while not watch.changed():
                     time.sleep(1)
             print('a file changed: building again', flush=True)
-            failed = once(args, folder, screens, esphome, watch)
+            failed, warnings = once(args, folder, screens, esphome, watch)
     except KeyboardInterrupt:
         print('stopped', flush=True)
         return 130
-    return 1 if failed else 0
+    if failed:
+        return 1
+    if args.strict and warnings:
+        print(f'--strict: {warnings} warnings; see the findings in {args.out / "summary.json"}', flush=True)
+        return 2
+    return 0
 
 
 if __name__ == '__main__':
