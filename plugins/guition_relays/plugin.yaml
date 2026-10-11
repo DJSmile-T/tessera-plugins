@@ -1,0 +1,16 @@
+# What a screen gets when it takes this plugin: the first relay of the base as a switch of the screen, which Home
+# Assistant shows on the screen's device (switch.<screen>_relay_1). The pins are those of ESPHome's device page for
+# this board; a three-relay base showed the relays are active-high, so none is inverted. RESTORE_DEFAULT_OFF keeps the
+# state a relay had across a restart. The names are those of the Override YAML the Guition docs gave before, so a screen
+# that moves from that override to this plugin keeps its entities in Home Assistant.
+switch:
+  - platform: gpio
+    id: guition_relays_1
+    name: "Relay 1"
+    restore_mode: RESTORE_DEFAULT_OFF
+    pin:
+      number: GPIO40
+      inverted: false
+
+guition_relays:
+  relay_1: guition_relays_1

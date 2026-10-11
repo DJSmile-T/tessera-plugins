@@ -1,0 +1,15 @@
+{
+  "_meta": { "name": "English" },
+  "screen": {
+    "name": "Relays",
+    "relay_1": "Relay 1",
+    "relay_2": "Relay 2",
+    "relay_3": "Relay 3"
+  },
+  "app": {
+    "name": "Guition relays",
+    "summary": "The relays of the Guition 4-inch wallbox base as switches in Home Assistant and on the screen.",
+    "part_three": "Three relays",
+    "part_three_hint": "Tick this for a base with three relays. Leave it off for a base with one."
+  }
+}

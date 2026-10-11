@@ -1,0 +1,15 @@
+{
+  "_meta": { "name": "Nederlands" },
+  "screen": {
+    "name": "Relais",
+    "relay_1": "Relais 1",
+    "relay_2": "Relais 2",
+    "relay_3": "Relais 3"
+  },
+  "app": {
+    "name": "Guition-relais",
+    "summary": "De relais van de Guition 4-inch inbouwdoos als schakelaars in Home Assistant en op het scherm.",
+    "part_three": "Drie relais",
+    "part_three_hint": "Vink dit aan voor een doos met drie relais. Laat het uit voor een doos met een."
+  }
+}

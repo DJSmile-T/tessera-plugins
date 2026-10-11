@@ -1,0 +1,20 @@
+# The second and third relay, for a base with three. A one-relay base has neither, so this part stays off there.
+switch:
+  - platform: gpio
+    id: guition_relays_2
+    name: "Relay 2"
+    restore_mode: RESTORE_DEFAULT_OFF
+    pin:
+      number: GPIO2
+      inverted: false
+  - platform: gpio
+    id: guition_relays_3
+    name: "Relay 3"
+    restore_mode: RESTORE_DEFAULT_OFF
+    pin:
+      number: GPIO1
+      inverted: false
+
+guition_relays:
+  relay_2: guition_relays_2
+  relay_3: guition_relays_3

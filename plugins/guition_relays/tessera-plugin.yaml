@@ -1,0 +1,18 @@
+# Guition relays: the relays of the Guition 4-inch wallbox base (ESP32-S3-4848S040, sold with one or three relays) as
+# switches of the screen in Home Assistant, and on the screen's own settings page. The first relay is always there;
+# the part `three` adds the second and third for a base that has them.
+id: guition_relays
+version: 0.1.0
+api: "0.8"
+icon: toggle-switch
+maintainer: MaxGramser
+license: MIT
+stage: beta
+topics: [home]
+requires:
+  esphome: 2026.6.2
+boards: [guition]
+flash_kb: 4
+
+parts:
+  - { id: three, file: parts/three.yaml, label: part_three, hint: part_three_hint, flash_kb: 1, default: false }
