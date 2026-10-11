@@ -1,6 +1,6 @@
 {
  "format": 1,
- "generated": "2026-10-10T14:02:09Z",
+ "generated": "2026-10-11T04:47:01Z",
  "plugin_api": "0.8",
  "blocked": [],
  "featured": [
@@ -8,6 +8,11 @@
   "waste_collection"
  ],
  "claims": {
+  "guition_relays": {
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/guition_relays"
+  },
   "ov_departures": {
    "repo": "https://github.com/maxgramser/tessera-plugins",
    "repo_id": 1408945265,
@@ -40,6 +45,92 @@
   }
  },
  "plugins": [
+  {
+   "id": "guition_relays",
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/guition_relays",
+   "label": "tessera",
+   "status": "ok",
+   "release": {
+    "version": "0.1.0",
+    "sha": "789c5c0d1ea06664d4eec443d68137ad092c2276",
+    "date": "2026-10-11"
+   },
+   "manifest": {
+    "id": "guition_relays",
+    "version": "0.1.0",
+    "api": "0.8",
+    "icon": "toggle-switch",
+    "maintainer": "MaxGramser",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "home"
+    ],
+    "requires": {
+     "esphome": "2026.6.2"
+    },
+    "boards": [
+     "guition"
+    ],
+    "flash_kb": 4,
+    "parts": [
+     {
+      "id": "three",
+      "file": "parts/three.yaml",
+      "label": "part_three",
+      "hint": "part_three_hint",
+      "flash_kb": 1,
+      "default": false
+     }
+    ]
+   },
+   "translations": {
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "name": "Relays",
+      "relay_1": "Relay 1",
+      "relay_2": "Relay 2",
+      "relay_3": "Relay 3"
+     },
+     "app": {
+      "name": "Guition relays",
+      "summary": "The relays of the Guition 4-inch wallbox base as switches in Home Assistant and on the screen.",
+      "part_three": "Three relays",
+      "part_three_hint": "Tick this for a base with three relays. Leave it off for a base with one."
+     }
+    },
+    "nl": {
+     "_meta": {
+      "name": "Nederlands"
+     },
+     "screen": {
+      "name": "Relais",
+      "relay_1": "Relais 1",
+      "relay_2": "Relais 2",
+      "relay_3": "Relais 3"
+     },
+     "app": {
+      "name": "Guition-relais",
+      "summary": "De relais van de Guition 4-inch inbouwdoos als schakelaars in Home Assistant en op het scherm.",
+      "part_three": "Drie relais",
+      "part_three_hint": "Vink dit aan voor een doos met drie relais. Laat het uit voor een doos met een."
+     }
+    }
+   },
+   "readme": {
+    "en": "# Guition relays\n\nThe Guition 4-inch screen (ESP32-S3-4848S040) is also sold on a mains-powered wallbox base with one or three relays.\nThis plugin makes those relays work: each one is a switch of the screen in Home Assistant, ready for a tile or an\nautomation, and on the screen's own settings page.\n\n## What you need\n\n- A Guition 4-inch screen on a base with one or three relays. The screen without a base, or on a base without relays,\n  has nothing for this plugin to switch.\n\n## Set up\n\n1. In Tessera, open **Plugins**, choose **Guition relays** and tick your screen.\n2. Base with three relays? Tick **Three relays** for that screen. Leave it off for a base with one.\n3. Add it. The screen builds once.\n4. In Home Assistant the screen's device now has **Relay 1** (and **Relay 2** and **Relay 3**): `switch.<screen>_relay_1`\n   and so on. Rename them in Home Assistant to what they switch, such as \"Ceiling light\".\n5. In Tessera's Layout, put a relay on a tile like any other switch.\n\nChanged your base later? Open the plugin's details on the screen's Plugins tab, tick or untick **Three relays** and\nchoose **Save and build**.\n\n## On the screen\n\nHold the top bar, then **Settings**, **Plugins**, **Relays**: a switch for each relay. These switch the relay on the\nscreen itself, so they work even while Home Assistant is away. A tile switches through Home Assistant: while Home\nAssistant is unreachable, the relays keep their state, but a tile cannot change them.\n\n## Good to know\n\n- The relays are on GPIO40 (relay 1), GPIO2 (relay 2) and GPIO1 (relay 3), the pins of ESPHome's device page for this\n  board. They are active-high, which a three-relay base confirmed.\n- Each relay keeps its state across a restart, and starts off the very first time.\n- Added the relays through the screen's **Override YAML** before? Remove that `switch:` block first: the plugin uses\n  the same pins and the same names, so the build would otherwise find each pin twice. With the same names, Home\n  Assistant keeps the entities, their names and your automations.\n- Not tested on a one-relay base yet. If yours behaves differently, please say so in an issue.\n\n## Safety\n\nThe base carries mains voltage. Have it wired by someone qualified, and check the relay's rating against the load.\n",
+    "nl": "# Guition-relais\n\nHet Guition 4-inch scherm (ESP32-S3-4848S040) wordt ook verkocht op een inbouwdoos op netspanning met een of drie\nrelais. Deze plugin laat die relais werken: elk relais is een schakelaar van het scherm in Home Assistant, klaar voor\neen tegel of een automatisering, en staat op de instellingenpagina van het scherm zelf.\n\n## Wat je nodig hebt\n\n- Een Guition 4-inch scherm op een doos met een of drie relais. Het scherm zonder doos, of op een doos zonder relais,\n  heeft niets dat deze plugin kan schakelen.\n\n## Instellen\n\n1. Open in Tessera **Plugins**, kies **Guition-relais** en vink je scherm aan.\n2. Doos met drie relais? Vink **Drie relais** aan voor dat scherm. Laat het uit voor een doos met een.\n3. Voeg het toe. Het scherm wordt een keer gebouwd.\n4. In Home Assistant heeft het apparaat van het scherm nu **Relay 1** (en **Relay 2** en **Relay 3**):\n   `switch.<scherm>_relay_1` enzovoort. Geef ze in Home Assistant de naam van wat ze schakelen, zoals \"Plafondlamp\".\n5. Zet in de Layout van Tessera een relais op een tegel, zoals elke andere schakelaar.\n\nLater een andere doos? Open de details van de plugin op het tabblad Plugins van het scherm, vink **Drie relais** aan of\nuit en kies **Opslaan en bouwen**.\n\n## Op het scherm\n\nHoud de bovenbalk vast, dan **Instellingen**, **Plugins**, **Relais**: een schakelaar per relais. Die schakelen het\nrelais op het scherm zelf, dus ze werken ook als Home Assistant weg is. Een tegel schakelt via Home Assistant: zolang\nHome Assistant onbereikbaar is houden de relais hun stand, maar kan een tegel ze niet veranderen.\n\n## Goed om te weten\n\n- De relais zitten op GPIO40 (relais 1), GPIO2 (relais 2) en GPIO1 (relais 3), de pinnen van de apparaatpagina van\n  ESPHome voor dit bord. Ze zijn active-high, wat een doos met drie relais bevestigde.\n- Elk relais houdt zijn stand over een herstart, en staat de allereerste keer uit.\n- De relais eerder via de **Override YAML** van het scherm toegevoegd? Haal dat `switch:`-blok eerst weg: de plugin\n  gebruikt dezelfde pinnen en dezelfde namen, anders vindt de build elke pin twee keer. Door dezelfde namen houdt Home\n  Assistant de entiteiten, hun namen en je automatiseringen.\n- Nog niet getest op een doos met een relais. Doet de jouwe iets anders, meld het dan in een issue.\n\n## Veiligheid\n\nDe doos werkt op netspanning. Laat hem aansluiten door iemand die daarvoor bevoegd is, en controleer het vermogen van\nhet relais tegen wat je erop aansluit.\n"
+   },
+   "changelog": {
+    "en": "# Changelog\n\n## 0.1.0 - 2026-10-11\n- First version: the relays of the Guition 4-inch wallbox base (one, or three with **Three relays**) as switches in Home Assistant and on the screen's settings page.\n- Moving from the Override YAML of the Guition docs? Remove its `switch:` block first; the entities stay the same.\n",
+    "nl": "# Wijzigingen\n\n## 0.1.0 - 2026-10-11\n- Eerste versie: de relais van de Guition 4-inch inbouwdoos (een, of drie met **Drie relais**) als schakelaars in Home Assistant en op de instellingenpagina van het scherm.\n- Kom je van de Override YAML uit de Guition-docs? Haal eerst het `switch:`-blok weg; de entiteiten blijven hetzelfde.\n"
+   }
+  },
   {
    "id": "ov_departures",
    "repo": "https://github.com/maxgramser/tessera-plugins",
