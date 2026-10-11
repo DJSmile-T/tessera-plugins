@@ -1,6 +1,6 @@
 {
  "format": 1,
- "generated": "2026-10-11T04:47:01Z",
+ "generated": "2026-10-11T14:14:55Z",
  "plugin_api": "0.8",
  "blocked": [],
  "featured": [
@@ -42,9 +42,94 @@
    "repo": "https://github.com/maxgramser/tessera-plugins",
    "repo_id": 1408945265,
    "path": "plugins/waste_collection"
+  },
+  "bt_proxy": {
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/bt_proxy"
   }
  },
  "plugins": [
+  {
+   "id": "bt_proxy",
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/bt_proxy",
+   "label": "tessera",
+   "status": "ok",
+   "release": {
+    "version": "0.1.0",
+    "sha": "b270653592500b3f3ef065b0ef6318a7f3b7a12b",
+    "date": "2026-10-11"
+   },
+   "manifest": {
+    "id": "bt_proxy",
+    "version": "0.1.0",
+    "api": "0.8",
+    "icon": "bluetooth",
+    "maintainer": "MaxGramser",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "home"
+    ],
+    "requires": {
+     "esphome": "2026.6.2",
+     "features": [
+      "bluetooth"
+     ]
+    },
+    "boards": "any",
+    "flash_kb": 380,
+    "settings": [
+     {
+      "key": "bluetooth_proxy",
+      "label": "setting_proxy",
+      "hint": "setting_proxy_hint"
+     }
+    ]
+   },
+   "translations": {
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "name": "Bluetooth",
+      "proxy": "Bluetooth proxy"
+     },
+     "app": {
+      "name": "Bluetooth proxy",
+      "summary": "Home Assistant reaches Bluetooth devices near the screen. Shares the radio with Wi-Fi.",
+      "setting_proxy": "Bluetooth proxy",
+      "setting_proxy_hint": "Off gives the radio to Wi-Fi alone, for smoother pictures and camera streams. No build needed."
+     }
+    },
+    "nl": {
+     "_meta": {
+      "name": "Nederlands"
+     },
+     "screen": {
+      "name": "Bluetooth",
+      "proxy": "Bluetooth-proxy"
+     },
+     "app": {
+      "name": "Bluetooth-proxy",
+      "summary": "Home Assistant bereikt Bluetooth-apparaten bij het scherm. Deelt de radio met wifi.",
+      "setting_proxy": "Bluetooth-proxy",
+      "setting_proxy_hint": "Uit geeft de radio alleen aan wifi, voor vlottere plaatjes en camerabeelden. Zonder opnieuw bouwen."
+     }
+    }
+   },
+   "readme": {
+    "en": "# Bluetooth proxy\n\nTurns the screen into a Bluetooth proxy for Home Assistant, the same one a ready-made ESPHome Bluetooth proxy runs.\nHome Assistant then hears Bluetooth devices near the screen (thermometers, plant sensors, tags for presence with\n[Bermuda](https://github.com/agittins/bermuda)) and can connect to some of them through it (a lock, a light), up to\nthree at a time.\n\n## Before you add it: Wi-Fi\n\nThe screen does Wi-Fi and Bluetooth with one radio, so every moment it listens for Bluetooth is a moment without\nWi-Fi. The plugin listens the way ESPHome's own Wi-Fi proxies do, a short slice of time at a steady pace, but the\nscreen still has less Wi-Fi than before:\n\n- Pictures, covers and camera streams can load more slowly. One tester saw a camera stream run clearly smoother with\n  the proxy off.\n- On weak Wi-Fi the screen can react more slowly to Home Assistant, or drop its connection more often.\n\nTurn the proxy off at any time with the setting **Bluetooth proxy** (below), without a build. When the screen shows\ncamera streams, or hangs on the edge of your Wi-Fi, a separate ESP32 as a Bluetooth proxy is the better choice: it costs\na few euros and you can put it where the reception is best.\n\n## Which screens\n\nEvery screen with an ESP32-P4 (the Guition P4 screens, the Waveshare P4 86, the M5Stack Tab5, the reTerminal D1001,\nthe CrowPanel 10.1). The P4 runs Bluetooth through the ESP32-C6 beside it, which also does its Wi-Fi, and has the\nmemory to spare. The app only offers the plugin on those screens.\n\nNot on an ESP32-S3 with an RGB panel (the 4-inch Guition, the Waveshare 4.3, 5 and 7-inch, and their kind): Bluetooth\nneeds memory inside the chip that the panel and Wi-Fi already use, and such a screen stops connecting. Not on the CYD\nand other 4 MB screens either: there is no room for it.\n\n## What you need\n\n- A screen with an ESP32-P4.\n- A recent firmware on its ESP32-C6. The C6 often comes with a firmware too old for Bluetooth; see \"Updating the C6\"\n  below. Wi-Fi works either way.\n\n## Set up\n\n1. In Tessera, open **Plugins**, choose **Bluetooth proxy** and tick your screen.\n2. Add it. The screen builds once.\n3. In Home Assistant, open **Settings**, **Devices & services**, **ESPHome**: the screen now shows up as a Bluetooth\n   proxy, and devices it hears appear under **Bluetooth** as Home Assistant finds them.\n4. No devices after a few minutes, and the log of the screen says Bluetooth did not start? Update the C6 (below).\n\n## The setting\n\n**Bluetooth proxy** turns Bluetooth on and off. It is in Home Assistant on the screen's device, in the plugin's details\non the screen's Plugins tab in Tessera, and on the screen itself: hold the top bar, then **Settings**, **Plugins**,\n**Bluetooth**. Off gives the radio to Wi-Fi alone; the screen keeps it off across a restart until you turn it on.\n\n## Updating the C6\n\nThe ESP32-C6 has a firmware of its own, and ESPHome publishes newer ones. Tessera never updates it by itself: an update\nthat goes wrong leaves the C6 starting over and over, and only its download mode brings it back, which on some screens\nmeans opening the case. So it is a step you take on purpose, once, for your own screen:\n\n1. In Tessera, open the screen, then **More**, **Override YAML**, and add:\n\n   ```yaml\n   http_request:\n\n   update:\n     - platform: esp32_hosted\n       type: http\n       name: \"Wi-Fi co-processor firmware\"\n       source: https://esphome.github.io/esp-hosted-firmware/manifest/esp32c6.json\n   ```\n\n2. Save and let the screen build.\n3. In Home Assistant, the screen's device now has **Wi-Fi co-processor firmware**. It shows the version on the C6 and\n   the newest one. Press **Install** when you are ready, and leave the screen powered until it is done.\n4. Afterwards you may remove the block again, or keep it to hear of newer versions (it checks every six hours and\n   installs only when you press Install).\n\n## Good to know\n\n- It adds about 370 KB to the firmware. Every P4 screen has room for that.\n- The proxy follows ESPHome's own: what Home Assistant does with it is in the\n  [ESPHome Bluetooth proxy docs](https://esphome.io/components/bluetooth_proxy/).\n- Added a Bluetooth proxy through the screen's **Override YAML** before? Remove those blocks (`esp32_ble_tracker:`,\n  `bluetooth_proxy:`) first, or the build finds them twice. The C6 update block may stay.\n",
+    "nl": "# Bluetooth-proxy\n\nMaakt van het scherm een Bluetooth-proxy voor Home Assistant, dezelfde die een kant-en-klare ESPHome Bluetooth-proxy\ndraait. Home Assistant hoort dan Bluetooth-apparaten bij het scherm (thermometers, plantsensoren, tags voor\naanwezigheid met [Bermuda](https://github.com/agittins/bermuda)) en kan via het scherm met sommige verbinden (een slot,\neen lamp), tot drie tegelijk.\n\n## Voordat je hem toevoegt: wifi\n\nHet scherm doet wifi en Bluetooth met één radio, dus elk moment dat het naar Bluetooth luistert is een moment zonder\nwifi. De plugin luistert zoals de wifi-proxies van ESPHome zelf, een kort stukje tijd in een vast ritme, maar het scherm\nheeft toch minder wifi dan eerst:\n\n- Plaatjes, hoesjes en camerabeelden kunnen langzamer laden. Een tester zag een camerabeeld duidelijk vlotter lopen\n  met de proxy uit.\n- Bij zwakke wifi kan het scherm trager reageren op Home Assistant, of vaker de verbinding kwijtraken.\n\nZet de proxy op elk moment uit met de instelling **Bluetooth-proxy** (hieronder), zonder opnieuw bouwen. Toont het\nscherm camerabeelden, of hangt het aan de rand van je wifi, dan is een losse ESP32 als Bluetooth-proxy de betere keus:\ndie kost een paar euro en zet je waar de ontvangst het best is.\n\n## Welke schermen\n\nElk scherm met een ESP32-P4 (de Guition P4-schermen, het Waveshare P4 86, de M5Stack Tab5, de reTerminal D1001, de\nCrowPanel 10.1). De P4 doet Bluetooth via de ESP32-C6 ernaast, die ook de wifi doet, en heeft het geheugen over. De app\nbiedt de plugin alleen op die schermen aan.\n\nNiet op een ESP32-S3 met een RGB-paneel (de Guition 4-inch, de Waveshare 4,3, 5 en 7-inch en hun soort): Bluetooth heeft\ngeheugen in de chip nodig dat het paneel en wifi al gebruiken, en zo'n scherm maakt dan geen verbinding meer. Ook niet\nop de CYD en andere schermen met 4 MB: daar is geen ruimte voor.\n\n## Wat je nodig hebt\n\n- Een scherm met een ESP32-P4.\n- Een recente firmware op de ESP32-C6. De C6 komt vaak met een firmware die te oud is voor Bluetooth; zie \"De C6\n  bijwerken\" hieronder. Wifi werkt hoe dan ook.\n\n## Instellen\n\n1. Open in Tessera **Plugins**, kies **Bluetooth-proxy** en vink je scherm aan.\n2. Voeg hem toe. Het scherm bouwt één keer.\n3. Open in Home Assistant **Instellingen**, **Apparaten & diensten**, **ESPHome**: het scherm staat er nu als\n   Bluetooth-proxy, en apparaten die het hoort verschijnen onder **Bluetooth** zodra Home Assistant ze vindt.\n4. Na een paar minuten geen apparaten, en zegt het log van het scherm dat Bluetooth niet startte? Werk de C6 bij\n   (hieronder).\n\n## De instelling\n\n**Bluetooth-proxy** zet Bluetooth aan en uit. Hij staat in Home Assistant bij het apparaat van het scherm, in de details\nvan de plugin op het tabblad Plugins van het scherm in Tessera, en op het scherm zelf: houd de bovenbalk vast, dan\n**Instellingen**, **Plugins**, **Bluetooth**. Uit geeft de radio alleen aan wifi; het scherm houdt hem ook na een\nherstart uit tot je hem weer aanzet.\n\n## De C6 bijwerken\n\nDe ESP32-C6 heeft een eigen firmware, en ESPHome brengt nieuwere uit. Tessera werkt hem nooit vanzelf bij: een update\ndie misgaat laat de C6 steeds opnieuw starten, en alleen zijn downloadmodus haalt hem terug, wat bij sommige schermen\nbetekent dat de behuizing open moet. Het is dus een stap die je bewust zet, één keer, voor je eigen scherm:\n\n1. Open in Tessera het scherm, dan **Meer**, **Override YAML**, en voeg toe:\n\n   ```yaml\n   http_request:\n\n   update:\n     - platform: esp32_hosted\n       type: http\n       name: \"Wi-Fi co-processor firmware\"\n       source: https://esphome.github.io/esp-hosted-firmware/manifest/esp32c6.json\n   ```\n\n2. Sla op en laat het scherm bouwen.\n3. In Home Assistant heeft het apparaat van het scherm nu **Wi-Fi co-processor firmware**. Die toont de versie op de C6\n   en de nieuwste. Druk op **Installeren** als je zover bent, en laat het scherm aan tot hij klaar is.\n4. Daarna mag het blok er weer uit, of laat het staan om van nieuwere versies te horen (hij kijkt elke zes uur en\n   installeert pas als je op Installeren drukt).\n\n## Goed om te weten\n\n- Hij voegt ongeveer 370 KB toe aan de firmware. Elk P4-scherm heeft daar ruimte voor.\n- De proxy is die van ESPHome zelf: wat Home Assistant ermee doet staat in de\n  [ESPHome-documentatie over de Bluetooth-proxy](https://esphome.io/components/bluetooth_proxy/).\n- Eerder een Bluetooth-proxy toegevoegd via de **Override YAML** van het scherm? Haal die blokken (`esp32_ble_tracker:`,\n  `bluetooth_proxy:`) eerst weg, anders vindt de build ze twee keer. Het blok voor de C6-update mag blijven.\n"
+   },
+   "changelog": {
+    "en": "# Changelog\n\n## 0.1.0 - 2026-10-11\n- First version: ESPHome's Bluetooth proxy on every screen with an ESP32-P4, with a setting to turn it off without a build.\n- It shares the radio with Wi-Fi: pictures and camera streams can be slower while it runs. Read \"Before you add it\" in the README.\n- Had a Bluetooth proxy in the Override YAML? Remove its `esp32_ble_tracker:` and `bluetooth_proxy:` blocks first.\n",
+    "nl": "# Wijzigingen\n\n## 0.1.0 - 2026-10-11\n- Eerste versie: de Bluetooth-proxy van ESPHome op elk scherm met een ESP32-P4, met een instelling om hem zonder opnieuw bouwen uit te zetten.\n- Hij deelt de radio met wifi: plaatjes en camerabeelden kunnen trager zijn zolang hij draait. Lees \"Voordat je hem toevoegt\" in de README.\n- Een Bluetooth-proxy in de Override YAML gehad? Haal eerst de blokken `esp32_ble_tracker:` en `bluetooth_proxy:` weg.\n"
+   }
+  },
   {
    "id": "guition_relays",
    "repo": "https://github.com/maxgramser/tessera-plugins",
