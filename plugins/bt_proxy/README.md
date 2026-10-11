@@ -75,6 +75,9 @@ It checks for a newer version every six hours and shows it there; installing sta
   [ESPHome Bluetooth proxy docs](https://esphome.io/components/bluetooth_proxy/).
 - Added a Bluetooth proxy or the C6 update through the screen's **Override YAML** before? Remove those blocks
   (`esp32_ble_tracker:`, `bluetooth_proxy:`, `http_request:` and the `esp32_hosted` update) first, or the build finds
-  them twice. The update keeps its name, so Home Assistant keeps its entity.
+  them twice. The update keeps its name, so Home Assistant keeps its entity. If that entity says unavailable after the
+  build, reload the screen in Home Assistant (**Settings**, **Devices & services**, **ESPHome**, the screen's three dots,
+  **Reload**).
 - Tried on a reTerminal D1001: its C6 went from 2.3.2 to 2.12.12 with Install, and the proxy heard 51 devices in its
-  first minute.
+  first minute. With 0.2.0, built by the Tessera app from the plugin with **Wi-Fi chip update**, the screen shows
+  **Bluetooth status** Listening and the update as up to date.

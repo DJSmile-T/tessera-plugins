@@ -78,6 +78,9 @@ en bouwen**.
   [ESPHome-documentatie over de Bluetooth-proxy](https://esphome.io/components/bluetooth_proxy/).
 - Eerder een Bluetooth-proxy of de C6-update toegevoegd via de **Override YAML** van het scherm? Haal die blokken
   (`esp32_ble_tracker:`, `bluetooth_proxy:`, `http_request:` en de `esp32_hosted`-update) eerst weg, anders vindt de
-  build ze twee keer. De update houdt zijn naam, dus Home Assistant houdt zijn entiteit.
+  build ze twee keer. De update houdt zijn naam, dus Home Assistant houdt zijn entiteit. Zegt die entiteit na het bouwen
+  niet beschikbaar, herlaad het scherm dan in Home Assistant (**Instellingen**, **Apparaten & diensten**, **ESPHome**, de
+  drie puntjes bij het scherm, **Herladen**).
 - Geprobeerd op een reTerminal D1001: zijn C6 ging met Installeren van 2.3.2 naar 2.12.12, en de proxy hoorde in de
-  eerste minuut 51 apparaten.
+  eerste minuut 51 apparaten. Met 0.2.0, door de Tessera-app gebouwd uit de plugin met **Update van de wifichip**, zegt
+  het scherm **Bluetooth status** Luistert en de update bijgewerkt.
