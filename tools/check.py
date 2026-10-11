@@ -52,6 +52,9 @@ SCREEN_RULES = [
     (re.compile(r'lv_font_t\s+\w+\s*=|font:\s*$|LV_FONT_DECLARE'), 'a font of its own: use the screen\'s fonts (tessera::Font)'),
 ]
 SCREEN_CODE = re.compile(r'plugin_api\.h|\btessera::|\blv_')
+# Parts of the C++ API by the minor that brought them (docs/FIRMWARE_API.md, "Versions"): a plugin that uses one names
+# at least that minor in `api`, or a core before it stops its build with a compiler error.
+API_PARTS = [((0, 9), re.compile(r'Font::DIGITS|\bui::covers\s*\('), 'Font::DIGITS and ui::covers')]
 
 # What plugin.yaml (and a part's file) never sets at its top level (docs/LIMITS.md, "plugin.yaml"). It is merged into
 # the screen's own configuration, so these would change what the core and the screen's own YAML hold, or open the
@@ -424,7 +427,14 @@ def check_folder(folder):
         sources = {path: re.sub(r'//[^\n]*|/\*.*?\*/', '', path.read_text(encoding='utf-8', errors='replace'), flags=re.S)
                    for path in sorted(component.rglob('*')) if path.suffix in ('.h', '.cpp', '.c', '.hpp')}
         screen = any(SCREEN_CODE.search(code) for code in sources.values())
+        api = tuple(int(n) for n in str(manifest['api']).split('.'))
         for path, code in sources.items():
+            for minor, rule, what in API_PARTS:
+                match = rule.search(code)
+                if match and api < minor:
+                    line = code[:match.start()].count('\n') + 1
+                    fail(name, f'{path.relative_to(folder)}:{line}: {what} came with plugin API {minor[0]}.{minor[1]}: '
+                               f'the manifest says api "{manifest["api"]}"')
             for rule, why in CODE_RULES + (SCREEN_RULES if screen else []):
                 match = rule.search(code)
                 if match:

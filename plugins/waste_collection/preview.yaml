@@ -1,0 +1,28 @@
+# What tools/preview.py shows (docs/PREVIEW.md): a waste calendar whose next collection is tomorrow, and the answer
+# of calendar.get_events the card asks for. Moments are made from the time of the render ("{now+1d}").
+tiles:
+  - tile: next
+    name: Waste
+    entity: calendar.waste
+
+states:
+  calendar.waste:
+    state: "off"
+    attributes:
+      friendly_name: Waste collection
+      message: Paper
+      start_time: "{now+1d}"
+      end_time: "{now+2d}"
+
+cards:
+  - card: upcoming
+    entity: calendar.waste
+
+commands:
+  "call_service:calendar.get_events":
+    calendar.waste:
+      events:
+        - { start: "{now+1d}", end: "{now+2d}", summary: Paper }
+        - { start: "{now+4d}", end: "{now+5d}", summary: Organic }
+        - { start: "{now+8d}", end: "{now+9d}", summary: Plastic }
+        - { start: "{now+15d}", end: "{now+16d}", summary: Residual waste }

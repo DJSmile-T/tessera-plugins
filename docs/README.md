@@ -7,6 +7,7 @@
 | [FIRMWARE_API.md](FIRMWARE_API.md) | You write the C++. The API, the life of a tile, drawing, rules. |
 | [FETCH.md](FETCH.md) | Your tile needs data from a web service. |
 | [TRANSLATIONS.md](TRANSLATIONS.md) | You add words or a language. |
+| [PREVIEW.md](PREVIEW.md) | You want to see it on every kind of screen, without one: the bench. |
 | [TESTING.md](TESTING.md) | You want it on a screen. |
 | [PUBLISHING.md](PUBLISHING.md) | Others should get it. |
 | [LIMITS.md](LIMITS.md) | You wonder whether your idea fits. |

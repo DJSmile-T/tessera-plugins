@@ -1,10 +1,11 @@
 # Testing a plugin
 
-Four ways, from quick to real. A plugin is done when it ran on a real screen.
+Five ways, from quick to real. A plugin is done when it ran on a real screen.
 
 | Way | What one change costs | What it shows |
 |---|---|---|
 | 1. The check | Seconds, no screen | The manifest as the app reads it, the files, the texts, `plugin.yaml`, a few code patterns, and what the plugin needs. Not whether the C++ compiles. |
+| The bench ([PREVIEW.md](PREVIEW.md)) | Half a minute per screen after the first build, no screen | The C++ compiled with the real firmware, and everything it draws on every kind of screen, light and dark, checked. Not hardware, not a finger on the glass. |
 | 2. A link to GitHub | A push; then up to an hour until the app sees the new commit (it asks GitHub at most every hour); then a tap, a full firmware build in the app and an update over Wi-Fi | The whole route a person takes: the Plugins page, the build, the screen. |
 | 3. A test folder in Home Assistant | A copy into Home Assistant's config; then **Build again**: a full firmware build in the app and an update over Wi-Fi, no wait for GitHub | The same, without publishing anything. |
 | 4. A build on your own computer | A build with `esphome run` (the first one long, later ones only what changed), uploaded over USB or Wi-Fi | Compiler errors and the screen's log the soonest. |
@@ -12,6 +13,9 @@ Four ways, from quick to real. A plugin is done when it ran on a real screen.
 A full firmware build in the app takes minutes, and longer on a small Home Assistant host; the update over Wi-Fi
 follows it. So for a run of small changes to the C++, the build on your own computer is the quickest, and the link to
 GitHub the slowest.
+
+Between the check and a screen, the bench shows the plugin on every kind of screen in a few minutes:
+`python3 tools/preview.py plugins/my_idea` ([PREVIEW.md](PREVIEW.md)).
 
 ## 1. The check (seconds)
 

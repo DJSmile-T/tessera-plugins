@@ -15,9 +15,10 @@ plugin is done.
    carries out the plugin's `fetch` (JSON from a web service) with its own code.
 4. A tile of a plugin is `plugin:<plugin id>.<tile id>` in a screen's layout. The core gives it a card's drawing area
    while its page is on the glass, hands it the data the app sent (`on_state`), and ticks it once a second (`on_tick`).
-5. The plugin API is 0.8, and a new manifest says `api: "0.8"`. A plugin builds on a core with the same major and at
+5. The plugin API is 0.9 on Tessera's dev branch (the release has 0.8 until the next one). A manifest names the lowest
+   minor whose parts it uses: `api: "0.8"`, or `"0.9"` for `Font::DIGITS` and `ui::covers`. A plugin builds on a core with the same major and at
    least its minor, unless a minor after its own changed a name: while the major is 0 that may happen, and the core
-   lists those minors (only 0.4 so far). So a plugin of 0.7 builds on a core of 0.8, one of 0.3 does not
+   lists those minors (only 0.4 so far). So a plugin of 0.7 builds on a core of 0.9, one of 0.3 does not
    (`docs/FIRMWARE_API.md`, "Versions").
 
 ## Where each kind of thing lives
@@ -42,7 +43,8 @@ plugin is done.
 2. [docs/MANIFEST.md](docs/MANIFEST.md): every field of `tessera-plugin.yaml` and its limits.
 3. [docs/FIRMWARE_API.md](docs/FIRMWARE_API.md): the C++ API, the life of a tile, the drawing rules.
 4. [docs/FETCH.md](docs/FETCH.md): data from a web service, the map language, the limits.
-5. [docs/TRANSLATIONS.md](docs/TRANSLATIONS.md), [docs/TESTING.md](docs/TESTING.md),
+5. [docs/PREVIEW.md](docs/PREVIEW.md): the bench, to see what the plugin draws on every kind of screen.
+6. [docs/TRANSLATIONS.md](docs/TRANSLATIONS.md), [docs/TESTING.md](docs/TESTING.md),
    [docs/PUBLISHING.md](docs/PUBLISHING.md), [docs/LIMITS.md](docs/LIMITS.md) when you need them.
 
 The two plugins to copy from: [`template/`](template) (a tile without data, the smallest complete plugin) and
@@ -100,7 +102,13 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 ```sh
 pip install pyyaml                      # once: the check reads YAML
 python3 tools/check.py plugins/<id>     # must print "<id>: ok"
+python3 tools/preview.py plugins/<id>   # the bench: no warning in its findings (docs/PREVIEW.md)
 ```
+
+Read the bench's `.preview/summary.json` (its findings, what the plugin adds) and look at `.preview/overview.png`, one
+picture of every tile at every size on every screen. Give the plugin a `preview.yaml` with data it really gets, so the
+pictures show the plugin working, not waiting. A plugin whose `plugin.yaml` brings hardware does not build on the bench:
+say so.
 
 The check also fails while the folder still has the template's placeholders: `maintainer: your-github-name`, the
 LICENSE's `<year> <your name>`, and the README's line that it is the template.

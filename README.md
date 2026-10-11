@@ -11,7 +11,7 @@ This repository holds:
 | [`plugins/`](plugins) | The plugins Tessera ships, one folder each. Every folder is a complete plugin. |
 | [`template/`](template) | A small plugin that works, to start your own from. |
 | [`docs/`](docs) | How plugins work and how to make one, step by step. |
-| [`tools/`](tools) | `check.py` (check a plugin), `new_plugin.py` (start one), `build_index.py` (write the index), `build_likes.py` (copy the likes). |
+| [`tools/`](tools) | `check.py` (check a plugin), `preview.py` (the bench: see it on every kind of screen), `new_plugin.py` (start one), `build_index.py` (write the index), `build_likes.py` (copy the likes). |
 | `index.json` | The list the Tessera app reads. Written by `tools/build_index.py`, never by hand. |
 | `blocked.yaml` | Plugin versions the app refuses to build. |
 | `featured.yaml` | The plugins Tessera recommends to start with. |
@@ -43,7 +43,7 @@ stays on the commit it was built with: a newer version shows as an update on the
 builds it.
 
 Plugins are new and only in the dev version of the app for now (the app added with `#dev` at the end of the repository
-URL, or a local copy). The plugin API is 0.8, and a plugin names the version it was written for. While the API is 0.x
+URL, or a local copy). The plugin API is 0.9 on Tessera's dev branch (the release has 0.8 until the next one), and a plugin names the version it was written for. While the API is 0.x
 a minor may still change a name: the core lists the minors that did (only 0.4 so far), a plugin written before one no
 longer builds and says so, and Tessera's own plugins move with it ([docs/FIRMWARE_API.md](docs/FIRMWARE_API.md),
 "Versions").
@@ -56,6 +56,8 @@ cd tessera-plugins
 pip install pyyaml                           # the check needs PyYAML
 python3 tools/new_plugin.py my_idea          # plugins/my_idea/, copied from template/
 python3 tools/check.py plugins/my_idea       # the same check the app does
+python3 tools/preview.py --setup             # once: what the bench needs (docs/PREVIEW.md)
+python3 tools/preview.py plugins/my_idea --open   # every tile, card and setting on every kind of screen
 ```
 
 Then read [docs/MAKING_A_PLUGIN.md](docs/MAKING_A_PLUGIN.md). It goes through every file, how to try the plugin on

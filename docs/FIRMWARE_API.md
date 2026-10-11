@@ -1,4 +1,4 @@
-# The firmware API (plugin API 0.8)
+# The firmware API (plugin API 0.9)
 
 A plugin's code runs on the screen as an ESPHome component. It talks to Tessera's core through one header:
 
@@ -9,7 +9,7 @@ A plugin's code runs on the screen as an ESPHome component. It talks to Tessera'
 The header lives in the Tessera repository at `components/smart_display/plugin_api.h`; it is the reference, and this
 page explains it. Everything is in namespace `tessera`.
 
-A manifest names the plugin API it was written for: `api: "0.8"`, the plugin API 0.8 the core offers now. Which cores
+A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"` for the parts 0.9 brought; the plugin API 0.9 is the one the core offers now (on Tessera's dev until its next release). Which cores
 a plugin builds on is under "Versions" at the end of this page.
 
 ## The component: `__init__.py`
@@ -327,6 +327,7 @@ The screen's look is the same on every tile, so a plugin draws with the core's s
 | `ui::large()` | The standard look (4 inches and up), or the compact one (the 2.8-inch CYD). |
 | `ui::font(Font)` | The screen's font. |
 | `ui::line_height(Font)`, `ui::text_width(text, Font)` | To lay out before setting. |
+| `ui::covers(text, Font)` (0.9) | Whether the font has every character of the text; a character it lacks draws as nothing. |
 | `ui::label(parent, Font, Role)` | A one-line label, cut with dots when too long. |
 | `ui::set_text(label, text)`, `ui::set_font(label, Font)`, `ui::set_color(label, Role)`, `ui::set_tone(label, Tone, Role)` | Change it only when it differs: call them on every tick for free. |
 | `ui::block(parent, Role)` | A rounded block with the radius of a key (a badge, a bar). |
@@ -337,6 +338,7 @@ Fonts (`tessera::Font`), largest first. Take the largest that fits.
 
 | Font | Used for |
 |---|---|
+| `DIGITS` (0.9) | The largest: the digits of a climate card's setpoint (64 px on the standard look, 40 on the compact). Only `0`-`9`, `-`, `.`, `,`, `°` and `%`: take it where `ui::covers(value, Font::DIGITS)`, else step down to `VALUE`. It is a font every screen has already, so it costs no flash. |
 | `VALUE` | The big number of a card. |
 | `HEADLINE` | Large words. |
 | `TITLE` | A card's name (bold). |
@@ -420,7 +422,7 @@ itself. Each will raise the minor.
 
 ## Versions
 
-A manifest names the plugin API it was written for: `api: "0.8"`, the plugin API 0.8 the core offers now. When a
+A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"`; the plugin API 0.9 is the one the core offers now. When a
 screen is built, `smart_display.register_plugin()` compares it with the core's and stops the build with one sentence
 when it does not fit. A plugin fits a core when all three hold:
 
@@ -433,14 +435,15 @@ when it does not fit. A plugin fits a core when all three hold:
 **While the major is 0** a minor may still change a name or a signature as the API settles. The core lists those
 minors in `PLUGIN_API_BREAKS`, in `screen_manager/app/plugin_manifest.py` and in `components/smart_display/__init__.py`
 (a test keeps the two equal). Today the list holds one: 0.4, where `Plugin::on_tick` became `on_interval`. So with a
-core of 0.8:
+core of 0.9:
 
 | The manifest says | Builds? | Why |
 |---|---|---|
-| `api: "0.8"` | Yes | The core's own. |
+| `api: "0.9"` | Yes | The core's own. |
+| `api: "0.8"` | Yes | Same major, an older minor, and no break after 0.8. |
 | `api: "0.7"` | Yes | Same major, an older minor, and no break after 0.7. |
 | `api: "0.3"` | No | 0.4 changed a name it may use; the build says so in one sentence and asks to update the plugin. |
-| `api: "0.9"` | No | Newer than the core; the build asks to update the plugin or the screen's firmware. |
+| `api: "0.10"` | No | Newer than the core; the build asks to update the plugin or the screen's firmware. |
 | `api: "1.0"` | No | Another major. |
 
 `tools/check.py` applies the same rules against the core it checks with (`api_fits` of `plugin_manifest.py`), so a
@@ -460,6 +463,7 @@ brought:
 | 0.6 | The app's side only: settings of kind text and button, a button's `status`, settings found by their name in the entity registry, and each plugin's settings in its details on the screen's Plugins tab. |
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
+| 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
 knows it ([MANIFEST.md](MANIFEST.md), "Which minor brought a field").

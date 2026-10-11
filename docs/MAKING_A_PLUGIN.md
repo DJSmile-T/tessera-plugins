@@ -30,6 +30,7 @@ plugins/my_idea/
     __init__.py                the ESPHome side: schema and code generation (a few lines)
     my_idea.h                  the plugin class
     my_idea.cpp                the tiles: how they draw
+  preview.yaml                 optional: the data tools/preview.py shows the tiles with (docs/PREVIEW.md)
   translations/
     en.json                    every word: part "screen" (on the glass) and part "app" (in the editor)
     nl.json                    more languages, optional
@@ -159,7 +160,20 @@ C++. Fix what it says until it prints `ok`. It also fails while the plugin still
 `plugins/` of this repository, which the repository's LICENSE covers), and the README's line that it is the template.
 [TESTING.md](TESTING.md) says what else it checks.
 
-### 7. Put it on your screen
+### 7. See it on every kind of screen
+
+```sh
+python3 tools/preview.py --setup       # once
+python3 tools/preview.py plugins/my_idea --open
+```
+
+The bench builds the real firmware of a small, a middle, a standing and a large screen with your plugin, gives its
+tiles the data of your `preview.yaml`, and shows every tile at every size, light and dark, every card, the top bar and
+the settings page on one page, with what it found wrong (a word too faint in dark, a label cut, a part outside its
+tile). `--screen 1024x600@7` adds a glass of your own, `--grid max` the finest grid each screen takes, `--watch` builds
+again on every save. [PREVIEW.md](PREVIEW.md) has it all.
+
+### 8. Put it on your screen
 
 Two ways, both a test only you see, with the label **Test**:
 
@@ -174,12 +188,12 @@ Add it to a screen; the app writes the screen's plugins file and builds the scre
 settings, inputs and parts are in its details on the screen's Plugins tab. [TESTING.md](TESTING.md) has both ways step
 by step, and a build on your own computer.
 
-### 8. Write the changelog
+### 9. Write the changelog
 
 Every version that reaches screens gets a few lines in `CHANGELOG.md` (below, "The changelog"). Write them with the
 version, before you publish it.
 
-### 9. Publish it
+### 10. Publish it
 
 See [PUBLISHING.md](PUBLISHING.md): a plugin in this repository through a pull request, or in a repository of your own,
 added with a link or listed in the index.
@@ -332,7 +346,7 @@ came along is offered to go as well.
 | What happens | Why | Fix |
 |---|---|---|
 | The build says "No tessera-plugin.yaml above ..." | The component is not in `components/<id>/` next to the manifest. | Keep the folder layout of the template. |
-| The build says the plugin wants another plugin API | `api:` in the manifest is newer than the screen's core. | Name the lowest API whose parts you use; the core offers plugin API 0.8 now. Or update the screen's firmware. |
+| The build says the plugin wants another plugin API | `api:` in the manifest is newer than the screen's core. | Name the lowest API whose parts you use; the core offers plugin API 0.9 now (0.8 in the release until the next one). Or update the screen's firmware. |
 | The build says a newer API "changed a name it may use" | `api:` is from before a minor that renamed something (0.4: `Plugin::on_tick` became `on_interval`). | Move the code to the new name and raise `api` ([FIRMWARE_API.md](FIRMWARE_API.md), "Versions"). |
 | `check.py` says a key "belongs to the core" or "opens the screen" | `plugin.yaml` sets something a plugin never sets, such as `wifi:` or `http_request:`. | Leave it to the core; data comes through a `fetch` ([LIMITS.md](LIMITS.md), "plugin.yaml"). |
 | `check.py` says "provides speaker, so it makes a speaker: with id: ts_speaker" | The plugin promises a feature it does not make, or gives it another id. | Give the component the feature's id. |
