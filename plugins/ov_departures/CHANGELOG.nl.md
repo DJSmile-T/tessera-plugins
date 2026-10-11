@@ -1,5 +1,8 @@
 # Wijzigingen
 
+## 1.2.4 - 2026-10-11
+- Op een smalle tegel (een fijn raster) blijft de regel met de volgende tijden op de tegel, afgekapt met puntjes, in plaats van eronder te lopen.
+
 ## 1.2.3 - 2026-10-09
 - Staat onder het onderwerp Onderweg op de pagina Plugins.
 - Vraagt een Tessera met plugin-API 0.7: werk eerst de app en het scherm bij.

@@ -37,7 +37,8 @@ class NextTile : public tessera::Tile {
       rows_.resize(std::max(1, std::min(6, (height_ + gap_) / row)));
       for (size_t i = 0; i < rows_.size(); ++i) make_row(rows_[i], c.parent, static_cast<int>(i) * row);
       note_ = ui::label(c.parent, Font::BODY, theme::MUTED);
-      lv_obj_set_width(note_, width_);
+      // One line high: a label of LVGL's own height wraps what does not fit onto a second line under the card.
+      lv_obj_set_size(note_, width_, ui::line_height(Font::BODY));
       lv_obj_set_pos(note_, 0, height_ - ui::line_height(Font::BODY));
     } else {
       rows_.resize(1);
@@ -45,7 +46,7 @@ class NextTile : public tessera::Tile {
       big_ = ui::label(c.parent, Font::VALUE, theme::INK);
       lv_obj_set_width(big_, width_);
       later_ = ui::label(c.parent, Font::BODY, theme::MUTED);
-      lv_obj_set_width(later_, width_);
+      lv_obj_set_size(later_, width_, ui::line_height(Font::BODY));   // one line, cut with dots (as note_)
       lv_obj_set_pos(later_, 0, height_ - ui::line_height(Font::BODY));
     }
   }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.4 - 2026-10-11
+- On a narrow tile (a fine grid) the line with the next times stays on the tile, cut with dots, instead of running under it.
+
 ## 1.2.3 - 2026-10-09
 - Listed under the topic On the move on the Plugins page.
 - Needs a Tessera with plugin API 0.7: update the app and the screen first.
