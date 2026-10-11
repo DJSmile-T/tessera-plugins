@@ -15,7 +15,8 @@ A plugin is right for something that not every screen needs and that the screen 
 
 It is the wrong tool for:
 
-- something Home Assistant already has as an entity: a normal tile shows it, no plugin needed;
+- showing an entity the way Tessera's own tile for it already does: a normal tile shows it, no plugin needed (one
+  that shows it another way, a CO2 sensor as a number with a coloured bar, is the second case above);
 - a better card for a kind of entity everyone has (lights, thermostats): that belongs in Tessera itself, as a pull
   request on the main repository;
 - anything listed in [LIMITS.md](LIMITS.md).

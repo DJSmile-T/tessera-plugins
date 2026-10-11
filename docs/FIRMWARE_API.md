@@ -152,7 +152,10 @@ attribute whose name ends in `_at`, `_time` or `date` and holds a moment comes a
 in the screen's words (`tessera::date_text`, `days_from_today`). `"wait": "wrong_entity"` means the entity chosen in the
 editor is of another domain than the manifest names.
 
-A tile without `data` and without `domains` gets `{}`.
+A tile without `data` and without `domains` gets `{}`, and so does a tile with `domains` before a person has chosen
+its entity in the editor: say what to do (a word such as "Choose a sensor") until `state` is there. `state` is always
+text as Home Assistant has it: `"1043.6"` for a sensor's number (read it with `atof` or `strtof`), or `"unavailable"`
+and `"unknown"` while the entity has no value.
 
 ## A tile of an entity
 
@@ -356,6 +359,12 @@ screen's look. The ones a tile needs most:
 | `theme::ACCENT` | The one thing that stands out (a badge, a bar). |
 | `theme::ON_ACCENT` | Text on the accent. |
 | `theme::CARD`, `theme::RAISED`, `theme::LINE`, `theme::TRACK` | Surfaces and lines inside a card. |
+| `theme::MARK_GREEN`, `MARK_AMBER`, `MARK_BLUE`, `MARK_PURPLE` | The four colours of the Tessera mark, the same in light and dark: for a dot or a block that names a kind (a bin, a line). |
+
+A label can also take a colour by what it means, in both looks: `ui::set_tone(label, Tone::ALERT, theme::INK)` for
+red, `BUSY` for amber, `ACCENT` for the look's accent. A block (a bar, a dot) has no colour by meaning yet: there is no
+role for good, moderate and bad, and no red for a block. Until there is, use `TRACK` and `ACCENT`, or the mark's
+colours where a kind fits, and never a colour as a number.
 
 ## The rest of the core
 

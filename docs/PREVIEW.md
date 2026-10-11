@@ -21,6 +21,7 @@ It reads what your plugin adds from its manifest and from its code (`add_tile`, 
 - a label cut with dots;
 - a character the font does not have (it draws as nothing);
 - a word too faint to read on its ground, in light and in dark (a colour `on_theme` forgot, most often);
+- two parts over each other (a number under a bar), and a label lower than its own letters;
 - a tile, card or top bar item the code registers and the manifest does not name, or the other way round;
 - an action the code calls that `permissions.home_assistant_actions` does not name;
 - `Font::DIGITS` in code whose manifest names an API before 0.9;
@@ -120,8 +121,10 @@ python3 tools/preview.py plugins/<id> --strict    # or from the plugin's folder:
   a minute each. Give the command a timeout of 20 minutes, or run it in the background and wait for it. A single
   `--board cyd` is the quickest round while the C++ still changes; the four defaults (or `--all`) before you are done.
 - **Never `--window` or `--watch`.** Both wait for a person and never end on their own.
-- **The exit code says it.** 0: every screen built and nothing to fix. 1: a build failed or the plugin cannot be
-  benched (its reason is printed). 2 (with `--strict`): it built, and a finding is a warning.
+- **The check comes first.** The bench runs `tools/check.py` on the plugin with its own Python (which has PyYAML) and
+  stops when it fails, so a plugin the app would refuse is never benched.
+- **The exit code says it.** 0: every screen built and nothing to fix. 1: the check or a build failed, or the plugin
+  cannot be benched (its reason is printed). 2 (with `--strict`): it built, and a finding is a warning.
 - **Read the findings first.** They are printed at the end, one line each (`warning: guition, Waste 2x1, page 1,
   dark: 1 too faint to read on its ground: faint[Tomorrow]`), and are in `.preview/summary.json`.
 - **Then look.** `.preview/overview.png` has every tile at every size on every screen on one picture. Each picture is
@@ -141,7 +144,7 @@ python3 tools/preview.py plugins/<id> --strict    # or from the plugin's folder:
 | `plugin`, `version`, `rendered` | The plugin and when the bench ran. |
 | `adds` | What the plugin adds: `tiles` (id, name, sizes, data, memory), `cards`, `bar_items`, `tap_actions`, `settings_entities`, `settings_rows`, `questions`, `actions`, `large_digits`, and `mismatches` between manifest and code. |
 | `screens[]` | Each screen: `key`, `title`, `width`, `height`, `dpi`, `look`, `error` when it failed, and its `views`. |
-| `screens[].views[]` | Each grid of it: `grid`, `folder` (empty for its own grid), `tiles[]` (`name`, `span` as `2x1`, `size`, `px`, the `light` and `dark` file), `cards[]`, `taps[]` (with the `actions` a tap asked Home Assistant for), `bar`, `bar_icon`, `settings[]`, `pages[]`, `memory` (`used` and `room` of the layout memory, in bytes). |
+| `screens[].views[]` | Each grid of it: `grid`, `folder` (empty for its own grid), `tiles[]` (`name`, `span` as `2x1`, `size`, `px`, the `light` and `dark` file), `cards[]`, `taps[]` (with the `actions` a tap asked Home Assistant for), `bar`, `bar_icon`, `settings[]`, `pages[]`. |
 | `findings[]` | `level` (`error`, `warning` or `info`), `screen`, `where` and `text`. Fix every `error` and `warning`; an `info` says what was not shown and why. |
 
 ## preview.yaml: the data your plugin is shown with
@@ -205,8 +208,8 @@ Assistant, a top bar item) are complete examples. The template has one to start 
   bench says so. Test it on a screen (TESTING.md). A plugin with switches or sensors on a board's pins builds, and its
   settings rows show; a plugin for some boards only (`boards`) is shown on those.
 - **The real Home Assistant and the real services**, unless `--live`: it shows what `preview.yaml` gives.
-- **Speed and memory on the chip.** The pictures are the firmware's own, the timing is your computer's. The screens
-  table says how much of the screen's layout memory the bench's layout takes, as the screen counts it.
+- **Speed and memory on the chip.** The pictures are the firmware's own, the timing and the memory are your
+  computer's: a tile's `memory` in the manifest, and the flash a plugin costs on a 4 MB board, show on a screen only.
 - **A finger on the glass.** Tap and swipe in `--window`, then try it on a real screen before you publish.
 
 A top bar item stands beside the page's name. On a page with a long name a screen leaves an item out that does not fit;
@@ -220,5 +223,7 @@ the bench names its page "Home", so the item shows.
 | cut with dots | The text is longer than the room on the smallest screen or the finest grid. Take a smaller font there (`ui::text_width`), or a shorter text. |
 | with a character its font lacks | `Font::DIGITS` with a letter, or a sign the screen's fonts do not carry. Test with `ui::covers(text, Font::DIGITS)` and step down to `VALUE`. |
 | outside its area | A position or size worked out from a fixed number instead of `TileContext`'s `width` and `height`. |
+| over another part | Two parts on one place: a number under a bar, two lines on top of each other. On a short tile (the finest grid, `--grid max`) something has to give way: a line, then the name. |
+| lower than its letters | A label given less height than its font's line: its letters are cut off. Take its height from `ui::line_height`, or a smaller font. |
 | not on a 1 x 4 grid | The grid has no room for that size (a 2x1 tile on one column). Nothing to fix: the editor never offers it there. |
 | the tile waits (asking) | `preview.yaml` has no answer for the tile's fetch. |

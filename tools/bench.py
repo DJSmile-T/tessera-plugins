@@ -101,7 +101,10 @@ BENCH_ACTIONS = '''    - action: render_settings
             lv_obj_update_layout(lv_screen_active());
             const int sw = lv_display_get_horizontal_resolution(lv_display_get_default()),
                       sh = lv_display_get_vertical_resolution(lv_display_get_default());
-            struct Count {{ int objects = 0, outside = 0, cut = 0, glyph = 0, faint = 0; std::string notes; }};
+            // A part that shows: a label with words, or a block with a ground of its own (a bar, a badge, a dot).
+            struct Part {{ lv_obj_t *o; lv_area_t a; bool label; std::string text; }};
+            struct Count {{ int objects = 0, outside = 0, cut = 0, glyph = 0, faint = 0, clipped = 0, overlap = 0; std::string notes;
+                           std::vector<Part> parts; }};
             // A label's ink against the ground it stands on (the nearest opaque background up its parents), as the WCAG
             // contrast ratio; below 2.5 a person cannot read it, a colour left behind by a change of look most often.
             auto luminance = [](lv_color_t c) {{
@@ -125,8 +128,14 @@ BENCH_ACTIONS = '''    - action: render_settings
               if (a.x2 >= a.x1 && a.y2 >= a.y1 && (a.x1 < room.x1 - 1 || a.y1 < room.y1 - 1 || a.x2 > room.x2 + 1 || a.y2 > room.y2 + 1)) {{
                 ++n.outside; note("outside");
               }}
+              if (label && !text.empty() && lv_obj_get_style_text_opa(o, LV_PART_MAIN) >= LV_OPA_50 && lv_obj_get_style_opa(o, LV_PART_MAIN) >= LV_OPA_50)
+                n.parts.push_back({{o, a, true, text}});
+              else if (!label && lv_obj_get_style_bg_opa(o, LV_PART_MAIN) >= LV_OPA_50 && lv_obj_get_style_opa(o, LV_PART_MAIN) >= LV_OPA_50)
+                n.parts.push_back({{o, a, false, ""}});
               if (label && !text.empty()) {{
                 const lv_font_t *face = lv_obj_get_style_text_font(o, LV_PART_MAIN);
+                // Lower than four fifths of its font's line: the letters are cut off at the top or the bottom.
+                if (face && lv_obj_get_height(o) * 5 < lv_font_get_line_height(face) * 4) {{ ++n.clipped; note("clipped"); }}
                 if (text.size() >= 3 && text.compare(text.size() - 3, 3, "\\u2026") == 0) {{ ++n.cut; note("cut"); }}
                 else if (face && !runtime_tiles::face_covers(face, text)) {{ ++n.glyph; note("glyph"); }}
                 if (lv_obj_get_style_text_opa(o, LV_PART_MAIN) >= LV_OPA_50) {{
@@ -136,22 +145,42 @@ BENCH_ACTIONS = '''    - action: render_settings
               }}
               for (uint32_t i = 0; i < lv_obj_get_child_count(o); ++i) walk(lv_obj_get_child(o, i), room, n);
             }};
+            // Two parts over each other where neither holds the other: words under a bar, or two lines on one place.
+            auto overlaps = [&](Count &n) {{
+              auto holds = [](lv_obj_t *outer, lv_obj_t *inner) {{
+                for (lv_obj_t *p = lv_obj_get_parent(inner); p; p = lv_obj_get_parent(p)) if (p == outer) return true;
+                return false;
+              }};
+              for (size_t i = 0; i < n.parts.size(); ++i)
+                for (size_t j = i + 1; j < n.parts.size(); ++j) {{
+                  const Part &x = n.parts[i], &y = n.parts[j];
+                  if (!x.label && !y.label) continue;
+                  if (holds(x.o, y.o) || holds(y.o, x.o)) continue;
+                  const int w = std::min(x.a.x2, y.a.x2) - std::max(x.a.x1, y.a.x1), h = std::min(x.a.y2, y.a.y2) - std::max(x.a.y1, y.a.y1);
+                  if (w > 2 && h > 2) {{
+                    ++n.overlap;
+                    if (n.notes.size() < 160) n.notes += "overlap[" + (x.label ? x.text : y.text).substr(0, 24) + "]" + (x.label && y.label ? "[" + y.text.substr(0, 24) + "]" : std::string("[a block]")) + ";";
+                  }}
+                }}
+            }};
             if (card) {{
               Count n; const lv_area_t glass{{0, 0, (int32_t) (sw - 1), (int32_t) (sh - 1)}};
               // The card's root is the newest object on the screen (plugin_host::open_card).
               lv_obj_t *screen = lv_screen_active();
               const uint32_t count = lv_obj_get_child_count(screen);
               if (count) walk(lv_obj_get_child(screen, count - 1), glass, n);
-              ESP_LOGI("render", "audit card objects=%d outside=%d cut=%d glyph=%d faint=%d notes=%s", n.objects, n.outside, n.cut,
-                       n.glyph, n.faint, n.notes.c_str());
+              overlaps(n);
+              ESP_LOGI("render", "audit card objects=%d outside=%d cut=%d glyph=%d faint=%d clipped=%d overlap=%d notes=%s", n.objects,
+                       n.outside, n.cut, n.glyph, n.faint, n.clipped, n.overlap, n.notes.c_str());
               return;
             }}
             for (auto &w : runtime_tiles::widgets) {{
               if (!w.plugin || !w.tile || lv_obj_has_flag(w.tile, LV_OBJ_FLAG_HIDDEN)) continue;
               Count n; lv_area_t room; lv_obj_get_coords(w.tile, &room);
               for (uint32_t i = 0; i < lv_obj_get_child_count(w.tile); ++i) walk(lv_obj_get_child(w.tile, i), room, n);
-              ESP_LOGI("render", "audit tile=%u objects=%d outside=%d cut=%d glyph=%d faint=%d notes=%s", (unsigned) w.index,
-                       n.objects, n.outside, n.cut, n.glyph, n.faint, n.notes.c_str());
+              overlaps(n);
+              ESP_LOGI("render", "audit tile=%u objects=%d outside=%d cut=%d glyph=%d faint=%d clipped=%d overlap=%d notes=%s",
+                       (unsigned) w.index, n.objects, n.outside, n.cut, n.glyph, n.faint, n.clipped, n.overlap, n.notes.c_str());
             }}
             ESP_LOGI("render", "audit end");
 '''
@@ -218,7 +247,7 @@ CUSTOM_BASE = 'guition'
 PORT_OFFSET = 200   # beside run.py's plugin builds (+100), so the two never meet on one port
 REGION = dict(keepalive=120, clock_24h=True, numbers='point', group_min=1, percent_space=False)
 SETTINGS = re.compile(r'settings pages=(\d+)')
-AUDIT = re.compile(r'audit (?:tile=(\d+)|card) objects=(\d+) outside=(\d+) cut=(\d+) glyph=(\d+) faint=(\d+) notes=(.*)$')
+AUDIT = re.compile(r'audit (?:tile=(\d+)|card) objects=(\d+) outside=(\d+) cut=(\d+) glyph=(\d+) faint=(\d+) clipped=(\d+) overlap=(\d+) notes=(.*)$')
 BOX = re.compile(r'box=(-?\d+),(-?\d+),(-?\d+),(-?\d+)')
 ZONE = 'Europe/Amsterdam'
 SHOWN = re.compile(r'[^a-z0-9_.-]+')
@@ -603,11 +632,13 @@ class Bench(run.Run):
         return [AUDIT.search(l).groups() for l in self.lines[start:] if 'audit tile=' in l]
 
     def faults(self, groups, where, names=None):
-        for tile, _, outside, cut, glyph, faint, notes in groups:
+        for tile, _, outside, cut, glyph, faint, clipped, overlap, notes in groups:
             place = f'{names[int(tile)]}, {where}' if names and tile is not None and int(tile) in names else where
             found = [f'{n} {what}' for n, what in ((int(outside), 'outside its area'), (int(cut), 'cut with dots'),
                                                    (int(glyph), 'with a character its font lacks'),
-                                                   (int(faint), 'too faint to read on its ground')) if int(n)]
+                                                   (int(faint), 'too faint to read on its ground'),
+                                                   (int(clipped), 'lower than its letters'),
+                                                   (int(overlap), 'over another part')) if int(n)]
             if found:
                 self.find('warning', place, f'{", ".join(found)}: {notes.strip(";")}')
 
@@ -662,7 +693,7 @@ class Bench(run.Run):
         out = self.out / name if name else self.out
         out.mkdir(parents=True, exist_ok=True)
         view = {'screen': self.screen.key, 'grid': f'{grid.columns} x {grid.rows}', 'folder': name, 'tiles': [],
-                'pages': [], 'taps': [], 'cards': [], 'bar': None, 'settings': [], 'memory': None}
+                'pages': [], 'taps': [], 'cards': [], 'bar': None, 'settings': []}
         self.views.append(view)
         record, compiled, origins, bars, left = layout_of(self.entry, examples, grid)
         for example, span in left:
@@ -718,7 +749,8 @@ class Bench(run.Run):
                         view['tiles'].append(entry)
                     entry[theme] = file
                 names = {i: f'{o[0]["name"]} {o[1]}' for i, o in origins.items() if o}
-                self.faults(await self.audit(), f'page {page + 1}, {theme}', names)
+                on = '' if own else f'the {grid.columns} x {grid.rows} grid, '
+                self.faults(await self.audit(), f'{on}page {page + 1}, {theme}', names)
                 if page == 0 and theme == 'light':
                     for item in self.entry.manifest['bar_items']:
                         start = len(self.lines)
@@ -736,18 +768,6 @@ class Bench(run.Run):
             await self.icons_only(record, values, top, out, view)
         await self.taps(compiled, origins, grid, boxes, out, view)
         await self.cards(out, view)
-        # The screen measures its room once the layout has settled (firmware 0.51.0+): ask again for its figures.
-        await asyncio.sleep(1)
-        try:
-            await self.sender.probe()
-        except Exception:
-            pass
-        memory = self.sender.memory
-        if memory and memory.get('room'):
-            view['memory'] = {'used': memory['used'], 'room': memory['room']}
-            if memory['used'] > memory['room']:
-                self.find('warning', 'memory', f'this layout takes {memory["used"]} of {memory["room"]} bytes: '
-                          'the tiles\' memory in the manifest is more than this screen has room for')
 
     async def icons_only(self, record, values, top, out, view):
         """The top bar with the plugin's items as their icon alone, as a person may choose in the editor (Show: icon),
@@ -993,17 +1013,14 @@ def index_page(out, entry, screens, findings, started, parts_of):
     row('Large digits (0.9)', 'yes' if parts_of['large_digits'] else '')
     parts.append('</table></div>')
     # The screens
-    parts.append('<h2>Screens</h2><div class="scroll"><table><tr><th>Screen</th><th>Glass</th><th>Look</th><th>Grids</th>'
-                 '<th>Layout memory</th></tr>')
+    parts.append('<h2>Screens</h2><div class="scroll"><table><tr><th>Screen</th><th>Glass</th><th>Look</th><th>Grids</th></tr>')
     for screen in screens:
-        memory = next((v['memory'] for v in screen['views'] if v.get('memory')), None)
-        memory = f'{memory["used"]} of {memory["room"]} bytes' if memory else '-'
         parts.append(f'<tr><td><b>{e(screen["key"])}</b><br><span class="muted">{e(screen["title"])}</span></td>'
                      f'<td>{screen["width"]} x {screen["height"]} px, {screen["dpi"]} dpi</td><td>{e(screen["look"])}</td>'
                      f'<td>{", ".join(e(v["grid"]) for v in screen["views"]) or "-"}</td>'
-                     f'<td>{memory}</td></tr>'
+                     '</tr>'
                      if not screen.get('error') else
-                     f'<tr><td><b>{e(screen["key"])}</b></td><td colspan="4" class="error">{e(screen["error"])}</td></tr>')
+                     f'<tr><td><b>{e(screen["key"])}</b></td><td colspan="3" class="error">{e(screen["error"])}</td></tr>')
     parts.append('</table></div>')
     # What it found
     parts.append(f'<h2>Findings</h2>')

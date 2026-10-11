@@ -16,7 +16,9 @@ plugin is done.
 4. A tile of a plugin is `plugin:<plugin id>.<tile id>` in a screen's layout. The core gives it a card's drawing area
    while its page is on the glass, hands it the data the app sent (`on_state`), and ticks it once a second (`on_tick`).
 5. The plugin API is 0.9 on Tessera's dev branch (the release has 0.8 until the next one). A manifest names the lowest
-   minor whose parts it uses: `api: "0.8"`, or `"0.9"` for `Font::DIGITS` and `ui::covers`. A plugin builds on a core with the same major and at
+   minor whose parts it uses: `api: "0.8"`, or `"0.9"` for `Font::DIGITS` and `ui::covers`. A plugin of `"0.9"` builds
+   on no screen with the released firmware until that release: for a plugin a person wants on their screen today, stay
+   on `"0.8"`. A plugin builds on a core with the same major and at
    least its minor, unless a minor after its own changed a name: while the major is 0 that may happen, and the core
    lists those minors (only 0.4 so far). So a plugin of 0.7 builds on a core of 0.9, one of 0.3 does not
    (`docs/FIRMWARE_API.md`, "Versions").
@@ -102,7 +104,8 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 ## When you are done
 
 ```sh
-pip install pyyaml                      # once: the check reads YAML
+pip install pyyaml                      # once: the check reads YAML (Homebrew's Python refuses: use the bench's,
+                                        # tools/.cache/preview-venv/bin/python tools/check.py, which has it)
 python3 tools/check.py plugins/<id>     # must print "<id>: ok"
 python3 tools/preview.py plugins/<id> --strict   # the bench: exit 0, no warning in its findings (docs/PREVIEW.md)
 ```

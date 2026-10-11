@@ -261,6 +261,10 @@ def main():
             stop(f'not even Tessera\'s dev offers plugin API {need}')
     open_page = '--open' in rest
     rest = [a for a in rest if a != '--open']
+    # The check first, with the bench's own Python (which has PyYAML): a plugin the app would refuse is not benched.
+    checked = subprocess.run([str(python_of_venv()), str(ROOT / 'tools' / 'check.py'), str(folder)])
+    if checked.returncode:
+        stop('fix what tools/check.py says first; the bench runs after it passes')
     env = {**os.environ, 'ESPHOME': str(esphome_of_venv()), 'TESSERA_TREE': str(tree), 'TESSERA_BENCH_WORK': str(CACHE / 'bench-build')}
     code = subprocess.run([str(python_of_venv()), str(BENCH), str(folder), *rest], env=env).returncode
     page = folder / '.preview' / 'index.html'
