@@ -161,12 +161,20 @@ class BenchBuild(host.Build):
     glass no board has the board's sizes, density, look and grids replaced in its mirror (`glass`: {'PANEL_W': '800',
     ..., 'look': 'compact'})."""
 
-    def __init__(self, item, glass=None, **kw):
+    def __init__(self, item, glass=None, window=False, **kw):
         super().__init__(item, **kw)
-        self.glass = dict(glass or {})
+        self.glass, self.window = dict(glass or {}), window
 
     def package(self):
         text = super().package()
+        if self.window:
+            # Tessera's host build draws without a window (set_headless at boot, for renders on a machine without a
+            # display); --window keeps the window, so a person can tap and swipe it with the mouse.
+            core_yaml = self.work / 'host' / self.variant.key / 'packages' / 'core.yaml'
+            body = core_yaml.read_text()
+            if 'id(my_display).set_headless(true);' not in body:
+                raise SystemExit('Tessera\'s host build changed how it draws without a window; --window needs an update of tools/bench.py')
+            core_yaml.write_text(body.replace('id(my_display).set_headless(true);', 'id(my_display).set_headless(false);'))
         if self.glass:
             item, tree = self.variant, self.tree
             mirror = self.work / 'host' / item.key / 'packages'
@@ -501,6 +509,9 @@ class Bench(run.Run):
         self.findings.append({'level': level, 'screen': self.screen.key, 'where': where, 'text': text})
 
     async def connect(self):
+        # Again here: a module of the driver may have set a level of its own since it was imported.
+        for name in [n for n in logging.root.manager.loggerDict if n.startswith('aioesphomeapi')]:
+            logging.getLogger(name).setLevel(logging.CRITICAL)
         self.client = run.APIClient('127.0.0.1', self.item.port, None)
         for _ in range(240):
             if self.process.poll() is not None:
@@ -1122,7 +1133,7 @@ def once(args, folder, screens, esphome, watch=None):
     for text in parts_of['mismatches']:
         print(f'  warning: {text}', flush=True)
     for screen in screens:
-        build = BenchBuild(screen.variant, glass=screen.glass, tree=REPO, work=args.work, esphome=esphome, plugin=folder)
+        build = BenchBuild(screen.variant, glass=screen.glass, window=args.window, tree=REPO, work=args.work, esphome=esphome, plugin=folder)
         result = {'key': screen.key, 'title': screen.title, 'width': screen.width, 'height': screen.height,
                   'dpi': screen.dpi, 'look': screen.look, 'views': []}
         results.append(result)
@@ -1200,7 +1211,7 @@ def main():
         if text != 'max' and not re.fullmatch(r'[1-8]x[1-8]', text):
             raise SystemExit(f'--grid {text}: columns x rows, as 4x3, or max')
     args.out = (args.out or folder / '.preview').resolve()
-    args.work = (args.work or HERE / '.cache' / 'bench-build').resolve()
+    args.work = (args.work or Path(os.environ.get('TESSERA_BENCH_WORK') or HERE / '.cache' / 'bench-build')).resolve()
     keys = all_screens() if args.all else args.board or ([] if args.screen else list(DEFAULT_BOARDS))
     screens = [board_screen(key, i) for i, key in enumerate(dict.fromkeys(keys))]
     screens += [custom_screen(text, i) for i, text in enumerate(args.screen)]

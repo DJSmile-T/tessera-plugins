@@ -29,7 +29,10 @@ import webbrowser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / 'tools' / '.cache'
+# Inside WSL on a Windows drive (/mnt/c/...) every file goes through Windows, which makes a build ten times slower: the
+# bench's Python and builds live in the Linux home there instead.
+WSL = 'microsoft' in platform.release().lower()
+CACHE = Path.home() / '.cache' / 'tessera-plugins' if WSL and str(ROOT).startswith('/mnt/') else ROOT / 'tools' / '.cache'
 VENV = CACHE / 'preview-venv'
 REPOSITORY = 'https://github.com/MaxGramser/homeassistant_espscreen'
 # The firmware the bench builds: main, what every screen runs, unless TESSERA_REF names another branch.
@@ -65,16 +68,18 @@ def core(ref=None):
     if not shutil.which('git'):
         stop('git is needed to fetch Tessera; install it (macOS: xcode-select --install, Linux: apt install git)')
     copy = CACHE / f'tessera-{ref}'
-    stamp = copy / '.git' / 'FETCH_HEAD'
+    stamp = copy / '.git' / 'bench-fetched'   # when this copy was last brought up to date
     if not (copy / '.git').is_dir():
         say(f'Fetching the firmware: Tessera\'s {ref} into {copy} ...')
         CACHE.mkdir(parents=True, exist_ok=True)
         run(['git', 'clone', '--quiet', '--depth', '1', '--branch', ref, REPOSITORY, str(copy)])
+        stamp.touch()
     elif not stamp.exists() or time.time() - stamp.stat().st_mtime > FRESH:
         say(f'Updating the firmware: Tessera\'s {ref} ...')
         try:
             run(['git', '-C', str(copy), 'fetch', '--quiet', '--depth', '1', 'origin', ref])
             run(['git', '-C', str(copy), 'reset', '--quiet', '--hard', 'FETCH_HEAD'])
+            stamp.touch()
         except subprocess.CalledProcessError:
             say('  could not reach GitHub: using the copy there is')
     if not (copy / HARNESS).is_file():
@@ -120,7 +125,7 @@ def hints():
         return {'sdl2': 'sudo apt install libsdl2-dev   (Fedora: sudo dnf install SDL2-devel)',
                 'compiler': 'sudo apt install build-essential   (Fedora: sudo dnf install gcc-c++ make)',
                 'python': 'sudo apt install python3 python3-venv'}
-    return {'sdl2': 'use WSL 2 (Ubuntu) and run the bench there', 'compiler': 'use WSL 2 (Ubuntu)', 'python': 'use WSL 2 (Ubuntu)'}
+    return {'sdl2': 'run it in WSL 2 (Ubuntu): docs/PREVIEW.md, "Set it up once"', 'compiler': 'WSL 2', 'python': 'WSL 2'}
 
 
 def missing():
@@ -194,8 +199,39 @@ def plugin_folder(args):
          + (f'; in this repository: {", ".join("plugins/" + k for k in known)}' if known else ''))
 
 
+def windows(args):
+    """On Windows the bench runs in WSL 2 (ESPHome builds the firmware for a computer on Linux and macOS only): the same
+    command again inside it, with every path that names a file or folder made a path of WSL's."""
+    wsl = shutil.which('wsl')
+    distros = subprocess.run([wsl, '-l', '-q'], capture_output=True).stdout.decode('utf-16-le', 'replace').strip('\x00\r\n ') if wsl else ''
+    if not distros:
+        stop('on Windows the bench runs in WSL 2, the Linux that comes with Windows. Once:\n'
+             '  1. Open PowerShell as administrator and run:  wsl --install\n'
+             '  2. Restart Windows, open "Ubuntu" from the Start menu and choose a user name and password.\n'
+             '  3. In Ubuntu:  sudo apt update && sudo apt install -y build-essential libsdl2-dev git python3 python3-venv\n'
+             'Then run this command again here, or the same one in Ubuntu.')
+
+    def linux(path):
+        found = subprocess.run([wsl, 'wslpath', '-a', str(path)], capture_output=True, text=True)
+        return found.stdout.strip() if found.returncode == 0 else str(path)
+    converted = [linux(Path(a).resolve()) if not a.startswith('-') and Path(a).exists() else a for a in args]
+    say('Running the bench in WSL ...')
+    return subprocess.run([wsl, '--', 'python3', linux(Path(__file__).resolve()), *converted]).returncode
+
+
+def show(page):
+    """Open the bench's page in a browser: Windows' own from WSL."""
+    if WSL and shutil.which('explorer.exe'):
+        found = subprocess.run(['wslpath', '-w', str(page)], capture_output=True, text=True)
+        subprocess.run(['explorer.exe', found.stdout.strip()])
+    else:
+        webbrowser.open(page.as_uri())
+
+
 def main():
     args = sys.argv[1:]
+    if os.name == 'nt':
+        return windows(args)
     if args[:1] in (['-h'], ['--help']):
         say(__doc__)
         say('Everything after the folder goes to the bench; its own options:')
@@ -225,13 +261,13 @@ def main():
             stop(f'not even Tessera\'s dev offers plugin API {need}')
     open_page = '--open' in rest
     rest = [a for a in rest if a != '--open']
-    env = {**os.environ, 'ESPHOME': str(esphome_of_venv()), 'TESSERA_TREE': str(tree)}
+    env = {**os.environ, 'ESPHOME': str(esphome_of_venv()), 'TESSERA_TREE': str(tree), 'TESSERA_BENCH_WORK': str(CACHE / 'bench-build')}
     code = subprocess.run([str(python_of_venv()), str(BENCH), str(folder), *rest], env=env).returncode
     page = folder / '.preview' / 'index.html'
     if '--out' in rest:
         page = Path(rest[rest.index('--out') + 1]).resolve() / 'index.html'
     if open_page and page.is_file():
-        webbrowser.open(page.as_uri())
+        show(page)
     return code
 
 

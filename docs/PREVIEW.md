@@ -31,13 +31,26 @@ tile at every size on one picture, and `summary.json` with the same as data, for
 
 ## Set it up once
 
-The bench needs a Mac or Linux (on Windows: WSL 2 with Ubuntu), Python 3.11 or newer, a C++ compiler, SDL2 and git.
+The bench needs macOS or Linux, Python 3.11 or newer, a C++ compiler, SDL2 and git. On Windows it runs in WSL 2, the
+Linux that comes with Windows (below): ESPHome builds the firmware for a computer on Linux and macOS only.
 
 | System | Install |
 |---|---|
 | macOS | `xcode-select --install`, then with [Homebrew](https://brew.sh): `brew install sdl2 uv` |
 | Ubuntu, Debian, WSL 2 | `sudo apt install build-essential libsdl2-dev git python3 python3-venv` |
 | Fedora | `sudo dnf install gcc-c++ make SDL2-devel git python3` |
+
+**Windows**, once:
+
+1. Open PowerShell as administrator and run `wsl --install`, then restart Windows.
+2. Open **Ubuntu** from the Start menu, choose a user name and a password, and run
+   `sudo apt update && sudo apt install -y build-essential libsdl2-dev git python3 python3-venv`.
+
+Then run the bench from Windows as from anywhere else, `py tools\preview.py plugins\my_idea` in PowerShell or the
+terminal of your editor: it runs itself in WSL, with the paths made WSL's. Or run it in Ubuntu directly. Its Python and
+its builds live in Ubuntu's home (`~/.cache/tessera-plugins`), where a build is many times quicker than on the Windows
+drive; the pictures still land in your plugin's `.preview\`, and `--open` shows them in Windows' browser. `--window`
+needs Windows 11, whose WSL shows Linux windows on the desktop.
 
 [uv](https://docs.astral.sh/uv/) is optional; with it the bench makes its Python in seconds and picks a version
 ESPHome supports by itself.
