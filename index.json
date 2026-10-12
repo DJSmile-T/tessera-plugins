@@ -1,6 +1,6 @@
 {
  "format": 1,
- "generated": "2026-10-11T17:40:52Z",
+ "generated": "2026-10-12T09:41:48Z",
  "plugin_api": "0.9",
  "blocked": [],
  "featured": [
@@ -12,6 +12,16 @@
    "repo": "https://github.com/maxgramser/tessera-plugins",
    "repo_id": 1408945265,
    "path": "plugins/bt_proxy"
+  },
+  "custom_card": {
+   "repo": "https://github.com/stofle/tessera-plugin-custom-card",
+   "repo_id": 1412296533,
+   "path": "."
+  },
+  "film_stasera": {
+   "repo": "https://github.com/alexcoscia/tessera-film-stasera",
+   "repo_id": 1414532919,
+   "path": "."
   },
   "guition_relays": {
    "repo": "https://github.com/maxgramser/tessera-plugins",
@@ -47,6 +57,11 @@
    "repo": "https://github.com/maxgramser/tessera-plugins",
    "repo_id": 1408945265,
    "path": "plugins/waste_collection"
+  },
+  "world_clock": {
+   "repo": "https://github.com/stofle/tessera-plugin-world-clock",
+   "repo_id": 1412405727,
+   "path": "."
   }
  },
  "plugins": [
@@ -969,6 +984,1211 @@
    "changelog": {
     "en": "# Changelog\n\n## 1.0.7 - 2026-10-11\n- In Dark mode the tile's \"Tomorrow\" or \"In 3 days\" is readable again, also after switching between light and dark. On most screens it stayed dark on a dark tile.\n\n## 1.0.6 - 2026-10-09\n- Listed under the topics Home and Calendar & tasks on the Plugins page.\n- Needs a Tessera with plugin API 0.7: update the app and the screen first.\n\n## 1.0.5 - 2026-10-09\n- Its two settings are in the plugin's details on the screen's Plugins tab; the README says so.\n\n## 1.0.4 - 2026-10-08\n- Shows as an Example in the app.\n\n## 1.0.3 - 2026-10-08\n- The README says from when the top bar item shows.\n\n## 1.0.2 - 2026-10-08\n- The tile offers calendars only when you choose its entity.\n\n## 1.0.1 - 2026-10-07\n- Its two settings show in the editor under Screen settings.\n\n## 1.0.0 - 2026-10-07\n- First version: the next collection from a calendar in Home Assistant, on a tile, in the top bar the day before, and\n  on a card with the coming four weeks.\n- A sensor tile of your waste integration can open the card with a tap.\n- Two settings on the screen: whether the top bar says it, and how many days ahead.\n",
     "nl": "# Wijzigingen\n\n## 1.0.7 - 2026-10-11\n- In de donkere modus is \"Morgen\" of \"Over 3 dagen\" op de tegel weer leesbaar, ook na wisselen tussen licht en donker. Op de meeste schermen bleef het donker op een donkere tegel.\n\n## 1.0.6 - 2026-10-09\n- Staat onder de onderwerpen Thuis en Agenda & taken op de pagina Plugins.\n- Vraagt een Tessera met plugin-API 0.7: werk eerst de app en het scherm bij.\n\n## 1.0.5 - 2026-10-09\n- De twee instellingen staan in de details van de plugin op het tabblad Plugins van het scherm; de README zegt het.\n\n## 1.0.4 - 2026-10-08\n- Staat in de app als Voorbeeld.\n\n## 1.0.3 - 2026-10-08\n- De README zegt vanaf wanneer het item in de bovenbalk verschijnt.\n\n## 1.0.2 - 2026-10-08\n- De tegel biedt alleen agenda's aan als je zijn entiteit kiest.\n\n## 1.0.1 - 2026-10-07\n- De twee instellingen staan in de editor onder Scherminstellingen.\n\n## 1.0.0 - 2026-10-07\n- Eerste versie: de volgende ophaaldag uit een agenda in Home Assistant, op een tegel, de dag ervoor in de bovenbalk,\n  en op een kaart met de komende vier weken.\n- Een sensortegel van je afvalintegratie kan de kaart met een tik openen.\n- Twee instellingen op het scherm: of de bovenbalk het zegt, en hoeveel dagen vooruit.\n"
+   }
+  },
+  {
+   "id": "custom_card",
+   "repo": "https://github.com/stofle/tessera-plugin-custom-card",
+   "repo_id": 1412296533,
+   "path": ".",
+   "label": "community",
+   "status": "ok",
+   "release": {
+    "version": "0.4.1",
+    "sha": "9d29e208338e2081b809035771e9e35c0a648072",
+    "date": "2026-10-11",
+    "tag": "v0.4.1"
+   },
+   "manifest": {
+    "id": "custom_card",
+    "version": "0.4.1",
+    "api": "0.5",
+    "icon": "gauge",
+    "maintainer": "StofLE",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "home"
+    ],
+    "requires": {
+     "esphome": "2026.6.2"
+    },
+    "boards": "any",
+    "flash_kb": 12,
+    "tiles": [
+     {
+      "id": "card",
+      "name": "tile_name",
+      "icon": "gauge",
+      "sizes": {
+       "min": "1x1",
+       "max": "4x4"
+      },
+      "memory": 4300,
+      "domains": [
+       "sensor"
+      ],
+      "attributes": [
+       "elements",
+       "unit_of_measurement"
+      ],
+      "has_attributes": [
+       "elements"
+      ],
+      "example": "tile_example",
+      "preview": {
+       "title": "{name}",
+       "value": "{state}"
+      }
+     }
+    ],
+    "cards": [
+     {
+      "id": "detail",
+      "name": "card_name"
+     }
+    ]
+   },
+   "translations": {
+    "de": {
+     "_meta": {
+      "name": "Deutsch"
+     },
+     "screen": {
+      "choose": "Sensor wählen",
+      "wrong_entity": "Sensor wählen",
+      "waiting": "Warte auf Home Assistant",
+      "no_elements": "Nichts anzuzeigen"
+     },
+     "app": {
+      "name": "Eigene Karte",
+      "summary": "Eine Karte aus Werten, Balken und Text, die ein Template-Sensor in Home Assistant beschreibt.",
+      "tile_name": "Eigene Karte",
+      "tile_example": "21,4 °C, 48 %, CO2 820 ppm",
+      "card_name": "Eigene Karte, groß"
+     }
+    },
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "choose": "Choose a sensor",
+      "wrong_entity": "Choose a sensor",
+      "waiting": "Waiting for Home Assistant",
+      "no_elements": "No part to show"
+     },
+     "app": {
+      "name": "Custom card",
+      "summary": "A card of values, bars and words that a template sensor in Home Assistant describes.",
+      "tile_name": "Custom card",
+      "tile_example": "21.4 °C, 48 %, CO2 820 ppm",
+      "card_name": "Custom card, large"
+     }
+    }
+   },
+   "readme": {
+    "de": "# Eigene Karte\n\nEin Tile, das du selbst zusammenstellst: Werte, Balken und Textzeilen, die ein Template-Sensor in Home Assistant\nbeschreibt, gezeichnet vom Bildschirm in seinen eigenen Schriften und Farben. Das Raumklima eines Zimmers auf einem\nTile, der Strom im Haus, was offen ist: alles, was ein Template sagen kann.\n\nAuf einem Tile, das eine Zeile hoch und zwei oder mehr Spalten breit ist, stehen die Teile nebeneinander, jeder mit\nLabel und Icon darüber und einem Balken unter dem Wert. Jedes andere Tile stapelt sie: Werte nebeneinander, ein Balken\noder eine Textzeile über die ganze Breite. Die Werte bekommen die größte Schrift, die neben dem Namen des Tiles passt;\ndie Labels darüber bleiben nur, wo sie die Werte nichts kosten, sonst steht jedes Icon vor seiner Zahl.\nEin Label ohne Icon und ohne Farbe bleibt immer.\nEin Tippen öffnet die Teile groß auf einer Karte über der Seite, mit ihren Labels.\n\n## Einrichten\n\n1. Lege in Home Assistant einen Template-Sensor an, dessen Attribut `elements` die Teile der Karte aufzählt, einen\n   Text je Teil (unten), füge ihn in die `configuration.yaml` ein und lade die Template-Entitäten neu.\n   [examples/living_room.yaml](https://github.com/StofLE/tessera-plugin-custom-card/blob/main/examples/living_room.yaml)\n   ist ein größeres Beispiel, mit Stufen für Feuchte und CO2.\n2. Öffne in Tessera **Plugins**, wähle **Eigene Karte** und hake deine Bildschirme an. Jeder Bildschirm baut einmal neu.\n3. Platziere im Layout das Tile **Eigene Karte** aus der Gruppe Plugins der Bibliothek, in jeder Größe, und wähle im\n   Inspector den Template-Sensor. Er bietet die Sensoren an, die ein Attribut `elements` haben.\n\n## Ein Beispiel\n\n```yaml\ntemplate:\n  - sensor:\n      - name: Raumkarte\n        state: \"{{ states('sensor.room_co2') }}\"\n        attributes:\n          elements: >\n            {% set t = states('sensor.room_temp') %}\n            {% set c = states('sensor.room_co2')\n                 | int(0) %}\n            {{ [\n              'value|' ~ t ~ '|°C|Temperatur',\n              'bar|' ~ c ~ '|ppm|CO2|'\n                ~ ('green' if c < 800 else 'red')\n                ~ '|molecule-co2|400|2000'\n            ] }}\n```\n\n## Die Teile\n\nJeder Teil ist ein Text, die Felder getrennt durch `|`, in dieser Reihenfolge: die Art, der Wert, die Einheit, das\nLabel, die Farbe, das Icon und bei einem Balken sein kleinster und größter Wert. Felder am Ende dürfen fehlen.\n\n- `value`: eine Zahl mit Einheit, etwa `value|21,4|°C|Temperatur||thermometer`.\n- `bar`: eine Zahl mit einem Balken darunter, vom kleinsten bis zum größten Wert (ohne Angabe 0 und 100), etwa\n  `bar|820|ppm|CO2|yellow||400|2000`.\n- `text`: eine Textzeile, etwa `text|Tür offen||||door-open`.\n\nEine Farbe ist `red`, `orange`, `yellow`, `green`, `mint`, `blue`, `purple`, `pink` oder `gray`. Wie auf Tesseras\neigenen Tiles markiert sie einen Teil und färbt nie seine Worte: Sie färbt das Icon (einen Punkt, wo der Teil keins hat)\nund den Balken. Ein Icon ist ein Name aus der Icon-Auswahl des Editors, mit oder ohne `mdi:`.\n\n## Gut zu wissen\n\n- Home Assistant rendert das Template; das Tile ändert sich, sobald sich der Sensor ändert. Stufen und Farben\n  berechnest du im Template, dort rundest du die Werte und wählst das Dezimalzeichen.\n- Höchstens sechs Teile, jeder höchstens 48 Bytes: Tessera kürzt längere Texte, also Labels kurz halten.\n- Die Schrift eines Werts richtet sich nach seiner Form, nicht nach den Ziffern, so behält das Tile seine Größe, wenn\n  sich ein Wert ändert.\n- Ist der Sensor eine Weile nicht verfügbar, behält das Tile ihn und zeigt seinen Zustand, bis `elements` zurück ist.\n- Die Hintergrundfarbe des Tiles stellst du im Editor ein, wie bei jedem Tile.\n\n## So funktioniert es\n\n- `tessera-plugin.yaml`: ein Tile, das zu einem Sensor gehört und dessen `elements` und `unit_of_measurement` bekommt.\n- `components/custom_card/`: die ESPHome-Komponente, die die Teile anordnet und zeichnet, auf dem Tile und auf der\n  Karte, die ein Tippen öffnet.\n- `translations/`: die Worte auf dem Bildschirm (`screen`) und in der App (`app`).\n- `CHANGELOG.md`: was jede Version geändert hat; die App zeigt es bei einem Update.\n- `tools/make_icons.py`: schreibt die Namen von Tesseras Icon-Satz in `icons.h`.\n",
+    "en": "# Custom card\n\nA tile you put together yourself: values, bars and lines of words that a template sensor in Home Assistant describes,\ndrawn by the screen in its own fonts and colours. A room's climate on one tile, the house's power, what is open:\nwhatever a template can say.\n\nOn a tile one row high and two columns or more, the parts stand side by side, each with its label and icon above it\nand a bar under its value. Any other tile stacks them: values side by side, a bar or a line of words across the width.\nThe values take the largest face that fits beside the tile's name; the labels above them stay only where they cost\nthe values nothing, else each icon stands before its number. A label without an icon or a colour always stays.\nA tap opens the parts large on a card over the page, with their labels.\n\n## Set up\n\n1. In Home Assistant, make a template sensor whose attribute `elements` lists the card's parts, one text per part\n   (below), put it in `configuration.yaml`, and reload Template entities. [examples/living_room.yaml](https://github.com/StofLE/tessera-plugin-custom-card/blob/main/examples/living_room.yaml)\n   is a larger one, with levels for the humidity and the CO2.\n2. In Tessera, open **Plugins**, choose **Custom card** and tick your screens. Each screen builds once.\n3. In Layout, place the **Custom card** tile from the library's Plugins group, at any size, and choose the template\n   sensor in its inspector. It offers the sensors that have an `elements` attribute.\n\n## An example\n\n```yaml\ntemplate:\n  - sensor:\n      - name: Room card\n        state: \"{{ states('sensor.room_co2') }}\"\n        attributes:\n          elements: >\n            {% set t = states('sensor.room_temp') %}\n            {% set c = states('sensor.room_co2')\n                 | int(0) %}\n            {{ [\n              'value|' ~ t ~ '|°C|Temperature',\n              'bar|' ~ c ~ '|ppm|CO2|'\n                ~ ('green' if c < 800 else 'red')\n                ~ '|molecule-co2|400|2000'\n            ] }}\n```\n\n## The parts\n\nEach part is one text, its fields split by `|`, in this order: the kind, the value, the unit, the label, the colour,\nthe icon, and for a bar its lowest and highest value. Fields at the end may be left out.\n\n- `value`: a number with its unit, such as `value|21.4|°C|Temperature||thermometer`.\n- `bar`: a number with a bar under it, from its lowest to its highest value (0 and 100 when left out), such as\n  `bar|820|ppm|CO2|yellow||400|2000`.\n- `text`: a line of words, such as `text|Door open||||door-open`.\n\nA colour is `red`, `orange`, `yellow`, `green`, `mint`, `blue`, `purple`, `pink` or `gray`. As on Tessera's own tiles it\nmarks a part and never paints its words: it colours the icon (a dot where the part has none) and the bar. An icon is a\nname from the editor's icon picker, with or without `mdi:`.\n\n## Good to know\n\n- Home Assistant renders the template; the tile changes whenever the sensor does. Work out levels and colours in the\n  template, round values there, and write the decimal sign you want.\n- At most six parts, each at most 48 bytes: Tessera cuts longer texts, so keep labels short.\n- The face of a value is chosen for its shape, not its digits, so the tile keeps its size when a value ticks.\n- When the sensor is unavailable for a while, the tile keeps it and shows its state until `elements` is back.\n- The tile's background colour is set in the editor, as for every tile.\n\n## How it works\n\n- `tessera-plugin.yaml`: one tile that belongs to a sensor and gets its `elements` and `unit_of_measurement`.\n- `components/custom_card/`: the ESPHome component that lays the parts out and draws them, on the tile and on the\n  card a tap opens.\n- `translations/`: the words on the screen (`screen`) and in the app (`app`).\n- `CHANGELOG.md`: what each version changed; the app shows it with an update.\n- `tools/make_icons.py`: writes the names of Tessera's icon set into `icons.h`.\n"
+   },
+   "changelog": {
+    "de": "# Änderungen\n\n## 0.4.1 - 2026-10-11\n- Ein farbiges Icon wird im hellen Modus dunkler, wo es sich sonst nicht von der Karte abhebt: ein gelbes wird auf Weiß ocker.\n\n## 0.4.0 - 2026-10-10\n- Ein Tippen auf das Tile öffnet die Teile groß auf einer Karte über der Seite, mit ihren Labels.\n- Braucht ein Tessera vom 10.10.2026 oder neuer: ein älteres zeigt die Karte unter ihrer Titelzeile leer.\n\n## 0.3.3 - 2026-10-09\n- Auf der Plugins-Seite unter dem Thema Zuhause zu finden.\n- Braucht ein Tessera mit Plugin-API 0.7: erst die App aktualisieren.\n\n## 0.3.2 - 2026-10-09\n- Ein Label ohne Icon und ohne Farbe bleibt immer, so sagt jede Zahl, was sie ist.\n- Ein Icon oder Punkt vor einer Zahl hat etwas mehr Abstand zu ihr.\n\n## 0.3.1 - 2026-10-09\n- Der Inspector des Tiles bietet nur noch Sensoren an, die eine Karte beschreiben (mit einem Attribut `elements`).\n\n## 0.3.0 - 2026-10-09\n- Erste Version: Werte, Balken und Textzeilen, die ein Template-Sensor beschreibt, nebeneinander auf einem breiten\n  Tile und gestapelt auf jedem anderen, in den Schriften und Farben des Bildschirms.\n",
+    "en": "# Changelog\n\n## 0.4.1 - 2026-10-11\n- A coloured icon is darker in the light look where it would not read on the card: a yellow one turns ochre on white.\n\n## 0.4.0 - 2026-10-10\n- A tap on the tile opens its parts large on a card over the page, with their labels.\n- Needs a Tessera from 2026-10-10 or later: an older one shows the card empty under its top bar.\n\n## 0.3.3 - 2026-10-09\n- Listed under the topic Home on the Plugins page.\n- Needs a Tessera with plugin API 0.7: update the app first.\n\n## 0.3.2 - 2026-10-09\n- A label without an icon or a colour always stays, so every number says what it is.\n- An icon or a dot in front of a number keeps a little more room from it.\n\n## 0.3.1 - 2026-10-09\n- The tile's inspector offers only the sensors that describe a card (with an `elements` attribute).\n\n## 0.3.0 - 2026-10-09\n- First release: values, bars and lines of words that a template sensor describes, side by side on a wide tile and\n  stacked on any other, in the screen's fonts and colours.\n"
+   }
+  },
+  {
+   "id": "film_stasera",
+   "repo": "https://github.com/alexcoscia/tessera-film-stasera",
+   "repo_id": 1414532919,
+   "path": ".",
+   "label": "community",
+   "status": "ok",
+   "release": {
+    "version": "0.2.0",
+    "sha": "bff173231da265b9383acb212d2f17f055760a90",
+    "date": "2026-10-11",
+    "tag": "v0.2.0"
+   },
+   "manifest": {
+    "id": "film_stasera",
+    "version": "0.2.0",
+    "api": "0.8",
+    "icon": "movie-open",
+    "maintainer": "alexcoscia",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "media"
+    ],
+    "requires": {
+     "esphome": "2026.6.2"
+    },
+    "boards": "any",
+    "flash_kb": 6,
+    "tiles": [
+     {
+      "id": "films",
+      "name": "tile_name",
+      "icon": "movie-open",
+      "sizes": {
+       "min": "1x1",
+       "max": "4x4"
+      },
+      "memory": 9000,
+      "domains": [
+       "sensor"
+      ],
+      "attributes": [
+       "titles",
+       "channels",
+       "starts",
+       "genres",
+       "groups",
+       "stale"
+      ],
+      "has_attributes": [
+       "titles",
+       "starts"
+      ],
+      "example": "tile_example",
+      "preview": {
+       "title": "{name}",
+       "value": "{state}"
+      }
+     }
+    ]
+   },
+   "translations": {
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "header": "Films tonight",
+      "none": "No more films tonight",
+      "waiting": "Waiting for the guide",
+      "choose_sensor": "Choose the film sensor",
+      "old": "Old guide"
+     },
+     "app": {
+      "name": "Films tonight",
+      "summary": "The films on Italian TV tonight, from a sensor in Home Assistant.",
+      "tile_name": "Films tonight",
+      "tile_example": "21:00 Cine34 - a film"
+     }
+    },
+    "it": {
+     "_meta": {
+      "name": "Italiano"
+     },
+     "screen": {
+      "header": "Film stasera",
+      "none": "Nessun altro film stasera",
+      "waiting": "In attesa della guida",
+      "choose_sensor": "Scegli il sensore dei film",
+      "old": "Guida vecchia"
+     },
+     "app": {
+      "name": "Film stasera",
+      "summary": "I film in TV stasera in Italia, da un sensore di Home Assistant.",
+      "tile_name": "Film stasera",
+      "tile_example": "21:00 Cine34 - un film"
+     }
+    }
+   },
+   "readme": {
+    "it": "# Film stasera\n\nUn tile con i film in TV stasera in Italia: l'orario d'inizio, il titolo e, sotto, il canale e il genere. Appartiene\na **un sensore di Home Assistant** e non scarica niente da internet.\n\n## Come si usa\n\n1. In Home Assistant crea il sensore `sensor.film_stasera`: lo stato e' il numero di film, con quattro attributi\n   della stessa lunghezza, una voce per film: `titles`, `channels`, `starts` (secondi dal 1970) e `genres`. Facoltativi: `groups` (un numero da 1 a 4 per film, il colore del pallino\n   davanti al nome del canale: 1 blu, 2 ambra, 3 verde, 4 viola; 0 o assente: nessun pallino) e `stale` (true o\n   false: la guida e' vecchia).\n2. Aggiungi il plugin a uno schermo in Tessera. Lo schermo si ricompila una volta.\n3. In Layout metti il tile **Film stasera** dalla libreria (gruppo Plugin), da 1x1 a 4x4: mostra tutti i film che\n   ci stanno. Poi scegli il sensore nell'ispettore.\n\n## Da sapere\n\n- Su un tile largo (circa 13 cm o piu', come quattro colonne di uno schermo da 7 pollici) i film vanno su due colonne,\n  uno dopo l'altro, cosi' una serata intera sta in una pagina.\n- Un film iniziato meno di due ore e mezza fa resta nel tile, con l'orario nel colore d'accento: la guida non ha gli\n  orari di fine. Il tile segue l'orologio dello schermo, quindi un film esce dalla lista da solo.\n- Quando non resta nessun film lo dice, e quando la guida e' vecchia lo scrive accanto alla data.\n- Non servono chiavi ne' account.\n- Provato su un vero Waveshare ESP32-S3-Touch-LCD-7B (7 pollici, firmware Tessera 0.55.0). Nel banco di prova dei\n  plugin (`tools/preview.py`) si disegna senza avvisi anche sul Waveshare da 5 pollici e sul CYD (2,8 pollici).\n",
+    "en": "# Films tonight\n\nA tile with the films on Italian TV tonight: the start time, the title, and under it the channel and the genre. It\nbelongs to **one sensor of Home Assistant** and fetches nothing from the internet itself.\n\n## Set up\n\n1. In Home Assistant, make the sensor `sensor.film_stasera` (the one this plugin was written for): a sensor whose\n   state is the number of films, with four attributes of the same length, one entry per film: `titles`, `channels`,\n   `starts` (seconds since 1970) and `genres`. Optional: `groups` (a number 1 to 4 per film, the colour of the dot before\n   the channel's name: 1 blue, 2 amber, 3 green, 4 purple; 0 or missing draws no dot) and `stale` (true or false: the\n   guide is old).\n2. Add the plugin to a screen in Tessera. The screen builds once.\n3. In Layout, place the **Films tonight** tile from the library's Plugins group (1x1 up to 4x4: it shows as many films\n   as fit) and choose the sensor in the inspector.\n\n## Good to know\n\n- On a wide tile (about 13 cm or more, such as four columns of a 7-inch screen) the films run in two columns, one after\n  the other, so a whole evening fits on one page.\n- A film that started less than two and a half hours ago stays on the tile, with its time in the accent colour: the\n  guide has no end times. The tile follows the screen's own clock, so a film leaves the list on its own.\n- When no film is left it says so. When the guide is old it says that beside the date.\n- It needs no key and no account.\n- Tried on a real Waveshare ESP32-S3-Touch-LCD-7B (7 inch, Tessera firmware 0.55.0). On the plugin bench\n  (`tools/preview.py`) it also draws without warnings on the 5-inch Waveshare and on the CYD (2.8 inch).\n"
+   },
+   "changelog": {
+    "en": "# Changelog\n\n## 0.2.0 - 2026-10-11\n- Under each title the channel's name is now in the regular colour, with a dot before it in the colour of its group\n  (Rai, Mediaset, Discovery, others), then the genre in grey. The sensor says the group in a new attribute, `groups`\n  (a number 1 to 4); without it the dot is simply not drawn.\n- The tile needs a little more room in the screen's layout memory (9000 instead of 6000 bytes).\n- A tile can now start from 1x1 (it shows the next film) and grow with the editor's handles up to 4x4.\n\n## 0.1.0 - 2026-10-11\n- First version: a tile with the films on TV tonight, read from a sensor of Home Assistant.\n"
+   }
+  },
+  {
+   "id": "world_clock",
+   "repo": "https://github.com/stofle/tessera-plugin-world-clock",
+   "repo_id": 1412405727,
+   "path": ".",
+   "label": "community",
+   "status": "ok",
+   "release": {
+    "version": "0.3.2",
+    "sha": "86fffc6361f4d4a2d4fd9d114a6e7852ec707429",
+    "date": "2026-10-11",
+    "tag": "v0.3.2"
+   },
+   "manifest": {
+    "id": "world_clock",
+    "version": "0.3.2",
+    "api": "0.4",
+    "icon": "clock-outline",
+    "maintainer": "StofLE",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "time"
+    ],
+    "requires": {
+     "esphome": "2026.6.2"
+    },
+    "boards": "any",
+    "flash_kb": 12,
+    "tiles": [
+     {
+      "id": "clocks",
+      "name": "tile_name",
+      "icon": "clock-outline",
+      "sizes": {
+       "min": "1x1",
+       "max": "4x2"
+      },
+      "memory": 6400,
+      "example": "tile_example",
+      "options": [
+       {
+        "id": "zone_1",
+        "kind": "choice",
+        "label": "zone_1",
+        "hint": "zone_hint",
+        "default": "America/New_York",
+        "choices": [
+         {
+          "value": "none",
+          "label": "none"
+         },
+         {
+          "value": "local",
+          "label": "z_local"
+         },
+         {
+          "value": "Pacific/Honolulu",
+          "label": "z_pacific_honolulu"
+         },
+         {
+          "value": "America/Anchorage",
+          "label": "z_america_anchorage"
+         },
+         {
+          "value": "America/Los_Angeles",
+          "label": "z_america_los_angeles"
+         },
+         {
+          "value": "America/Denver",
+          "label": "z_america_denver"
+         },
+         {
+          "value": "America/Chicago",
+          "label": "z_america_chicago"
+         },
+         {
+          "value": "America/Mexico_City",
+          "label": "z_america_mexico_city"
+         },
+         {
+          "value": "America/New_York",
+          "label": "z_america_new_york"
+         },
+         {
+          "value": "America/Toronto",
+          "label": "z_america_toronto"
+         },
+         {
+          "value": "America/Bogota",
+          "label": "z_america_bogota"
+         },
+         {
+          "value": "America/Lima",
+          "label": "z_america_lima"
+         },
+         {
+          "value": "America/Santiago",
+          "label": "z_america_santiago"
+         },
+         {
+          "value": "America/Sao_Paulo",
+          "label": "z_america_sao_paulo"
+         },
+         {
+          "value": "America/Argentina/Buenos_Aires",
+          "label": "z_america_argentina_buenos_aires"
+         },
+         {
+          "value": "Atlantic/Reykjavik",
+          "label": "z_atlantic_reykjavik"
+         },
+         {
+          "value": "Europe/London",
+          "label": "z_europe_london"
+         },
+         {
+          "value": "Europe/Dublin",
+          "label": "z_europe_dublin"
+         },
+         {
+          "value": "Europe/Lisbon",
+          "label": "z_europe_lisbon"
+         },
+         {
+          "value": "Europe/Madrid",
+          "label": "z_europe_madrid"
+         },
+         {
+          "value": "Europe/Paris",
+          "label": "z_europe_paris"
+         },
+         {
+          "value": "Europe/Amsterdam",
+          "label": "z_europe_amsterdam"
+         },
+         {
+          "value": "Europe/Berlin",
+          "label": "z_europe_berlin"
+         },
+         {
+          "value": "Europe/Zurich",
+          "label": "z_europe_zurich"
+         },
+         {
+          "value": "Europe/Rome",
+          "label": "z_europe_rome"
+         },
+         {
+          "value": "Europe/Vienna",
+          "label": "z_europe_vienna"
+         },
+         {
+          "value": "Europe/Stockholm",
+          "label": "z_europe_stockholm"
+         },
+         {
+          "value": "Europe/Warsaw",
+          "label": "z_europe_warsaw"
+         },
+         {
+          "value": "Europe/Athens",
+          "label": "z_europe_athens"
+         },
+         {
+          "value": "Europe/Helsinki",
+          "label": "z_europe_helsinki"
+         },
+         {
+          "value": "Europe/Istanbul",
+          "label": "z_europe_istanbul"
+         },
+         {
+          "value": "Europe/Moscow",
+          "label": "z_europe_moscow"
+         },
+         {
+          "value": "Africa/Cairo",
+          "label": "z_africa_cairo"
+         },
+         {
+          "value": "Africa/Lagos",
+          "label": "z_africa_lagos"
+         },
+         {
+          "value": "Africa/Johannesburg",
+          "label": "z_africa_johannesburg"
+         },
+         {
+          "value": "Africa/Nairobi",
+          "label": "z_africa_nairobi"
+         },
+         {
+          "value": "Asia/Dubai",
+          "label": "z_asia_dubai"
+         },
+         {
+          "value": "Asia/Karachi",
+          "label": "z_asia_karachi"
+         },
+         {
+          "value": "Asia/Kolkata",
+          "label": "z_asia_kolkata"
+         },
+         {
+          "value": "Asia/Bangkok",
+          "label": "z_asia_bangkok"
+         },
+         {
+          "value": "Asia/Singapore",
+          "label": "z_asia_singapore"
+         },
+         {
+          "value": "Asia/Shanghai",
+          "label": "z_asia_shanghai"
+         },
+         {
+          "value": "Asia/Hong_Kong",
+          "label": "z_asia_hong_kong"
+         },
+         {
+          "value": "Asia/Seoul",
+          "label": "z_asia_seoul"
+         },
+         {
+          "value": "Asia/Tokyo",
+          "label": "z_asia_tokyo"
+         },
+         {
+          "value": "Australia/Perth",
+          "label": "z_australia_perth"
+         },
+         {
+          "value": "Australia/Sydney",
+          "label": "z_australia_sydney"
+         },
+         {
+          "value": "Pacific/Auckland",
+          "label": "z_pacific_auckland"
+         }
+        ]
+       },
+       {
+        "id": "zone_2",
+        "kind": "choice",
+        "label": "zone_2",
+        "hint": "zone_hint",
+        "default": "local",
+        "choices": [
+         {
+          "value": "none",
+          "label": "none"
+         },
+         {
+          "value": "local",
+          "label": "z_local"
+         },
+         {
+          "value": "Pacific/Honolulu",
+          "label": "z_pacific_honolulu"
+         },
+         {
+          "value": "America/Anchorage",
+          "label": "z_america_anchorage"
+         },
+         {
+          "value": "America/Los_Angeles",
+          "label": "z_america_los_angeles"
+         },
+         {
+          "value": "America/Denver",
+          "label": "z_america_denver"
+         },
+         {
+          "value": "America/Chicago",
+          "label": "z_america_chicago"
+         },
+         {
+          "value": "America/Mexico_City",
+          "label": "z_america_mexico_city"
+         },
+         {
+          "value": "America/New_York",
+          "label": "z_america_new_york"
+         },
+         {
+          "value": "America/Toronto",
+          "label": "z_america_toronto"
+         },
+         {
+          "value": "America/Bogota",
+          "label": "z_america_bogota"
+         },
+         {
+          "value": "America/Lima",
+          "label": "z_america_lima"
+         },
+         {
+          "value": "America/Santiago",
+          "label": "z_america_santiago"
+         },
+         {
+          "value": "America/Sao_Paulo",
+          "label": "z_america_sao_paulo"
+         },
+         {
+          "value": "America/Argentina/Buenos_Aires",
+          "label": "z_america_argentina_buenos_aires"
+         },
+         {
+          "value": "Atlantic/Reykjavik",
+          "label": "z_atlantic_reykjavik"
+         },
+         {
+          "value": "Europe/London",
+          "label": "z_europe_london"
+         },
+         {
+          "value": "Europe/Dublin",
+          "label": "z_europe_dublin"
+         },
+         {
+          "value": "Europe/Lisbon",
+          "label": "z_europe_lisbon"
+         },
+         {
+          "value": "Europe/Madrid",
+          "label": "z_europe_madrid"
+         },
+         {
+          "value": "Europe/Paris",
+          "label": "z_europe_paris"
+         },
+         {
+          "value": "Europe/Amsterdam",
+          "label": "z_europe_amsterdam"
+         },
+         {
+          "value": "Europe/Berlin",
+          "label": "z_europe_berlin"
+         },
+         {
+          "value": "Europe/Zurich",
+          "label": "z_europe_zurich"
+         },
+         {
+          "value": "Europe/Rome",
+          "label": "z_europe_rome"
+         },
+         {
+          "value": "Europe/Vienna",
+          "label": "z_europe_vienna"
+         },
+         {
+          "value": "Europe/Stockholm",
+          "label": "z_europe_stockholm"
+         },
+         {
+          "value": "Europe/Warsaw",
+          "label": "z_europe_warsaw"
+         },
+         {
+          "value": "Europe/Athens",
+          "label": "z_europe_athens"
+         },
+         {
+          "value": "Europe/Helsinki",
+          "label": "z_europe_helsinki"
+         },
+         {
+          "value": "Europe/Istanbul",
+          "label": "z_europe_istanbul"
+         },
+         {
+          "value": "Europe/Moscow",
+          "label": "z_europe_moscow"
+         },
+         {
+          "value": "Africa/Cairo",
+          "label": "z_africa_cairo"
+         },
+         {
+          "value": "Africa/Lagos",
+          "label": "z_africa_lagos"
+         },
+         {
+          "value": "Africa/Johannesburg",
+          "label": "z_africa_johannesburg"
+         },
+         {
+          "value": "Africa/Nairobi",
+          "label": "z_africa_nairobi"
+         },
+         {
+          "value": "Asia/Dubai",
+          "label": "z_asia_dubai"
+         },
+         {
+          "value": "Asia/Karachi",
+          "label": "z_asia_karachi"
+         },
+         {
+          "value": "Asia/Kolkata",
+          "label": "z_asia_kolkata"
+         },
+         {
+          "value": "Asia/Bangkok",
+          "label": "z_asia_bangkok"
+         },
+         {
+          "value": "Asia/Singapore",
+          "label": "z_asia_singapore"
+         },
+         {
+          "value": "Asia/Shanghai",
+          "label": "z_asia_shanghai"
+         },
+         {
+          "value": "Asia/Hong_Kong",
+          "label": "z_asia_hong_kong"
+         },
+         {
+          "value": "Asia/Seoul",
+          "label": "z_asia_seoul"
+         },
+         {
+          "value": "Asia/Tokyo",
+          "label": "z_asia_tokyo"
+         },
+         {
+          "value": "Australia/Perth",
+          "label": "z_australia_perth"
+         },
+         {
+          "value": "Australia/Sydney",
+          "label": "z_australia_sydney"
+         },
+         {
+          "value": "Pacific/Auckland",
+          "label": "z_pacific_auckland"
+         }
+        ]
+       },
+       {
+        "id": "zone_3",
+        "kind": "choice",
+        "label": "zone_3",
+        "hint": "zone_hint",
+        "default": "Europe/London",
+        "choices": [
+         {
+          "value": "none",
+          "label": "none"
+         },
+         {
+          "value": "local",
+          "label": "z_local"
+         },
+         {
+          "value": "Pacific/Honolulu",
+          "label": "z_pacific_honolulu"
+         },
+         {
+          "value": "America/Anchorage",
+          "label": "z_america_anchorage"
+         },
+         {
+          "value": "America/Los_Angeles",
+          "label": "z_america_los_angeles"
+         },
+         {
+          "value": "America/Denver",
+          "label": "z_america_denver"
+         },
+         {
+          "value": "America/Chicago",
+          "label": "z_america_chicago"
+         },
+         {
+          "value": "America/Mexico_City",
+          "label": "z_america_mexico_city"
+         },
+         {
+          "value": "America/New_York",
+          "label": "z_america_new_york"
+         },
+         {
+          "value": "America/Toronto",
+          "label": "z_america_toronto"
+         },
+         {
+          "value": "America/Bogota",
+          "label": "z_america_bogota"
+         },
+         {
+          "value": "America/Lima",
+          "label": "z_america_lima"
+         },
+         {
+          "value": "America/Santiago",
+          "label": "z_america_santiago"
+         },
+         {
+          "value": "America/Sao_Paulo",
+          "label": "z_america_sao_paulo"
+         },
+         {
+          "value": "America/Argentina/Buenos_Aires",
+          "label": "z_america_argentina_buenos_aires"
+         },
+         {
+          "value": "Atlantic/Reykjavik",
+          "label": "z_atlantic_reykjavik"
+         },
+         {
+          "value": "Europe/London",
+          "label": "z_europe_london"
+         },
+         {
+          "value": "Europe/Dublin",
+          "label": "z_europe_dublin"
+         },
+         {
+          "value": "Europe/Lisbon",
+          "label": "z_europe_lisbon"
+         },
+         {
+          "value": "Europe/Madrid",
+          "label": "z_europe_madrid"
+         },
+         {
+          "value": "Europe/Paris",
+          "label": "z_europe_paris"
+         },
+         {
+          "value": "Europe/Amsterdam",
+          "label": "z_europe_amsterdam"
+         },
+         {
+          "value": "Europe/Berlin",
+          "label": "z_europe_berlin"
+         },
+         {
+          "value": "Europe/Zurich",
+          "label": "z_europe_zurich"
+         },
+         {
+          "value": "Europe/Rome",
+          "label": "z_europe_rome"
+         },
+         {
+          "value": "Europe/Vienna",
+          "label": "z_europe_vienna"
+         },
+         {
+          "value": "Europe/Stockholm",
+          "label": "z_europe_stockholm"
+         },
+         {
+          "value": "Europe/Warsaw",
+          "label": "z_europe_warsaw"
+         },
+         {
+          "value": "Europe/Athens",
+          "label": "z_europe_athens"
+         },
+         {
+          "value": "Europe/Helsinki",
+          "label": "z_europe_helsinki"
+         },
+         {
+          "value": "Europe/Istanbul",
+          "label": "z_europe_istanbul"
+         },
+         {
+          "value": "Europe/Moscow",
+          "label": "z_europe_moscow"
+         },
+         {
+          "value": "Africa/Cairo",
+          "label": "z_africa_cairo"
+         },
+         {
+          "value": "Africa/Lagos",
+          "label": "z_africa_lagos"
+         },
+         {
+          "value": "Africa/Johannesburg",
+          "label": "z_africa_johannesburg"
+         },
+         {
+          "value": "Africa/Nairobi",
+          "label": "z_africa_nairobi"
+         },
+         {
+          "value": "Asia/Dubai",
+          "label": "z_asia_dubai"
+         },
+         {
+          "value": "Asia/Karachi",
+          "label": "z_asia_karachi"
+         },
+         {
+          "value": "Asia/Kolkata",
+          "label": "z_asia_kolkata"
+         },
+         {
+          "value": "Asia/Bangkok",
+          "label": "z_asia_bangkok"
+         },
+         {
+          "value": "Asia/Singapore",
+          "label": "z_asia_singapore"
+         },
+         {
+          "value": "Asia/Shanghai",
+          "label": "z_asia_shanghai"
+         },
+         {
+          "value": "Asia/Hong_Kong",
+          "label": "z_asia_hong_kong"
+         },
+         {
+          "value": "Asia/Seoul",
+          "label": "z_asia_seoul"
+         },
+         {
+          "value": "Asia/Tokyo",
+          "label": "z_asia_tokyo"
+         },
+         {
+          "value": "Australia/Perth",
+          "label": "z_australia_perth"
+         },
+         {
+          "value": "Australia/Sydney",
+          "label": "z_australia_sydney"
+         },
+         {
+          "value": "Pacific/Auckland",
+          "label": "z_pacific_auckland"
+         }
+        ]
+       },
+       {
+        "id": "name_1",
+        "kind": "text",
+        "label": "name_1",
+        "hint": "name_hint"
+       },
+       {
+        "id": "name_2",
+        "kind": "text",
+        "label": "name_2",
+        "hint": "name_hint"
+       },
+       {
+        "id": "name_3",
+        "kind": "text",
+        "label": "name_3",
+        "hint": "name_hint"
+       },
+       {
+        "id": "face",
+        "kind": "choice",
+        "label": "face",
+        "hint": "face_hint",
+        "default": "analog",
+        "choices": [
+         {
+          "value": "analog",
+          "label": "face_analog"
+         },
+         {
+          "value": "classic",
+          "label": "face_classic"
+         },
+         {
+          "value": "calm",
+          "label": "face_calm"
+         },
+         {
+          "value": "digital",
+          "label": "face_digital"
+         }
+        ]
+       },
+       {
+        "id": "second_hand",
+        "kind": "choice",
+        "label": "second_hand",
+        "hint": "second_hand_hint",
+        "default": "home",
+        "choices": [
+         {
+          "value": "home",
+          "label": "second_hand_home"
+         },
+         {
+          "value": "all",
+          "label": "second_hand_all"
+         },
+         {
+          "value": "none",
+          "label": "second_hand_none"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "translations": {
+    "de": {
+     "_meta": {
+      "name": "Deutsch"
+     },
+     "screen": {
+      "offset": "{n} h",
+      "same": "Gleiche Zeit",
+      "tomorrow": "Morgen",
+      "yesterday": "Gestern",
+      "waiting": "Warte auf die Uhrzeit",
+      "z_local": "Hier",
+      "z_pacific_honolulu": "Honolulu",
+      "z_america_anchorage": "Anchorage",
+      "z_america_los_angeles": "Los Angeles",
+      "z_america_denver": "Denver",
+      "z_america_chicago": "Chicago",
+      "z_america_mexico_city": "Mexiko-Stadt",
+      "z_america_new_york": "New York",
+      "z_america_toronto": "Toronto",
+      "z_america_bogota": "Bogotá",
+      "z_america_lima": "Lima",
+      "z_america_santiago": "Santiago",
+      "z_america_sao_paulo": "São Paulo",
+      "z_america_argentina_buenos_aires": "Buenos Aires",
+      "z_atlantic_reykjavik": "Reykjavík",
+      "z_europe_london": "London",
+      "z_europe_dublin": "Dublin",
+      "z_europe_lisbon": "Lissabon",
+      "z_europe_madrid": "Madrid",
+      "z_europe_paris": "Paris",
+      "z_europe_amsterdam": "Amsterdam",
+      "z_europe_berlin": "Berlin",
+      "z_europe_zurich": "Zürich",
+      "z_europe_rome": "Rom",
+      "z_europe_vienna": "Wien",
+      "z_europe_stockholm": "Stockholm",
+      "z_europe_warsaw": "Warschau",
+      "z_europe_athens": "Athen",
+      "z_europe_helsinki": "Helsinki",
+      "z_europe_istanbul": "Istanbul",
+      "z_europe_moscow": "Moskau",
+      "z_africa_cairo": "Kairo",
+      "z_africa_lagos": "Lagos",
+      "z_africa_johannesburg": "Johannesburg",
+      "z_africa_nairobi": "Nairobi",
+      "z_asia_dubai": "Dubai",
+      "z_asia_karachi": "Karatschi",
+      "z_asia_kolkata": "Mumbai",
+      "z_asia_bangkok": "Bangkok",
+      "z_asia_singapore": "Singapur",
+      "z_asia_shanghai": "Shanghai",
+      "z_asia_hong_kong": "Hongkong",
+      "z_asia_seoul": "Seoul",
+      "z_asia_tokyo": "Tokio",
+      "z_australia_perth": "Perth",
+      "z_australia_sydney": "Sydney",
+      "z_pacific_auckland": "Auckland"
+     },
+     "app": {
+      "name": "Weltzeituhr",
+      "summary": "Die Uhrzeit an drei Orten der Welt, als Zifferblätter oder in Ziffern.",
+      "tile_name": "Weltzeituhr",
+      "tile_example": "New York 15:59 · Hier 21:59 · London 20:59",
+      "zone_1": "Erster Ort",
+      "zone_2": "Zweiter Ort",
+      "zone_3": "Dritter Ort",
+      "zone_hint": "Hier ist die Zeitzone des Bildschirms. Ein Ort auf Keiner zeigt weniger Uhren.",
+      "name_1": "Name des ersten Orts",
+      "name_2": "Name des zweiten Orts",
+      "name_3": "Name des dritten Orts",
+      "name_hint": "Leer lassen für den Namen der Stadt.",
+      "face": "Darstellung",
+      "face_analog": "Zifferblätter, nach Größe",
+      "face_digital": "Ziffern",
+      "second_hand": "Sekundenzeiger",
+      "second_hand_home": "An der Heimatuhr",
+      "second_hand_all": "An allen Uhren",
+      "second_hand_none": "Keiner",
+      "second_hand_hint": "Die Heimatuhr zeigt die Zeit des Bildschirms, oder ist die erste Uhr, wenn keine sie zeigt.",
+      "none": "Keiner",
+      "z_local": "Hier",
+      "z_pacific_honolulu": "Honolulu",
+      "z_america_anchorage": "Anchorage",
+      "z_america_los_angeles": "Los Angeles",
+      "z_america_denver": "Denver",
+      "z_america_chicago": "Chicago",
+      "z_america_mexico_city": "Mexiko-Stadt",
+      "z_america_new_york": "New York",
+      "z_america_toronto": "Toronto",
+      "z_america_bogota": "Bogotá",
+      "z_america_lima": "Lima",
+      "z_america_santiago": "Santiago",
+      "z_america_sao_paulo": "São Paulo",
+      "z_america_argentina_buenos_aires": "Buenos Aires",
+      "z_atlantic_reykjavik": "Reykjavík",
+      "z_europe_london": "London",
+      "z_europe_dublin": "Dublin",
+      "z_europe_lisbon": "Lissabon",
+      "z_europe_madrid": "Madrid",
+      "z_europe_paris": "Paris",
+      "z_europe_amsterdam": "Amsterdam",
+      "z_europe_berlin": "Berlin",
+      "z_europe_zurich": "Zürich",
+      "z_europe_rome": "Rom",
+      "z_europe_vienna": "Wien",
+      "z_europe_stockholm": "Stockholm",
+      "z_europe_warsaw": "Warschau",
+      "z_europe_athens": "Athen",
+      "z_europe_helsinki": "Helsinki",
+      "z_europe_istanbul": "Istanbul",
+      "z_europe_moscow": "Moskau",
+      "z_africa_cairo": "Kairo",
+      "z_africa_lagos": "Lagos",
+      "z_africa_johannesburg": "Johannesburg",
+      "z_africa_nairobi": "Nairobi",
+      "z_asia_dubai": "Dubai",
+      "z_asia_karachi": "Karatschi",
+      "z_asia_kolkata": "Mumbai",
+      "z_asia_bangkok": "Bangkok",
+      "z_asia_singapore": "Singapur",
+      "z_asia_shanghai": "Shanghai",
+      "z_asia_hong_kong": "Hongkong",
+      "z_asia_seoul": "Seoul",
+      "z_asia_tokyo": "Tokio",
+      "z_australia_perth": "Perth",
+      "z_australia_sydney": "Sydney",
+      "z_pacific_auckland": "Auckland",
+      "face_classic": "Klassische Zifferblätter",
+      "face_calm": "Ruhige Zifferblätter",
+      "face_hint": "Nach Größe: ruhige Zifferblätter bei kleinen Uhren, klassische mit Strichen und Ziffern bei großen."
+     }
+    },
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "offset": "{n} h",
+      "same": "Same time",
+      "tomorrow": "Tomorrow",
+      "yesterday": "Yesterday",
+      "waiting": "Waiting for the time",
+      "z_local": "Here",
+      "z_pacific_honolulu": "Honolulu",
+      "z_america_anchorage": "Anchorage",
+      "z_america_los_angeles": "Los Angeles",
+      "z_america_denver": "Denver",
+      "z_america_chicago": "Chicago",
+      "z_america_mexico_city": "Mexico City",
+      "z_america_new_york": "New York",
+      "z_america_toronto": "Toronto",
+      "z_america_bogota": "Bogotá",
+      "z_america_lima": "Lima",
+      "z_america_santiago": "Santiago",
+      "z_america_sao_paulo": "São Paulo",
+      "z_america_argentina_buenos_aires": "Buenos Aires",
+      "z_atlantic_reykjavik": "Reykjavík",
+      "z_europe_london": "London",
+      "z_europe_dublin": "Dublin",
+      "z_europe_lisbon": "Lisbon",
+      "z_europe_madrid": "Madrid",
+      "z_europe_paris": "Paris",
+      "z_europe_amsterdam": "Amsterdam",
+      "z_europe_berlin": "Berlin",
+      "z_europe_zurich": "Zurich",
+      "z_europe_rome": "Rome",
+      "z_europe_vienna": "Vienna",
+      "z_europe_stockholm": "Stockholm",
+      "z_europe_warsaw": "Warsaw",
+      "z_europe_athens": "Athens",
+      "z_europe_helsinki": "Helsinki",
+      "z_europe_istanbul": "Istanbul",
+      "z_europe_moscow": "Moscow",
+      "z_africa_cairo": "Cairo",
+      "z_africa_lagos": "Lagos",
+      "z_africa_johannesburg": "Johannesburg",
+      "z_africa_nairobi": "Nairobi",
+      "z_asia_dubai": "Dubai",
+      "z_asia_karachi": "Karachi",
+      "z_asia_kolkata": "Mumbai",
+      "z_asia_bangkok": "Bangkok",
+      "z_asia_singapore": "Singapore",
+      "z_asia_shanghai": "Shanghai",
+      "z_asia_hong_kong": "Hong Kong",
+      "z_asia_seoul": "Seoul",
+      "z_asia_tokyo": "Tokyo",
+      "z_australia_perth": "Perth",
+      "z_australia_sydney": "Sydney",
+      "z_pacific_auckland": "Auckland"
+     },
+     "app": {
+      "name": "World clock",
+      "summary": "The time in three places of the world, as clock faces or in digits.",
+      "tile_name": "World clock",
+      "tile_example": "New York 15:59 · Here 21:59 · London 20:59",
+      "zone_1": "First place",
+      "zone_2": "Second place",
+      "zone_3": "Third place",
+      "zone_hint": "Here is the screen's own time zone. Leave a place on None to show fewer.",
+      "name_1": "Name of the first place",
+      "name_2": "Name of the second place",
+      "name_3": "Name of the third place",
+      "name_hint": "Leave it empty for the city's name.",
+      "face": "Face",
+      "face_analog": "Clock faces, chosen by size",
+      "face_digital": "Digits",
+      "second_hand": "Second hand",
+      "second_hand_home": "On the home clock",
+      "second_hand_all": "On every clock",
+      "second_hand_none": "None",
+      "second_hand_hint": "The home clock shows the screen's own time, or is the first clock when none does.",
+      "none": "None",
+      "z_local": "Here",
+      "z_pacific_honolulu": "Honolulu",
+      "z_america_anchorage": "Anchorage",
+      "z_america_los_angeles": "Los Angeles",
+      "z_america_denver": "Denver",
+      "z_america_chicago": "Chicago",
+      "z_america_mexico_city": "Mexico City",
+      "z_america_new_york": "New York",
+      "z_america_toronto": "Toronto",
+      "z_america_bogota": "Bogotá",
+      "z_america_lima": "Lima",
+      "z_america_santiago": "Santiago",
+      "z_america_sao_paulo": "São Paulo",
+      "z_america_argentina_buenos_aires": "Buenos Aires",
+      "z_atlantic_reykjavik": "Reykjavík",
+      "z_europe_london": "London",
+      "z_europe_dublin": "Dublin",
+      "z_europe_lisbon": "Lisbon",
+      "z_europe_madrid": "Madrid",
+      "z_europe_paris": "Paris",
+      "z_europe_amsterdam": "Amsterdam",
+      "z_europe_berlin": "Berlin",
+      "z_europe_zurich": "Zurich",
+      "z_europe_rome": "Rome",
+      "z_europe_vienna": "Vienna",
+      "z_europe_stockholm": "Stockholm",
+      "z_europe_warsaw": "Warsaw",
+      "z_europe_athens": "Athens",
+      "z_europe_helsinki": "Helsinki",
+      "z_europe_istanbul": "Istanbul",
+      "z_europe_moscow": "Moscow",
+      "z_africa_cairo": "Cairo",
+      "z_africa_lagos": "Lagos",
+      "z_africa_johannesburg": "Johannesburg",
+      "z_africa_nairobi": "Nairobi",
+      "z_asia_dubai": "Dubai",
+      "z_asia_karachi": "Karachi",
+      "z_asia_kolkata": "Mumbai",
+      "z_asia_bangkok": "Bangkok",
+      "z_asia_singapore": "Singapore",
+      "z_asia_shanghai": "Shanghai",
+      "z_asia_hong_kong": "Hong Kong",
+      "z_asia_seoul": "Seoul",
+      "z_asia_tokyo": "Tokyo",
+      "z_australia_perth": "Perth",
+      "z_australia_sydney": "Sydney",
+      "z_pacific_auckland": "Auckland",
+      "face_classic": "Classic clock faces",
+      "face_calm": "Calm clock faces",
+      "face_hint": "Chosen by size: calm faces on small dials, classic ones with marks and numerals on large ones."
+     }
+    }
+   },
+   "readme": {
+    "de": "# Weltzeituhr\n\nDie Uhrzeit an bis zu drei Orten der Welt auf einem Tile: als Zifferblätter, gezeichnet wie Tesseras eigene\nAnaloguhr (klassisch mit Strichen und Ziffern, oder ruhig), oder in Ziffern. Über jeder Uhr steht der Name des Orts, darunter, wie weit er von der Zeit des Bildschirms\nentfernt ist („-6 h“, „Morgen · +8 h“). Der Bildschirm rechnet die Zeit selbst aus, Sommerzeit eingeschlossen: keine\nEntität, kein Internetdienst.\n\nDie Orte stehen nebeneinander. Jede Uhr bekommt die größte Größe, die ihre Spalte lässt; die Zeile darunter bleibt nur,\nwo sie die Uhr nichts kostet, sonst steht die Abweichung hinter dem Namen des Orts („New York  -6 h“). Eine Spalte, die für ein Zifferblatt zu schmal ist, zeigt die Zeit in Ziffern, im\n24-Stunden- oder AM/PM-Format des Bildschirms.\n\n## Einrichten\n\n1. Öffne in Tessera **Plugins**, wähle **Weltzeituhr** und hake deine Bildschirme an. Jeder Bildschirm baut einmal neu.\n2. Platziere im Layout das Tile **Weltzeituhr** aus der Gruppe Plugins der Bibliothek. Mit zwei oder mehr Spalten\n   Breite hat jeder Ort Platz für sein Zifferblatt.\n3. Wähle im Inspector die drei Orte. **Hier** ist die Zeitzone des Bildschirms, **Keiner** lässt einen Ort weg. Gib\n   einem Ort bei Bedarf einen eigenen Namen, etwa deine Stadt für **Hier**.\n4. Wähle die Darstellung: **Zifferblätter, nach Größe** (ruhige bei kleinen Uhren, klassische bei großen), **Klassisch**,\n   **Ruhig** oder **Ziffern**, und wo der Sekundenzeiger sitzt: an der Heimatuhr, an allen Uhren oder nirgends.\n\n## Gut zu wissen\n\n- 46 Orte zur Auswahl, die großen Städte aller Kontinente. Jeder Ort folgt seinen eigenen Sommerzeit-Regeln, nördlich\n  und südlich des Äquators.\n- Standardmäßig ein Sekundenzeiger, an der Heimatuhr: der Uhr mit der Zeit des Bildschirms, oder der ersten Uhr, wenn\n  keine sie zeigt. Die Sekunden sind in jeder Zone gleich. Er bewegt sich einmal pro Sekunde, solange das Tile auf dem\n  Glas ist.\n- Der Bildschirm braucht seine Uhrzeit von Home Assistant; bis dahin sagt das Tile, dass es darauf wartet.\n\n## So funktioniert es\n\n- `tessera-plugin.yaml`: das Tile und seine Optionen: drei Orte, ihre Namen, die Darstellung und der Sekundenzeiger.\n- `components/world_clock/`: die ESPHome-Komponente, die die Uhren zeichnet und die Zeit jedes Orts ausrechnet.\n- `components/world_clock/zones.h`: Abweichung und Sommerzeit-Regeln jedes Orts, geschrieben von\n  `tools/make_zones.py` aus den tzdata-Regeln. Neu ausführen, wenn ein Land seine Regeln ändert.\n- `translations/`: die Worte auf dem Bildschirm (`screen`) und in der App (`app`), darunter die Namen der Städte.\n- `CHANGELOG.md`: was jede Version geändert hat; die App zeigt es bei einem Update.\n",
+    "en": "# World clock\n\nThe time in up to three places of the world on one tile: as clock faces drawn like Tessera's own analog clock (classic\nwith marks and numerals, or calm), or in digits. Each place has its name above its clock and how far it is from the screen's time below it (\"-6 h\",\n\"Tomorrow · +8 h\"). The screen works the time out itself, daylight saving included: no entity, no internet service.\n\nThe places stand side by side. Each clock takes the largest size its column leaves; the line under it stays only where\nit costs the clock nothing, else the offset follows the place's name (\"New York  -6 h\"). A column too narrow for a dial shows the time in digits, in the screen's own 24-hour or\nAM/PM format.\n\n## Set up\n\n1. In Tessera, open **Plugins**, choose **World clock** and tick your screens. Each screen builds once.\n2. In Layout, place the **World clock** tile from the library's Plugins group. Two or more columns wide gives each\n   place room for its dial.\n3. In the inspector, choose the three places. **Here** is the screen's own time zone, **None** leaves a place out.\n   Give a place a name of your own if you like, such as the city you live in for **Here**.\n4. Choose the face: **Clock faces, chosen by size** (calm faces on small dials, classic ones on large), **Classic**,\n   **Calm** or **Digits**, and where the second hand goes: on the home clock, on every clock or nowhere.\n\n## Good to know\n\n- 46 places to choose from, every continent's large cities. A place follows its own daylight saving rules, north and\n  south of the equator.\n- By default one second hand, on the home clock: the clock of the screen's own time, or the first clock when none\n  shows it. The seconds are the same in every zone. It moves once a second while the tile is on the glass.\n- The screen needs its time from Home Assistant; until then the tile says it is waiting for it.\n\n## How it works\n\n- `tessera-plugin.yaml`: the tile and its options: three places, their names, the face and the second hand.\n- `components/world_clock/`: the ESPHome component that draws the clocks and works out each place's time.\n- `components/world_clock/zones.h`: each place's offset and daylight saving rules, written by `tools/make_zones.py`\n  from the tzdata rules. Run it again when a country changes its rules.\n- `translations/`: the words on the screen (`screen`) and in the app (`app`), the cities' names among them.\n- `CHANGELOG.md`: what each version changed; the app shows it with an update.\n"
+   },
+   "changelog": {
+    "de": "# Änderungen\n\n## 0.3.2 - 2026-10-11\n- Wo „Morgen · +7 h“ nicht hinter den Namen eines Orts oder unter seine Uhr passt, steht „+7 h“, statt mit Punkten abgeschnitten zu werden.\n\n## 0.3.1 - 2026-10-11\n- Ruhige Zifferblätter auch auf niedrigen Tiles, ab 6 mm, wie Tesseras eigene ruhige Uhr auf einer Karte mit einer Zeile: Ein 3x1-Tile auf einem 4-Zoll-Bildschirm zeigt wieder Zifferblätter. Ein Tile mit Klassisch oder Ruhig behält dieses Zifferblatt, wo immer eines Platz hat.\n\n## 0.3.0 - 2026-10-11\n- Standardmäßig ein Sekundenzeiger, an der Heimatuhr (der Uhr mit der Zeit des Bildschirms, oder der ersten, wenn keine sie zeigt): Die Sekunden sind in jeder Zone gleich, und drei Zeiger im Gleichschritt wirkten hektisch. **Sekundenzeiger** wählt die Heimatuhr, alle Uhren oder keinen; ein Tile mit ausgeschaltetem Sekundenzeiger behält keinen.\n\n## 0.2.1 - 2026-10-11\n- Baut mit Tessera 0.4.87 und neuer: Das Plugin nennt jetzt die Plugin-API 0.4, die diese Bildschirme verlangen. Sonst ändert sich nichts.\n\n## 0.2.0 - 2026-10-10\n- Ruhige Zifferblätter wie Tesseras eigene: eine gefüllte Scheibe mit vier Strichen und acht Punkten, bei jeder Größe lesbar.\n- Das Zifferblatt richtet sich standardmäßig nach der Größe (ruhig bei kleinen Uhren, klassisch bei großen), oder immer Klassisch, Ruhig oder Ziffern.\n\n## 0.1.2 - 2026-10-09\n- Zifferblätter auch auf Tiles, die eine Zeile hoch sind: die Abweichung steht dann hinter dem Namen des Orts (New York  -6 h).\n\n## 0.1.1 - 2026-10-09\n- Die Abweichung schreibt -6 h mit einem einfachen Minus: die Schriften des Bildschirms haben kein anderes.\n\n## 0.1.0 - 2026-10-09\n- Erste Version: die Uhrzeit an bis zu drei Orten der Welt, als Zifferblätter oder in Ziffern, mit der Abweichung\n  jedes Orts von der Zeit des Bildschirms. 46 Städte, Sommerzeit eingeschlossen.\n- Braucht ein Tessera mit Plugin-API 0.7: erst die App aktualisieren.\n",
+    "en": "# Changelog\n\n## 0.3.2 - 2026-10-11\n- Where \"Tomorrow · +7 h\" does not fit after a place's name or under its clock, it says \"+7 h\" instead of being cut with dots.\n\n## 0.3.1 - 2026-10-11\n- Calm clock faces on low tiles too, from 6 mm, as Tessera's own calm clock on a card one row high: a 3x1 tile on a 4-inch screen shows dials again. A tile set to Classic or Calm keeps that face wherever a dial fits.\n\n## 0.3.0 - 2026-10-11\n- One second hand by default, on the home clock (the clock of the screen's own time, or the first one when none shows it): the seconds are the same in every zone, and three hands in step looked hectic. **Second hand** chooses the home clock, every clock or none; a tile that had the second hand switched off keeps none.\n\n## 0.2.1 - 2026-10-11\n- Builds with Tessera 0.4.87 and newer: the plugin now names plugin API 0.4, which those screens ask for. Nothing else changes.\n\n## 0.2.0 - 2026-10-10\n- Calm clock faces, as Tessera's own: a filled disc with four strokes and eight dots that reads at any size.\n- Face chosen by size by default (calm on small dials, classic on large ones), or always Classic, Calm or Digits.\n\n## 0.1.2 - 2026-10-09\n- Clock faces on tiles one row high too: the offset then follows the place's name (New York  -6 h).\n\n## 0.1.1 - 2026-10-09\n- The offset says -6 h with a plain minus: the screen's fonts have no other.\n\n## 0.1.0 - 2026-10-09\n- First release: the time in up to three places of the world, as clock faces or in digits, with each place's offset\n  from the screen's time. 46 cities, daylight saving included.\n- Needs a Tessera with plugin API 0.7: update the app first.\n"
    }
   }
  ]
