@@ -1,6 +1,6 @@
 {
  "format": 1,
- "generated": "2026-10-12T09:41:48Z",
+ "generated": "2026-10-12T10:09:09Z",
  "plugin_api": "0.9",
  "blocked": [],
  "featured": [
@@ -74,8 +74,8 @@
    "status": "ok",
    "release": {
     "version": "0.2.0",
-    "sha": "95e0d4d5cffe8e0eefaa8ddf2c1c300f8f351c9d",
-    "date": "2026-10-11"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "bt_proxy",
@@ -167,7 +167,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.2.0 - 2026-10-11\n- The Wi-Fi chip's firmware update comes with the plugin (**Wi-Fi chip update**, ticked by default): Home Assistant shows it on the screen's device, and you press Install. Bluetooth needs a recent one; many screens come with one too old.\n- **Bluetooth status** says what the proxy does, in Home Assistant and on the screen's settings page: listening, off, starting, or that the Wi-Fi chip needs its update.\n- Had the update in the Override YAML? Remove that block first; the entity keeps its name.\n- Updating from 0.1.0? An update keeps the parts you had, so tick **Wi-Fi chip update** in the plugin's details on the screen's Plugins tab and choose **Save and build**.\n\n## 0.1.0 - 2026-10-11\n- First version: ESPHome's Bluetooth proxy on every screen with an ESP32-P4, with a setting to turn it off without a build.\n- It shares the radio with Wi-Fi: pictures and camera streams can be slower while it runs. Read \"Before you add it\" in the README.\n- Had a Bluetooth proxy in the Override YAML? Remove its `esp32_ble_tracker:` and `bluetooth_proxy:` blocks first.\n",
     "nl": "# Wijzigingen\n\n## 0.2.0 - 2026-10-11\n- De firmware-update van de wifichip komt mee met de plugin (**Update van de wifichip**, standaard aan): Home Assistant toont hem bij het apparaat van het scherm, en jij drukt op Installeren. Bluetooth vraagt een recente; veel schermen komen met een te oude.\n- **Bluetooth status** zegt wat de proxy doet, in Home Assistant en op de instellingenpagina van het scherm: luistert, uit, start op, of dat de wifichip zijn update nodig heeft.\n- De update in de Override YAML gehad? Haal dat blok eerst weg; de entiteit houdt zijn naam.\n- Bijgewerkt vanaf 0.1.0? Een update houdt de onderdelen die je had, dus vink **Update van de wifichip** aan in de details van de plugin op het tabblad Plugins van het scherm en kies **Opslaan en bouwen**.\n\n## 0.1.0 - 2026-10-11\n- Eerste versie: de Bluetooth-proxy van ESPHome op elk scherm met een ESP32-P4, met een instelling om hem zonder opnieuw bouwen uit te zetten.\n- Hij deelt de radio met wifi: plaatjes en camerabeelden kunnen trager zijn zolang hij draait. Lees \"Voordat je hem toevoegt\" in de README.\n- Een Bluetooth-proxy in de Override YAML gehad? Haal eerst de blokken `esp32_ble_tracker:` en `bluetooth_proxy:` weg.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "guition_relays",
@@ -178,8 +179,8 @@
    "status": "ok",
    "release": {
     "version": "0.1.0",
-    "sha": "789c5c0d1ea06664d4eec443d68137ad092c2276",
-    "date": "2026-10-11"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "guition_relays",
@@ -253,7 +254,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.1.0 - 2026-10-11\n- First version: the relays of the Guition 4-inch wallbox base (one, or three with **Three relays**) as switches in Home Assistant and on the screen's settings page.\n- Moving from the Override YAML of the Guition docs? Remove its `switch:` block first; the entities stay the same.\n",
     "nl": "# Wijzigingen\n\n## 0.1.0 - 2026-10-11\n- Eerste versie: de relais van de Guition 4-inch inbouwdoos (een, of drie met **Drie relais**) als schakelaars in Home Assistant en op de instellingenpagina van het scherm.\n- Kom je van de Override YAML uit de Guition-docs? Haal eerst het `switch:`-blok weg; de entiteiten blijven hetzelfde.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "ov_departures",
@@ -264,8 +266,8 @@
    "status": "ok",
    "release": {
     "version": "1.2.4",
-    "sha": "fd52a93b1b8f1e164b9a475f61b19d923e57152d",
-    "date": "2026-10-11"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "ov_departures",
@@ -463,7 +465,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 1.2.4 - 2026-10-11\n- On a narrow tile (a fine grid) the line with the next times stays on the tile, cut with dots, instead of running under it.\n\n## 1.2.3 - 2026-10-09\n- Listed under the topic On the move on the Plugins page.\n- Needs a Tessera with plugin API 0.7: update the app and the screen first.\n\n## 1.2.2 - 2026-10-08\n- Shows as an Example in the app.\n\n## 1.2.1 - 2026-10-08\n- The README says when the countdown says \"now\".\n\n## 1.2.0 - 2026-10-08\n- The next departure you can make counts down to the second (12:05, then 0:42); the ones after it stay in minutes.\n\n## 1.1.0 - 2026-10-07\n- A departure that runs a minute or more late says by how much (\"+2\").\n- New in the inspector: **Show delays**, on by default.\n\n## 1.0.0 - 2026-10-07\n- First version: the next departures from your stop, live from OVapi, with the walk to the stop taken off.\n- On a single cell the time is as large as the cell allows; on a wider tile it is a list.\n- The editor shows a preview of the tile.\n",
     "nl": "# Wijzigingen\n\n## 1.2.4 - 2026-10-11\n- Op een smalle tegel (een fijn raster) blijft de regel met de volgende tijden op de tegel, afgekapt met puntjes, in plaats van eronder te lopen.\n\n## 1.2.3 - 2026-10-09\n- Staat onder het onderwerp Onderweg op de pagina Plugins.\n- Vraagt een Tessera met plugin-API 0.7: werk eerst de app en het scherm bij.\n\n## 1.2.2 - 2026-10-08\n- Staat in de app als Voorbeeld.\n\n## 1.2.1 - 2026-10-08\n- De README zegt wanneer het aftellen \"nu\" zegt.\n\n## 1.2.0 - 2026-10-08\n- Het eerstvolgende vertrek dat je haalt telt af tot op de seconde (12:05, dan 0:42); de vertrekken erna blijven in\n  minuten.\n\n## 1.1.0 - 2026-10-07\n- Een vertrek dat een minuut of meer te laat is, zegt hoeveel (\"+2\").\n- Nieuw in de inspector: **Vertraging tonen**, standaard aan.\n\n## 1.0.0 - 2026-10-07\n- Eerste versie: de volgende vertrekken vanaf je halte, live van OVapi, met de looptijd naar de halte er al af.\n- Op één cel is de tijd zo groot als de cel toelaat; op een bredere tegel is het een lijst.\n- De editor toont een voorbeeld van de tegel.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "screen_camera",
@@ -474,8 +477,8 @@
    "status": "ok",
    "release": {
     "version": "0.2.0",
-    "sha": "5d14965e1f7e33947d6680c30e68b96a4815bb3b",
-    "date": "2026-10-10"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "screen_camera",
@@ -550,7 +553,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.2.0 - 2026-10-10\n- Also on a board that clocks its camera from a pin, such as the M5Stack Tab5.\n\n## 0.1.0 - 2026-10-10\n- First version: the screen's own camera as a camera in Home Assistant, and a camera in the top bar while it is watched.\n",
     "nl": "# Wijzigingen\n\n## 0.2.0 - 2026-10-10\n- Ook op een bord dat zijn camera vanaf een pin van klok voorziet, zoals de M5Stack Tab5.\n\n## 0.1.0 - 2026-10-10\n- Eerste versie: de eigen camera van het scherm als camera in Home Assistant, en een camera in de bovenbalk zolang er iemand kijkt.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "tap_sound",
@@ -561,8 +565,8 @@
    "status": "ok",
    "release": {
     "version": "0.1.0",
-    "sha": "a553990f27b6001929060efb8938ded34edfc30d",
-    "date": "2026-10-10"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "tap_sound",
@@ -631,7 +635,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.1.0 - 2026-10-10\n- First version: a short, soft tick on the screen's speaker for every tap, with a setting to turn it off.\n",
     "nl": "# Wijzigingen\n\n## 0.1.0 - 2026-10-10\n- Eerste versie: een kort, zacht tikje op de luidspreker van het scherm bij elke tik, met een instelling om het uit te zetten.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "voice_assist",
@@ -642,8 +647,8 @@
    "status": "ok",
    "release": {
     "version": "0.2.3",
-    "sha": "505dc32739bc7e83bf9107cd8ee8f05d1fcdba9a",
-    "date": "2026-10-10"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "voice_assist",
@@ -792,7 +797,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.2.3 - 2026-10-10\n- A new wake sound.\n\n## 0.2.2 - 2026-10-10\n- New wake and thinking sounds. The thinking sound plays again as soon as it ends, so its own length sets the rhythm.\n\n## 0.2.1 - 2026-10-10\n- Its sounds play through Tessera's own sound player; on a screen whose microphone and speaker share one bus, a sound that cannot play while it listens is left out.\n\n## 0.2.0 - 2026-10-10\n- A short sound when the screen starts to listen, and a soft plop again and again while Assist thinks, each with a setting to turn it off (Wake sound, Thinking sound).\n- In the top bar and on the tile, a microphone that lights up while it listens, dots in amber while it thinks and a speaker while it answers; the top bar item can show its icon alone.\n- Needs the screen's speaker as well.\n\n## 0.1.0 - 2026-10-10\n- First version: Home Assistant's Assist on the screen, with a wake phrase recognised on the screen, a tile, a top bar item and two settings.\n",
     "nl": "# Wijzigingen\n\n## 0.2.3 - 2026-10-10\n- Een nieuw geluid voor wakker worden.\n\n## 0.2.2 - 2026-10-10\n- Nieuwe geluiden voor wakker worden en nadenken. Het denkgeluid speelt opnieuw zodra het afgelopen is, dus de eigen lengte bepaalt het ritme.\n\n## 0.2.1 - 2026-10-10\n- De geluiden spelen via de eigen geluidsspeler van Tessera; op een scherm waarvan de microfoon en de luidspreker een bus delen, valt een geluid weg dat niet kan spelen zolang hij luistert.\n\n## 0.2.0 - 2026-10-10\n- Een kort geluid als het scherm begint te luisteren, en een zacht plopje steeds opnieuw zolang Assist nadenkt, elk met een instelling om het uit te zetten (Wekgeluid, Denkgeluid).\n- In de bovenbalk en op de tegel een microfoon die oplicht zolang hij luistert, stipjes in amber zolang hij nadenkt en een luidspreker zolang hij antwoordt; het item in de bovenbalk kan alleen zijn icoon tonen.\n- Heeft ook de luidspreker van het scherm nodig.\n\n## 0.1.0 - 2026-10-10\n- Eerste versie: Assist van Home Assistant op het scherm, met een wekzin die het scherm zelf herkent, een tegel, een item voor de bovenbalk en twee instellingen.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "waste_collection",
@@ -803,8 +809,8 @@
    "status": "ok",
    "release": {
     "version": "1.0.7",
-    "sha": "77f1f9974fca15b881e7bf2c4f8ae081abf37bce",
-    "date": "2026-10-11"
+    "sha": "d6a93b79c993c7eb908f1d48da41d17147eb31b7",
+    "date": "2026-10-12"
    },
    "manifest": {
     "id": "waste_collection",
@@ -984,7 +990,8 @@
    "changelog": {
     "en": "# Changelog\n\n## 1.0.7 - 2026-10-11\n- In Dark mode the tile's \"Tomorrow\" or \"In 3 days\" is readable again, also after switching between light and dark. On most screens it stayed dark on a dark tile.\n\n## 1.0.6 - 2026-10-09\n- Listed under the topics Home and Calendar & tasks on the Plugins page.\n- Needs a Tessera with plugin API 0.7: update the app and the screen first.\n\n## 1.0.5 - 2026-10-09\n- Its two settings are in the plugin's details on the screen's Plugins tab; the README says so.\n\n## 1.0.4 - 2026-10-08\n- Shows as an Example in the app.\n\n## 1.0.3 - 2026-10-08\n- The README says from when the top bar item shows.\n\n## 1.0.2 - 2026-10-08\n- The tile offers calendars only when you choose its entity.\n\n## 1.0.1 - 2026-10-07\n- Its two settings show in the editor under Screen settings.\n\n## 1.0.0 - 2026-10-07\n- First version: the next collection from a calendar in Home Assistant, on a tile, in the top bar the day before, and\n  on a card with the coming four weeks.\n- A sensor tile of your waste integration can open the card with a tap.\n- Two settings on the screen: whether the top bar says it, and how many days ahead.\n",
     "nl": "# Wijzigingen\n\n## 1.0.7 - 2026-10-11\n- In de donkere modus is \"Morgen\" of \"Over 3 dagen\" op de tegel weer leesbaar, ook na wisselen tussen licht en donker. Op de meeste schermen bleef het donker op een donkere tegel.\n\n## 1.0.6 - 2026-10-09\n- Staat onder de onderwerpen Thuis en Agenda & taken op de pagina Plugins.\n- Vraagt een Tessera met plugin-API 0.7: werk eerst de app en het scherm bij.\n\n## 1.0.5 - 2026-10-09\n- De twee instellingen staan in de details van de plugin op het tabblad Plugins van het scherm; de README zegt het.\n\n## 1.0.4 - 2026-10-08\n- Staat in de app als Voorbeeld.\n\n## 1.0.3 - 2026-10-08\n- De README zegt vanaf wanneer het item in de bovenbalk verschijnt.\n\n## 1.0.2 - 2026-10-08\n- De tegel biedt alleen agenda's aan als je zijn entiteit kiest.\n\n## 1.0.1 - 2026-10-07\n- De twee instellingen staan in de editor onder Scherminstellingen.\n\n## 1.0.0 - 2026-10-07\n- Eerste versie: de volgende ophaaldag uit een agenda in Home Assistant, op een tegel, de dag ervoor in de bovenbalk,\n  en op een kaart met de komende vier weken.\n- Een sensortegel van je afvalintegratie kan de kaart met een tik openen.\n- Twee instellingen op het scherm: of de bovenbalk het zegt, en hoeveel dagen vooruit.\n"
-   }
+   },
+   "image": "store.png"
   },
   {
    "id": "custom_card",
