@@ -134,6 +134,9 @@ python3 tools/preview.py plugins/<id> --strict    # or from the plugin's folder:
   (`cyd`) and the largest, light and dark: a finding only catches what can be measured, a picture shows what looks wrong.
 - **Give it real data.** Without a `preview.yaml` the tiles wait for data and the pictures show nothing of what the
   plugin does. Copy a real answer of the web service into `answers`, real attributes into `states`.
+- **Then the picture.** Once the bench ends without a warning, `python3 tools/store_image.py plugins/<id>` writes the
+  plugin's `store.png` for the Plugins page from the same firmware (docs/PUBLISHING.md, "The picture on the Plugins
+  page"). Look at it before you commit it.
 - **Say what was not benched.** A plugin with audio or a camera does not build there (exit 1 with a sentence); say so,
   and that it needs a test on a screen.
 

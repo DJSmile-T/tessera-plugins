@@ -99,6 +99,12 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 - **Home Assistant is the backend.** No plugin code runs in the Tessera app. What needs a server goes into Home
   Assistant: an existing integration, or one of your own.
 - **Plain English in READMEs**, with a `## Set up` section of numbered steps a person can follow in the Tessera app.
+- **A picture for the Plugins page.** Every plugin has a `store.png` beside its manifest, made with
+  `tools/store_image.py` once the bench passes, and made again when what the plugin shows changes. It is a thumbnail:
+  the name and the `summary` of `translations/en.json` (part `app`) large on the left, the plugin on three screens on
+  the right. So keep the summary to one sentence of what a person gets (about 110 characters at most), and put the
+  example that shows the plugin best first in `preview.yaml`: the picture lays its pages out with the first examples
+  first. Look at the picture before you commit it (docs/PUBLISHING.md, "The picture on the Plugins page").
 - **A changelog line for every version.** Raise `version` and add its `## <version>` heading at the top of
   `CHANGELOG.md`, with a few bullet lines of what a person notices and what they must do. The app shows them when it
   offers the update (docs/MAKING_A_PLUGIN.md, "The changelog").
@@ -110,6 +116,7 @@ pip install pyyaml                      # once: the check reads YAML (Homebrew's
                                         # tools/.cache/preview-venv/bin/python tools/check.py, which has it)
 python3 tools/check.py plugins/<id>     # must print "<id>: ok"
 python3 tools/preview.py plugins/<id> --strict   # the bench: exit 0, no warning in its findings (docs/PREVIEW.md)
+python3 tools/store_image.py plugins/<id>        # its picture on the Plugins page: plugins/<id>/store.png
 ```
 
 **The bench is how you see what you draw.** Run it after every change to the C++, the manifest or `preview.yaml`, not
@@ -121,6 +128,17 @@ light and dark (`.preview/<screen>/tile-...png`, `card-...png`): a finding catch
 looks wrong. Give the plugin a `preview.yaml` with data it really gets, so the pictures show it working, not waiting. A
 plugin that needs or brings audio or a camera does not build on the bench: say so. docs/PREVIEW.md, "For an
 assistant", has the exit codes, the files and the fields of `summary.json`.
+
+**The picture comes last.** When the bench ends without a warning, run `tools/store_image.py`: it writes `store.png`
+from the 10-inch, the 4-inch square and the CYD. `--from plugins/<id>/.preview` takes the pictures of the bench run you
+just made (its four default screens include those three), so it takes seconds; without it, it benches them again.
+Then open `store.png` and look: the name on one line or two, the summary whole (it is cut with an ellipsis only when
+three lines of the smallest size do not hold it), and pages that show the plugin with data, not waiting. What it does
+with each kind of plugin: tiles fill the three screens; a card shows on the square screen; a plugin with only settings
+shows its settings page with its icon; items in the top bar get a loupe over the bar; a plugin of hardware the bench
+cannot build (audio, a camera, Bluetooth) gets its icon, large, which is right for it. `check.py` reminds you while
+`store.png` is missing, and checks it once it is there (a PNG of 16:9, at most 1 MB). Commit it with the plugin; a
+plugin in a repository of its own publishes it with its next release.
 
 The check also fails while the folder still has the template's placeholders: `maintainer: your-github-name`, the
 LICENSE's `<year> <your name>`, and the README's line that it is the template.

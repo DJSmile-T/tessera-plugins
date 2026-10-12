@@ -109,6 +109,8 @@ There are two ways for people to find it:
 - `permissions` name everything its code does. The app enforces `network` and `ha_commands`; nothing checks
   `read_entities` or `home_assistant_actions` against the code.
 - `memory` and `flash_kb` are honest.
+- It has a `store.png` that shows what it does ("The picture on the Plugins page", below). Without one its card shows
+  only its icon.
 - The code rules of `tools/check.py` look for a few patterns that are mistakes (a colour as a number, a timer of its
   own, a connection from the screen). They catch slips, not intent.
 

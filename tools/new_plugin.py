@@ -33,6 +33,9 @@ git clone https://github.com/MaxGramser/tessera-plugins ../tessera-plugins
   `python3 ../tessera-plugins/tools/preview.py . --strict` (`--setup` once first; `../tessera-plugins/docs/PREVIEW.md`).
   The first build of each screen takes minutes. Read the findings it prints, `.preview/summary.json` and the pictures in
   `.preview/`, fix what it says, and run it again until it ends without a warning.
+- Then make its picture on the Plugins page: `python3 ../tessera-plugins/tools/store_image.py .` writes `store.png`
+  (`../tessera-plugins/docs/PUBLISHING.md`, "The picture on the Plugins page"). Look at it, commit it, and it reaches
+  the app with your next release.
 """
 
 

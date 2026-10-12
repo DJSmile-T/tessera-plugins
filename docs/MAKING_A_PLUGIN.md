@@ -175,7 +175,20 @@ the settings page on one page, with what it found wrong (a word too faint in dar
 tile). `--screen 1024x600@7` adds a glass of your own, `--grid max` the finest grid each screen takes, `--watch` builds
 again on every save. [PREVIEW.md](PREVIEW.md) has it all.
 
-### 8. Put it on your screen
+### 8. Make its picture
+
+```sh
+python3 tools/store_image.py plugins/my_idea
+```
+
+The Plugins page shows a picture of every plugin that has one: `store.png` beside the manifest, like a video's
+thumbnail. `store_image.py` makes it from the bench: the plugin's name and summary (`translations/en.json`, part `app`)
+large on the left, and on the right a page of the plugin on a 10-inch screen, a 4-inch square one and the CYD, drawn by
+the real firmware with the data of your `preview.yaml`. Put the example that shows the plugin best first in
+`preview.yaml`, keep the summary to one sentence, look at the picture, and commit it with the plugin. A picture of your
+own is welcome too ([PUBLISHING.md](PUBLISHING.md), "The picture on the Plugins page").
+
+### 9. Put it on your screen
 
 Two ways, both a test only you see, with the label **Test**:
 
@@ -190,12 +203,12 @@ Add it to a screen; the app writes the screen's plugins file and builds the scre
 settings, inputs and parts are in its details on the screen's Plugins tab. [TESTING.md](TESTING.md) has both ways step
 by step, and a build on your own computer.
 
-### 9. Write the changelog
+### 10. Write the changelog
 
 Every version that reaches screens gets a few lines in `CHANGELOG.md` (below, "The changelog"). Write them with the
 version, before you publish it.
 
-### 10. Publish it
+### 11. Publish it
 
 See [PUBLISHING.md](PUBLISHING.md): a plugin in this repository through a pull request, or in a repository of your own,
 added with a link or listed in the index.

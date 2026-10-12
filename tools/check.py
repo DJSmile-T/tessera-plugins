@@ -688,7 +688,10 @@ def main():
         raw, *_ = check_folder(folder)
         manifest = pm().check(raw)
         checked[manifest['id']] = manifest
-        print(f'{folder.name}: ok')
+        template = Path(folder).resolve() == (ROOT / 'template').resolve()
+        hint = '' if template or (Path(folder) / STORE_IMAGE).is_file() else \
+            f' (no {STORE_IMAGE} yet: python3 tools/store_image.py {folder} makes its picture on the Plugins page)'
+        print(f'{folder.name}: ok{hint}')
     # What the plugins need, against the index as it would be: the community plugins of the committed index.json, this
     # repository's own plugins, and the folders checked (the template needs nothing and brings nothing).
     known = {**index_manifests(), **own_manifests()}
