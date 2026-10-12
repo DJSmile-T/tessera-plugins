@@ -42,7 +42,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / 'index.json'
 sys.path.insert(0, str(ROOT / 'tools'))
-from check import (check_entry, check_folder, check_needs, index_manifests, needs_cycle, needs_problem,  # noqa: E402
+from check import (check_entry, check_folder, check_needs, check_store_image, index_manifests, needs_cycle, needs_problem,  # noqa: E402
                    normal_path, normal_repo, own_manifests, plugin_api, pm, read_featured, read_transfers)
 
 REPO = normal_repo('https://github.com/MaxGramser/tessera-plugins')
@@ -79,6 +79,12 @@ def repo_id(repo):
     return REPO_IDS[repo]
 
 
+def picture(folder):
+    """{'image': 'store.png'} when the plugin has its picture for the Plugins page (checked by check_folder), else {}.
+    The app fetches it at the release's commit, beside the manifest; an app from before pictures ignores the field."""
+    return {'image': 'store.png'} if check_store_image(Path(folder), Path(folder).name) else {}
+
+
 def own_plugin(folder, own_id):
     manifest, translations, readme, changelog = check_folder(folder)
     sha = git('log', '-1', '--format=%H', '--', str(folder.relative_to(ROOT)))
@@ -89,6 +95,7 @@ def own_plugin(folder, own_id):
         'id': manifest['id'], 'repo': REPO, 'repo_id': own_id, 'path': normal_path(folder.relative_to(ROOT)),
         'label': 'tessera', 'status': 'ok', 'release': {'version': manifest['version'], 'sha': sha, 'date': date},
         'manifest': manifest, 'translations': translations, 'readme': readme, 'changelog': changelog,
+        **picture(folder),
     }
 
 
@@ -109,6 +116,7 @@ def community_plugin(path):
                                   text=True).stdout.strip()
             folder = Path(tmp) / entry.get('path', '.')
             manifest, translations, readme, changelog = check_folder(folder)
+            image = picture(folder)
     except (SystemExit, subprocess.SubprocessError, OSError, ValueError, KeyError) as error:
         print(f'{path.stem}: left out ({error})', file=sys.stderr)
         return None
@@ -118,7 +126,7 @@ def community_plugin(path):
     return {
         'id': manifest['id'], 'repo': repo, 'repo_id': number, 'path': normal_path(entry.get('path', '.')),
         'label': 'community', 'status': 'ok', 'release': {'version': manifest['version'], 'sha': sha, 'date': date, 'tag': tag},
-        'manifest': manifest, 'translations': translations, 'readme': readme, 'changelog': changelog,
+        'manifest': manifest, 'translations': translations, 'readme': readme, 'changelog': changelog, **image,
     }
 
 

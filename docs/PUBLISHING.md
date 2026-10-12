@@ -162,6 +162,29 @@ and "Only what fits my screens" folds away what fits none of them, with the reas
 `featured.yaml` lists the plugins Tessera recommends, chosen by hand. The index carries them as `featured` (an id that
 is not in the index is left out), and on the Plugins page a recommendation breaks a tie in the number of likes.
 
+## The picture on the Plugins page
+
+A plugin can have a picture: `store.png` beside its `tessera-plugin.yaml`. The Plugins page shows it across the top of
+the plugin's card and large above its details; without one the card shows the plugin's icon, as before.
+
+- A PNG of 16:9, from 640 x 360 to 2560 x 1440, at most 1 MB. 1280 x 720 is best. `tools/check.py` checks it.
+- It goes with the release like every other file: the index and a link take it at the release's commit, so a new
+  picture reaches the app with the next release.
+- `tools/store_image.py` makes one from the bench, like a video's thumbnail: the plugin's name and summary
+  (`translations/en.json`, `app`) large at the top left, and a page of the plugin on a 10-inch screen, a 4-inch square one
+  and the CYD, drawn by the real firmware:
+
+  ```sh
+  python3 tools/store_image.py plugins/my_idea          # renders on the bench, writes plugins/my_idea/store.png
+  python3 tools/store_image.py ../my-plugin             # a plugin in a repository of its own
+  ```
+
+  It lays each page out from the bench's pictures of the tiles, with the first examples of `preview.yaml` first, so put
+  the example that shows the plugin best at the top. A plugin with a card shows the card a tap opens on the square
+  screen. A plugin without tiles (a function, hardware) has nothing for it to show: make a picture of your own.
+- A picture of your own is just as welcome. Show what the plugin does on a screen, keep words few and large, and leave
+  out what is not true of the plugin: the name of a product it does not support, a feature it does not have.
+
 ## Likes
 
 A like is a heart a person gives a plugin in the Tessera app: a thank-you to its maker and a hint for others. Only a

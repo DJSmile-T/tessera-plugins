@@ -226,7 +226,10 @@ class BenchBuild(host.Build):
             if 'look' in self.glass:
                 host.walk(tree, tree / 'packages' / 'looks' / f'{self.glass["look"]}.yaml', mirror, host.Chain())
             (self.work / 'host' / item.key / 'host-hw.yaml').write_text(host.host_hw(board, chain))
-        return text + BENCH_ACTIONS.format(plugin=self.plugin.name)
+        # The plugin's id from its manifest, not its folder's name: a plugin in a repository of its own lives in a
+        # folder named after the repository (tessera-something), and its cards are registered under its id.
+        plugin_id = yaml.safe_load((self.plugin / 'tessera-plugin.yaml').read_text())['id']
+        return text + BENCH_ACTIONS.format(plugin=plugin_id)
 
 
 def answer_of(entry, ask, result, zone=None):
@@ -702,6 +705,8 @@ class Bench(run.Run):
         if not compiled:
             if self.entry.manifest['tiles']:
                 self.find('warning', 'tiles', f'no tile of the plugin fits a {grid.columns} x {grid.rows} grid')
+            elif self.entry.manifest['bar_items'] and own:
+                await self.bar_only(record, bars, out, view)
             return
         values = await messages(app, compiled, origins, self.spec, self.now)
         for i, message in enumerate(values):
@@ -768,6 +773,28 @@ class Bench(run.Run):
             await self.icons_only(record, values, top, out, view)
         await self.taps(compiled, origins, grid, boxes, out, view)
         await self.cards(out, view)
+
+    async def bar_only(self, record, bars, out, view):
+        """A plugin that adds to the top bar and has no tile: an empty first page with its items in the bar, light and
+        dark (the pages of view['pages']; tools/store_image.py shows them)."""
+        items = [{'k': 'plugin', 't': f'plugin:{self.entry.id}.{item["id"]}'} for item in self.entry.manifest['bar_items']]
+        bars = bars or [items + [{'k': 'clock'}]]
+        await self.sender.synchronize(self.inbox.object_id, record, REGION, [], bars)
+        await asyncio.sleep(5.5)   # the bar reads its plugin items every five seconds
+        for theme in ('light', 'dark'):
+            await self.dark(theme == 'dark')
+            await self.call('render_page', page=0)
+            # An empty page draws no card, so page_done (which waits for one) never ends: the page placed is enough.
+            for _ in range(50):
+                placed = await self.probe()
+                if placed[0] == 0 and placed[1] == 0:
+                    break
+                await asyncio.sleep(0.2)
+            await asyncio.sleep(0.6)
+            shot = f'page-1-{theme}'
+            (await self.render(shot, keep=False)).save(out / f'{shot}.png')
+            view['pages'].append({'file': f'{shot}.png', 'theme': theme, 'page': 1})
+        await self.dark(False)
 
     async def icons_only(self, record, values, top, out, view):
         """The top bar with the plugin's items as their icon alone, as a person may choose in the editor (Show: icon),

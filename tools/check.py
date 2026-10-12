@@ -385,6 +385,32 @@ TEMPLATE_LICENSE = '<year> <your name>'
 TEMPLATE_README = re.compile(r'This is the template for a Tessera plugin', re.I)
 
 
+STORE_IMAGE = 'store.png'
+STORE_IMAGE_MAX = 1024 * 1024
+PNG_SIGNATURE = b'\x89PNG\r\n\x1a\n'
+
+
+def check_store_image(folder, name):
+    """The picture of the plugin on the Plugins page, when it has one: store.png beside the manifest, a PNG of 16:9 from
+    640 x 360 to 2560 x 1440 and at most 1 MB (docs/PUBLISHING.md, "The picture on the Plugins page"). Read from its
+    header, so no image library is needed."""
+    for other in ('store.jpg', 'store.jpeg', 'store.webp', 'store.gif'):
+        if (folder / other).is_file():
+            fail(name, f'{other}: the picture on the Plugins page is store.png, a PNG')
+    path = folder / STORE_IMAGE
+    if not path.is_file():
+        return None
+    body = path.read_bytes()
+    if len(body) > STORE_IMAGE_MAX:
+        fail(name, f'{STORE_IMAGE}: {len(body) // 1024} KB, at most {STORE_IMAGE_MAX // 1024} KB')
+    if not body.startswith(PNG_SIGNATURE) or body[12:16] != b'IHDR':
+        fail(name, f'{STORE_IMAGE}: not a PNG')
+    width, height = int.from_bytes(body[16:20], 'big'), int.from_bytes(body[20:24], 'big')
+    if width * 9 != height * 16 or not 640 <= width <= 2560:
+        fail(name, f'{STORE_IMAGE}: {width} x {height}; it is 16:9, from 640 x 360 to 2560 x 1440 (1280 x 720 is best)')
+    return STORE_IMAGE
+
+
 def check_folder(folder):
     """(raw manifest, translations, readmes, changelogs) of a plugin folder, or SystemExit with what is wrong."""
     folder = Path(folder)
@@ -440,6 +466,7 @@ def check_folder(folder):
         fail(name, f'LICENSE still has the template\'s "{TEMPLATE_LICENSE}": fill in the year and your name')
     changelog = texts(folder, name, 'CHANGELOG')
     check_changelog(name, manifest['version'], changelog)
+    check_store_image(folder, name)
     if folder.parent.name == 'plugins' and not (folder / 'LICENSE').is_file() and not (folder.parent.parent / 'LICENSE').is_file():
         fail(name, 'a LICENSE is required')
     for component in sorted(p for p in components.iterdir() if p.is_dir()):

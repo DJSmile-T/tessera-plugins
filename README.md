@@ -11,7 +11,7 @@ This repository holds:
 | [`plugins/`](plugins) | The plugins Tessera ships, one folder each. Every folder is a complete plugin. |
 | [`template/`](template) | A small plugin that works, to start your own from. |
 | [`docs/`](docs) | How plugins work and how to make one, step by step. |
-| [`tools/`](tools) | `check.py` (check a plugin), `preview.py` (the bench: see it on every kind of screen), `new_plugin.py` (start one), `build_index.py` (write the index), `build_likes.py` (copy the likes). |
+| [`tools/`](tools) | `check.py` (check a plugin), `preview.py` (the bench: see it on every kind of screen), `new_plugin.py` (start one), `store_image.py` (its picture on the Plugins page), `build_index.py` (write the index), `build_likes.py` (copy the likes). |
 | `index.json` | The list the Tessera app reads. Written by `tools/build_index.py`, never by hand. |
 | `blocked.yaml` | Plugin versions the app refuses to build. |
 | `featured.yaml` | The plugins Tessera recommends to start with. |
