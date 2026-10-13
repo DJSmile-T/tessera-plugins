@@ -1,6 +1,6 @@
 {
  "format": 1,
- "generated": "2026-10-13T11:54:17Z",
+ "generated": "2026-10-13T14:20:21Z",
  "plugin_api": "0.10",
  "blocked": [],
  "featured": [
@@ -12,6 +12,11 @@
    "repo": "https://github.com/maxgramser/tessera-plugins",
    "repo_id": 1408945265,
    "path": "plugins/bt_proxy"
+  },
+  "cinema": {
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/cinema"
   },
   "custom_card": {
    "repo": "https://github.com/stofle/tessera-plugin-custom-card",
@@ -172,6 +177,697 @@
    "changelog": {
     "en": "# Changelog\n\n## 0.2.0 - 2026-10-11\n- The Wi-Fi chip's firmware update comes with the plugin (**Wi-Fi chip update**, ticked by default): Home Assistant shows it on the screen's device, and you press Install. Bluetooth needs a recent one; many screens come with one too old.\n- **Bluetooth status** says what the proxy does, in Home Assistant and on the screen's settings page: listening, off, starting, or that the Wi-Fi chip needs its update.\n- Had the update in the Override YAML? Remove that block first; the entity keeps its name.\n- Updating from 0.1.0? An update keeps the parts you had, so tick **Wi-Fi chip update** in the plugin's details on the screen's Plugins tab and choose **Save and build**.\n\n## 0.1.0 - 2026-10-11\n- First version: ESPHome's Bluetooth proxy on every screen with an ESP32-P4, with a setting to turn it off without a build.\n- It shares the radio with Wi-Fi: pictures and camera streams can be slower while it runs. Read \"Before you add it\" in the README.\n- Had a Bluetooth proxy in the Override YAML? Remove its `esp32_ble_tracker:` and `bluetooth_proxy:` blocks first.\n",
     "nl": "# Wijzigingen\n\n## 0.2.0 - 2026-10-11\n- De firmware-update van de wifichip komt mee met de plugin (**Update van de wifichip**, standaard aan): Home Assistant toont hem bij het apparaat van het scherm, en jij drukt op Installeren. Bluetooth vraagt een recente; veel schermen komen met een te oude.\n- **Bluetooth status** zegt wat de proxy doet, in Home Assistant en op de instellingenpagina van het scherm: luistert, uit, start op, of dat de wifichip zijn update nodig heeft.\n- De update in de Override YAML gehad? Haal dat blok eerst weg; de entiteit houdt zijn naam.\n- Bijgewerkt vanaf 0.1.0? Een update houdt de onderdelen die je had, dus vink **Update van de wifichip** aan in de details van de plugin op het tabblad Plugins van het scherm en kies **Opslaan en bouwen**.\n\n## 0.1.0 - 2026-10-11\n- Eerste versie: de Bluetooth-proxy van ESPHome op elk scherm met een ESP32-P4, met een instelling om hem zonder opnieuw bouwen uit te zetten.\n- Hij deelt de radio met wifi: plaatjes en camerabeelden kunnen trager zijn zolang hij draait. Lees \"Voordat je hem toevoegt\" in de README.\n- Een Bluetooth-proxy in de Override YAML gehad? Haal eerst de blokken `esp32_ble_tracker:` en `bluetooth_proxy:` weg.\n"
+   },
+   "image": "store.png"
+  },
+  {
+   "id": "cinema",
+   "repo": "https://github.com/maxgramser/tessera-plugins",
+   "repo_id": 1408945265,
+   "path": "plugins/cinema",
+   "label": "tessera",
+   "status": "ok",
+   "release": {
+    "version": "0.1.0",
+    "sha": "2e1ac2007b4cd43e971288348364f75c1df0609d",
+    "date": "2026-10-13"
+   },
+   "manifest": {
+    "id": "cinema",
+    "version": "0.1.0",
+    "api": "0.10",
+    "icon": "movie-open",
+    "maintainer": "MaxGramser",
+    "license": "MIT",
+    "stage": "beta",
+    "topics": [
+     "media",
+     "fun"
+    ],
+    "requires": {
+     "esphome": "2026.6.2"
+    },
+    "boards": "any",
+    "flash_kb": 10,
+    "permissions": {
+     "network": [
+      "api.themoviedb.org",
+      "image.tmdb.org"
+     ]
+    },
+    "attributes": [
+     "cloud"
+    ],
+    "privacy": "https://github.com/MaxGramser/tessera-plugins/tree/main/plugins/cinema#privacy",
+    "inputs": [
+     {
+      "id": "api_key",
+      "kind": "secret",
+      "scope": "all",
+      "label": "api_key",
+      "hint": "api_key_hint"
+     }
+    ],
+    "tiles": [
+     {
+      "id": "films",
+      "name": "tile_name",
+      "icon": "movie-open",
+      "sizes": {
+       "min": "1x1",
+       "max": "4x4"
+      },
+      "memory": 3200,
+      "pictures": 7,
+      "data": "films",
+      "example": "tile_example",
+      "preview": {
+       "title": "{title}"
+      },
+      "options": [
+       {
+        "id": "list",
+        "kind": "choice",
+        "label": "list",
+        "hint": "list_hint",
+        "default": "now_playing",
+        "choices": [
+         {
+          "value": "now_playing",
+          "label": "list_now"
+         },
+         {
+          "value": "upcoming",
+          "label": "list_soon"
+         },
+         {
+          "value": "popular",
+          "label": "list_popular"
+         }
+        ]
+       },
+       {
+        "id": "country",
+        "kind": "choice",
+        "label": "country",
+        "hint": "country_hint",
+        "default": "US",
+        "choices": [
+         {
+          "value": "AR",
+          "label": "c_ar"
+         },
+         {
+          "value": "AU",
+          "label": "c_au"
+         },
+         {
+          "value": "AT",
+          "label": "c_at"
+         },
+         {
+          "value": "BE",
+          "label": "c_be"
+         },
+         {
+          "value": "BR",
+          "label": "c_br"
+         },
+         {
+          "value": "CA",
+          "label": "c_ca"
+         },
+         {
+          "value": "CZ",
+          "label": "c_cz"
+         },
+         {
+          "value": "DK",
+          "label": "c_dk"
+         },
+         {
+          "value": "FI",
+          "label": "c_fi"
+         },
+         {
+          "value": "FR",
+          "label": "c_fr"
+         },
+         {
+          "value": "DE",
+          "label": "c_de"
+         },
+         {
+          "value": "GR",
+          "label": "c_gr"
+         },
+         {
+          "value": "IN",
+          "label": "c_in"
+         },
+         {
+          "value": "IE",
+          "label": "c_ie"
+         },
+         {
+          "value": "IT",
+          "label": "c_it"
+         },
+         {
+          "value": "JP",
+          "label": "c_jp"
+         },
+         {
+          "value": "MX",
+          "label": "c_mx"
+         },
+         {
+          "value": "NL",
+          "label": "c_nl"
+         },
+         {
+          "value": "NZ",
+          "label": "c_nz"
+         },
+         {
+          "value": "NO",
+          "label": "c_no"
+         },
+         {
+          "value": "PL",
+          "label": "c_pl"
+         },
+         {
+          "value": "PT",
+          "label": "c_pt"
+         },
+         {
+          "value": "ZA",
+          "label": "c_za"
+         },
+         {
+          "value": "KR",
+          "label": "c_kr"
+         },
+         {
+          "value": "ES",
+          "label": "c_es"
+         },
+         {
+          "value": "SE",
+          "label": "c_se"
+         },
+         {
+          "value": "CH",
+          "label": "c_ch"
+         },
+         {
+          "value": "TR",
+          "label": "c_tr"
+         },
+         {
+          "value": "GB",
+          "label": "c_gb"
+         },
+         {
+          "value": "US",
+          "label": "c_us"
+         }
+        ]
+       },
+       {
+        "id": "language",
+        "kind": "choice",
+        "label": "language",
+        "hint": "language_hint",
+        "default": "en-US",
+        "choices": [
+         {
+          "value": "en-US",
+          "label": "l_en"
+         },
+         {
+          "value": "nl-NL",
+          "label": "l_nl"
+         },
+         {
+          "value": "de-DE",
+          "label": "l_de"
+         },
+         {
+          "value": "fr-FR",
+          "label": "l_fr"
+         },
+         {
+          "value": "es-ES",
+          "label": "l_es"
+         },
+         {
+          "value": "it-IT",
+          "label": "l_it"
+         },
+         {
+          "value": "pt-PT",
+          "label": "l_pt"
+         },
+         {
+          "value": "da-DK",
+          "label": "l_da"
+         },
+         {
+          "value": "sv-SE",
+          "label": "l_sv"
+         },
+         {
+          "value": "nb-NO",
+          "label": "l_nb"
+         },
+         {
+          "value": "fi-FI",
+          "label": "l_fi"
+         },
+         {
+          "value": "pl-PL",
+          "label": "l_pl"
+         },
+         {
+          "value": "cs-CZ",
+          "label": "l_cs"
+         },
+         {
+          "value": "tr-TR",
+          "label": "l_tr"
+         },
+         {
+          "value": "ja-JP",
+          "label": "l_ja"
+         },
+         {
+          "value": "ko-KR",
+          "label": "l_ko"
+         }
+        ]
+       },
+       {
+        "id": "genre",
+        "kind": "choice",
+        "label": "genre",
+        "hint": "genre_hint",
+        "default": "all",
+        "choices": [
+         {
+          "value": "all",
+          "label": "genre_all"
+         },
+         {
+          "value": "28",
+          "label": "genre_28"
+         },
+         {
+          "value": "12",
+          "label": "genre_12"
+         },
+         {
+          "value": "16",
+          "label": "genre_16"
+         },
+         {
+          "value": "35",
+          "label": "genre_35"
+         },
+         {
+          "value": "80",
+          "label": "genre_80"
+         },
+         {
+          "value": "99",
+          "label": "genre_99"
+         },
+         {
+          "value": "18",
+          "label": "genre_18"
+         },
+         {
+          "value": "10751",
+          "label": "genre_10751"
+         },
+         {
+          "value": "14",
+          "label": "genre_14"
+         },
+         {
+          "value": "36",
+          "label": "genre_36"
+         },
+         {
+          "value": "27",
+          "label": "genre_27"
+         },
+         {
+          "value": "10402",
+          "label": "genre_10402"
+         },
+         {
+          "value": "9648",
+          "label": "genre_9648"
+         },
+         {
+          "value": "10749",
+          "label": "genre_10749"
+         },
+         {
+          "value": "878",
+          "label": "genre_878"
+         },
+         {
+          "value": "10770",
+          "label": "genre_10770"
+         },
+         {
+          "value": "53",
+          "label": "genre_53"
+         },
+         {
+          "value": "10752",
+          "label": "genre_10752"
+         },
+         {
+          "value": "37",
+          "label": "genre_37"
+         }
+        ]
+       },
+       {
+        "id": "rating",
+        "kind": "number",
+        "min": 0,
+        "max": 9,
+        "step": 0.5,
+        "default": 0,
+        "label": "rating_min",
+        "hint": "rating_min_hint"
+       },
+       {
+        "id": "every",
+        "kind": "number",
+        "min": 0,
+        "max": 60,
+        "step": 5,
+        "unit": "s",
+        "default": 15,
+        "label": "every",
+        "hint": "every_hint"
+       }
+      ]
+     }
+    ],
+    "fetch": [
+     {
+      "id": "films",
+      "url": "https://api.themoviedb.org/3/movie/{list}?region={country}&language={language}&page=1&api_key={api_key}",
+      "every": "6h",
+      "map": {
+       "items": "$.results[*]",
+       "fields": {
+        "title": "title",
+        "poster": "poster_path",
+        "date": {
+         "path": "release_date",
+         "as": "epoch"
+        },
+        "rating": {
+         "path": "vote_average",
+         "as": "number"
+        },
+        "votes": {
+         "path": "vote_count",
+         "as": "number"
+        },
+        "genre": {
+         "path": "genre_ids[0]",
+         "as": "number"
+        },
+        "genre2": {
+         "path": "genre_ids[1]",
+         "as": "number"
+        }
+       },
+       "limit": 20
+      }
+     }
+    ]
+   },
+   "translations": {
+    "en": {
+     "_meta": {
+      "name": "English"
+     },
+     "screen": {
+      "waiting": "Asking for films",
+      "no_key": "Add the TMDB key",
+      "failed": "No films right now",
+      "none": "No films",
+      "old": "List may be old",
+      "today": "Today",
+      "rating": "{r} / 10",
+      "g28": "Action",
+      "g12": "Adventure",
+      "g16": "Animation",
+      "g35": "Comedy",
+      "g80": "Crime",
+      "g99": "Documentary",
+      "g18": "Drama",
+      "g10751": "Family",
+      "g14": "Fantasy",
+      "g36": "History",
+      "g27": "Horror",
+      "g10402": "Music",
+      "g9648": "Mystery",
+      "g10749": "Romance",
+      "g878": "Science Fiction",
+      "g10770": "TV Movie",
+      "g53": "Thriller",
+      "g10752": "War",
+      "g37": "Western"
+     },
+     "app": {
+      "name": "Cinema",
+      "summary": "The films in your country's cinemas, or coming soon, as a cover flow of posters with their rating.",
+      "tile_name": "Films",
+      "tile_example": "The posters of what plays tonight",
+      "api_key": "TMDB API key",
+      "api_key_hint": "Free at themoviedb.org: Settings, API. Use the API Key, not the Read Access Token.",
+      "list": "Which films",
+      "list_hint": "Films in cinemas now, films coming soon, or the most popular films of the moment.",
+      "list_now": "In cinemas now",
+      "list_soon": "Coming soon",
+      "list_popular": "Popular",
+      "country": "Country",
+      "country_hint": "Whose cinemas: the list and the release dates follow it.",
+      "language": "Titles in",
+      "language_hint": "The language of the titles and posters, where TMDB has them.",
+      "c_ar": "Argentina",
+      "c_au": "Australia",
+      "c_at": "Austria",
+      "c_be": "Belgium",
+      "c_br": "Brazil",
+      "c_ca": "Canada",
+      "c_cz": "Czechia",
+      "c_dk": "Denmark",
+      "c_fi": "Finland",
+      "c_fr": "France",
+      "c_de": "Germany",
+      "c_gr": "Greece",
+      "c_in": "India",
+      "c_ie": "Ireland",
+      "c_it": "Italy",
+      "c_jp": "Japan",
+      "c_mx": "Mexico",
+      "c_nl": "Netherlands",
+      "c_nz": "New Zealand",
+      "c_no": "Norway",
+      "c_pl": "Poland",
+      "c_pt": "Portugal",
+      "c_za": "South Africa",
+      "c_kr": "South Korea",
+      "c_es": "Spain",
+      "c_se": "Sweden",
+      "c_ch": "Switzerland",
+      "c_tr": "Turkey",
+      "c_gb": "United Kingdom",
+      "c_us": "United States",
+      "l_en": "English",
+      "l_nl": "Dutch",
+      "l_de": "German",
+      "l_fr": "French",
+      "l_es": "Spanish",
+      "l_it": "Italian",
+      "l_pt": "Portuguese",
+      "l_da": "Danish",
+      "l_sv": "Swedish",
+      "l_nb": "Norwegian",
+      "l_fi": "Finnish",
+      "l_pl": "Polish",
+      "l_cs": "Czech",
+      "l_tr": "Turkish",
+      "l_ja": "Japanese",
+      "l_ko": "Korean",
+      "genre_28": "Action",
+      "genre_12": "Adventure",
+      "genre_16": "Animation",
+      "genre_35": "Comedy",
+      "genre_80": "Crime",
+      "genre_99": "Documentary",
+      "genre_18": "Drama",
+      "genre_10751": "Family",
+      "genre_14": "Fantasy",
+      "genre_36": "History",
+      "genre_27": "Horror",
+      "genre_10402": "Music",
+      "genre_9648": "Mystery",
+      "genre_10749": "Romance",
+      "genre_878": "Science Fiction",
+      "genre_10770": "TV Movie",
+      "genre_53": "Thriller",
+      "genre_10752": "War",
+      "genre_37": "Western",
+      "genre": "Genre",
+      "genre_hint": "Only films of this genre (one of the first two TMDB gives a film).",
+      "genre_all": "Every genre",
+      "rating_min": "Lowest rating",
+      "rating_min_hint": "Only films rated at least this on TMDB, by enough people. 0 shows every film.",
+      "every": "Next film every",
+      "every_hint": "The flow moves on by itself after this long. 0 keeps it still until you tap."
+     }
+    },
+    "nl": {
+     "_meta": {
+      "name": "Nederlands"
+     },
+     "screen": {
+      "waiting": "Films ophalen",
+      "no_key": "Vul de TMDB-sleutel in",
+      "failed": "Nu geen films",
+      "none": "Geen films",
+      "old": "Lijst kan oud zijn",
+      "today": "Vandaag",
+      "rating": "{r} / 10",
+      "g28": "Actie",
+      "g12": "Avontuur",
+      "g16": "Animatie",
+      "g35": "Komedie",
+      "g80": "Misdaad",
+      "g99": "Documentaire",
+      "g18": "Drama",
+      "g10751": "Familie",
+      "g14": "Fantasie",
+      "g36": "Historisch",
+      "g27": "Horror",
+      "g10402": "Muziek",
+      "g9648": "Mysterie",
+      "g10749": "Romantiek",
+      "g878": "Sciencefiction",
+      "g10770": "TV Film",
+      "g53": "Thriller",
+      "g10752": "Oorlog",
+      "g37": "Western"
+     },
+     "app": {
+      "name": "Bioscoop",
+      "summary": "De films in de bioscopen van je land, of binnenkort, als coverflow van posters met hun rating.",
+      "tile_name": "Films",
+      "tile_example": "De posters van wat er vanavond draait",
+      "api_key": "TMDB API-sleutel",
+      "api_key_hint": "Gratis op themoviedb.org: Settings, API. Gebruik de API Key, niet het Read Access Token.",
+      "list": "Welke films",
+      "list_hint": "Films die nu draaien, films die binnenkort uitkomen, of de populairste films van het moment.",
+      "list_now": "Nu in de bioscoop",
+      "list_soon": "Binnenkort",
+      "list_popular": "Populair",
+      "country": "Land",
+      "country_hint": "Welke bioscopen: de lijst en de releasedata volgen het land.",
+      "language": "Titels in het",
+      "language_hint": "De taal van de titels en posters, waar TMDB ze heeft.",
+      "c_ar": "Argentinië",
+      "c_au": "Australië",
+      "c_at": "Oostenrijk",
+      "c_be": "België",
+      "c_br": "Brazilië",
+      "c_ca": "Canada",
+      "c_cz": "Tsjechië",
+      "c_dk": "Denemarken",
+      "c_fi": "Finland",
+      "c_fr": "Frankrijk",
+      "c_de": "Duitsland",
+      "c_gr": "Griekenland",
+      "c_in": "India",
+      "c_ie": "Ierland",
+      "c_it": "Italië",
+      "c_jp": "Japan",
+      "c_mx": "Mexico",
+      "c_nl": "Nederland",
+      "c_nz": "Nieuw-Zeeland",
+      "c_no": "Noorwegen",
+      "c_pl": "Polen",
+      "c_pt": "Portugal",
+      "c_za": "Zuid-Afrika",
+      "c_kr": "Zuid-Korea",
+      "c_es": "Spanje",
+      "c_se": "Zweden",
+      "c_ch": "Zwitserland",
+      "c_tr": "Turkije",
+      "c_gb": "Verenigd Koninkrijk",
+      "c_us": "Verenigde Staten",
+      "l_en": "Engels",
+      "l_nl": "Nederlands",
+      "l_de": "Duits",
+      "l_fr": "Frans",
+      "l_es": "Spaans",
+      "l_it": "Italiaans",
+      "l_pt": "Portugees",
+      "l_da": "Deens",
+      "l_sv": "Zweeds",
+      "l_nb": "Noors",
+      "l_fi": "Fins",
+      "l_pl": "Pools",
+      "l_cs": "Tsjechisch",
+      "l_tr": "Turks",
+      "l_ja": "Japans",
+      "l_ko": "Koreaans",
+      "genre_28": "Actie",
+      "genre_12": "Avontuur",
+      "genre_16": "Animatie",
+      "genre_35": "Komedie",
+      "genre_80": "Misdaad",
+      "genre_99": "Documentaire",
+      "genre_18": "Drama",
+      "genre_10751": "Familie",
+      "genre_14": "Fantasie",
+      "genre_36": "Historisch",
+      "genre_27": "Horror",
+      "genre_10402": "Muziek",
+      "genre_9648": "Mysterie",
+      "genre_10749": "Romantiek",
+      "genre_878": "Sciencefiction",
+      "genre_10770": "TV Film",
+      "genre_53": "Thriller",
+      "genre_10752": "Oorlog",
+      "genre_37": "Western",
+      "genre": "Genre",
+      "genre_hint": "Alleen films van dit genre (een van de eerste twee die TMDB een film geeft).",
+      "genre_all": "Alle genres",
+      "rating_min": "Laagste rating",
+      "rating_min_hint": "Alleen films met minstens deze rating op TMDB, van genoeg stemmers. 0 toont elke film.",
+      "every": "Volgende film elke",
+      "every_hint": "De rij schuift na zo lang vanzelf door. 0 laat hem stil staan tot je tikt."
+     }
+    }
+   },
+   "readme": {
+    "en": "# Cinema\n\nWhat plays in the cinemas of your country, as a cover flow on a tile: the film in the middle large with its rating on\nthe poster, its title and genres under it, the films beside it turned towards it with a reflection under every poster.\nIt moves on by itself every fifteen seconds and runs round: left of the first film stand the last. Tap a film beside the\nmiddle to bring it there, or tap left or right of the middle to move one film. Choose the films in cinemas now, the\nones coming soon, or the most popular of the moment, for any of thirty countries, with titles in the language you\nchoose; show only one genre, or only films with at least a rating you choose.\n\nThe list and the posters come from [The Movie Database (TMDB)](https://www.themoviedb.org). This product uses the\nTMDB API but is not endorsed or certified by TMDB.\n\n## Set up\n\n1. Make a free account on [themoviedb.org](https://www.themoviedb.org/signup), then open Settings, API, and ask for\n   an API key (personal use). Copy the **API Key** (not the Read Access Token).\n2. Add the plugin to a screen in Tessera and paste the key under **TMDB API key**. The screen builds once.\n3. In Layout, place the **Films** tile from the library's Plugins group. Two rows high or more shows the cover flow;\n   one row high shows a poster beside its title; one cell standing up shows the poster alone.\n4. In the inspector, choose **Which films**, the **Country** and the language of the titles. **Genre** and\n   **Lowest rating** narrow the list; **Next film every** sets how often it moves on (0 keeps it still).\n\n## Good to know\n\n- The list is asked for every six hours; a poster is fetched once and kept while the tile shows it.\n- The filters work on the twenty films TMDB lists first, so a narrow filter can leave a short flow. A genre counts\n  when it is one of the first two TMDB gives a film. A rating counts from twenty votes on.\n- A board without the memory for pictures (the CYD, the Waveshare 3.5-inch, the Hosyond 4-inch) shows the titles\n  with their rating as a list instead; it turns the page by itself, or on a tap.\n- \"Add the TMDB key\" on the tile means the key is not filled in yet.\n\n## Privacy\n\nTessera (the app in Home Assistant, not the screen) asks TMDB's API for the list of the country you chose, with your\nkey, and fetches the posters from `image.tmdb.org`. TMDB sees the address of your Home Assistant, the country, the\nlanguage and your key; nothing else of your home. The screen never reaches the internet.\n"
+   },
+   "changelog": {
+    "en": "# Changelog\n\n## 0.1.0\n- First version: the films in a country's cinemas, coming soon or popular, from TMDB, as a cover flow of posters that\n  moves on by itself, with the rating on the poster and the genres under the title. Filters for one genre and a\n  lowest rating. Needs a free TMDB API key and a screen with plugin API 0.10. A board without pictures shows the\n  titles as a list.\n"
    },
    "image": "store.png"
   },
@@ -482,7 +1178,7 @@
    "status": "ok",
    "release": {
     "version": "0.1.0",
-    "sha": "61e275e32fece754d05fccca2ebc89f9d4090e7a",
+    "sha": "2e1ac2007b4cd43e971288348364f75c1df0609d",
     "date": "2026-10-13"
    },
    "manifest": {
