@@ -107,7 +107,9 @@ class NextTile : public tessera::Tile {
    texts here, from the members and the clock.
 4. **`on_theme()`**: the screen went light or dark. Set every colour again.
 5. **`on_tap()`**: a short tap on the card, after the touch filter (a finger that moved or was too short never reaches
-   it). The tile's `tap` option set to "none" in the editor keeps taps away.
+   it). The tile's `tap` option set to "none" in the editor keeps taps away. `tessera::tap_point()` (0.10) says where
+   the finger was, in the tile's own pixels (`0,0` the top left of `context.parent`), so a list knows which row, a
+   row of posters which film; `-1,-1` when the screen could not say.
 6. **Destructor**: the card shows something else. The core deletes the LVGL objects; free only memory of your own.
 
 A change of the tile's size or options makes a new object: `create()` never has to handle a resize.
@@ -430,6 +432,7 @@ number. Before 0.9 a block has no colour by meaning: `TRACK` and `ACCENT`, or th
 | `tessera::days_text(days)` | "Tomorrow", "In 3 days" in the screen's language; `""` for today (bring your own word) and the past. |
 | `tessera::action(service, entity, key, value)` | A Home Assistant action on an entity (see "A tile of an entity"). |
 | `tessera::open_card(plugin_id, card, entity, tile, title)`, `close_card()` | Open or close a card. |
+| `tessera::tap_point()` | Where the finger of the tile's `on_tap` was (0.10), in the tile's own pixels; `-1,-1` when unknown. Valid during `on_tap`. |
 | `tessera::send(plugin, request)` | Ask the app (see "Questions to the app"). |
 
 ## Rules
@@ -522,7 +525,7 @@ brought:
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
 | 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
-| 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines. |
+| 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines; `tessera::tap_point()`, where a tile was tapped. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
 knows it ([MANIFEST.md](MANIFEST.md), "Which minor brought a field").
