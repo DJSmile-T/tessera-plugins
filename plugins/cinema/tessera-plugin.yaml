@@ -1,0 +1,80 @@
+# Cinema: the films in the cinemas of a country, or coming soon, from The Movie Database (TMDB), as a cover flow of posters
+# that moves on by itself: the film in the middle large with its rating, the films beside it turned towards it, a
+# reflection under each. A board without pictures shows the titles as a list. docs/MANIFEST.md has every field.
+id: cinema
+version: 0.1.0
+api: "0.10"
+icon: movie-open
+maintainer: MaxGramser
+license: MIT
+stage: beta
+topics: [media, fun]
+requires:
+  esphome: 2026.6.2
+boards: any
+flash_kb: 10
+
+permissions:
+  # The list of films from TMDB's API, their posters from TMDB's picture host.
+  network: [api.themoviedb.org, image.tmdb.org]
+attributes: [cloud]
+privacy: https://github.com/MaxGramser/tessera-plugins/tree/main/plugins/cinema#privacy
+
+inputs:
+  - { id: api_key, kind: secret, scope: all, label: api_key, hint: api_key_hint }
+
+tiles:
+  - id: films
+    name: tile_name
+    icon: movie-open
+    sizes: { min: 1x1, max: 4x4 }
+    # The labels, the places and their veils, the badge, and up to 16 films of a title and a poster's path.
+    memory: 3200
+    # The film in the middle and up to three on each side.
+    pictures: 7
+    data: films
+    example: tile_example
+    preview: { title: "{title}" }
+    options:
+      - { id: list, kind: choice, label: list, hint: list_hint, default: now_playing,
+          choices: [{ value: now_playing, label: list_now }, { value: upcoming, label: list_soon },
+                    { value: popular, label: list_popular }] }
+      - { id: country, kind: choice, label: country, hint: country_hint, default: US,
+          choices: [{ value: "AR", label: c_ar }, { value: "AU", label: c_au }, { value: "AT", label: c_at },
+                    { value: "BE", label: c_be }, { value: "BR", label: c_br }, { value: "CA", label: c_ca },
+                    { value: "CZ", label: c_cz }, { value: "DK", label: c_dk }, { value: "FI", label: c_fi },
+                    { value: "FR", label: c_fr }, { value: "DE", label: c_de }, { value: "GR", label: c_gr },
+                    { value: "IN", label: c_in }, { value: "IE", label: c_ie }, { value: "IT", label: c_it },
+                    { value: "JP", label: c_jp }, { value: "MX", label: c_mx }, { value: "NL", label: c_nl },
+                    { value: "NZ", label: c_nz }, { value: "NO", label: c_no }, { value: "PL", label: c_pl },
+                    { value: "PT", label: c_pt }, { value: "ZA", label: c_za }, { value: "KR", label: c_kr },
+                    { value: "ES", label: c_es }, { value: "SE", label: c_se }, { value: "CH", label: c_ch },
+                    { value: "TR", label: c_tr }, { value: "GB", label: c_gb }, { value: "US", label: c_us }] }
+      - { id: language, kind: choice, label: language, hint: language_hint, default: en-US,
+          choices: [{ value: en-US, label: l_en }, { value: nl-NL, label: l_nl }, { value: de-DE, label: l_de },
+                    { value: fr-FR, label: l_fr }, { value: es-ES, label: l_es }, { value: it-IT, label: l_it },
+                    { value: pt-PT, label: l_pt }, { value: da-DK, label: l_da }, { value: sv-SE, label: l_sv },
+                    { value: nb-NO, label: l_nb }, { value: fi-FI, label: l_fi }, { value: pl-PL, label: l_pl },
+                    { value: cs-CZ, label: l_cs }, { value: tr-TR, label: l_tr }, { value: ja-JP, label: l_ja },
+                    { value: ko-KR, label: l_ko }] }
+      - { id: genre, kind: choice, label: genre, hint: genre_hint, default: all, choices: [{ value: all, label: genre_all }, { value: "28", label: genre_28 }, { value: "12", label: genre_12 }, { value: "16", label: genre_16 }, { value: "35", label: genre_35 }, { value: "80", label: genre_80 }, { value: "99", label: genre_99 }, { value: "18", label: genre_18 }, { value: "10751", label: genre_10751 }, { value: "14", label: genre_14 }, { value: "36", label: genre_36 }, { value: "27", label: genre_27 }, { value: "10402", label: genre_10402 }, { value: "9648", label: genre_9648 }, { value: "10749", label: genre_10749 }, { value: "878", label: genre_878 }, { value: "10770", label: genre_10770 }, { value: "53", label: genre_53 }, { value: "10752", label: genre_10752 }, { value: "37", label: genre_37 }] }
+      - { id: rating, kind: number, min: 0, max: 9, step: 0.5, default: 0, label: rating_min, hint: rating_min_hint }
+      - { id: every, kind: number, min: 0, max: 60, step: 5, unit: s, default: 15, label: every, hint: every_hint }
+
+fetch:
+  # One page of TMDB's list, in its own order (most popular first), with the release dates of the chosen country.
+  # Twenty films fit the tile's data; the posters come one by one when the row shows them.
+  - id: films
+    url: https://api.themoviedb.org/3/movie/{list}?region={country}&language={language}&page=1&api_key={api_key}
+    every: 6h
+    map:
+      items: "$.results[*]"
+      fields:
+        title: title
+        poster: poster_path
+        date: { path: release_date, as: epoch }
+        rating: { path: vote_average, as: number }
+        votes: { path: vote_count, as: number }
+        genre: { path: "genre_ids[0]", as: number }
+        genre2: { path: "genre_ids[1]", as: number }
+      limit: 20

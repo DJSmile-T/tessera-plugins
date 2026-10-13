@@ -350,6 +350,8 @@ void on_state(JsonObjectConst data) override {
 | `ui::pictures()` | Whether this screen shows pictures at all. A board without the memory for them (the CYD, the Waveshare 3.5-inch, the Hosyond 4-inch) shows none: lay the tile out without the places then, as you would without a picture. |
 | `ui::picture(parent)` | A place for a picture, sized and placed by you as any object (`lv_obj_set_size`, `lv_obj_set_pos`), in `create()`. A soft block (`theme::TRACK`) until its picture is there. Its corners are a key's; a radius of your own (`lv_obj_set_style_radius`) is taken over by the picture. |
 | `ui::set_picture(place, url, fit)` | The picture a place shows. `Fit::COVER` fills the place and cuts away what is over (a poster in a poster's frame); `Fit::CONTAIN` shows the whole picture within it, on the card's own colour (a logo). The same address again does nothing, so call it on every `on_state`; another address asks the app again; `""` takes the picture away. |
+| `ui::set_picture(place, url, fit, turn, mirror)` | The same, turned in perspective and with a reflection, as the covers of a cover flow. `Turn::LEFT` faces the left (its left edge far: a cover right of the middle one), `Turn::RIGHT` the right; the app draws the whole picture into the place, its near edge the place's height and its far edge 70 % of it. `mirror` puts a reflection under the picture that fades out: the place's lower part holds it, `MIRROR_PERCENT` (30) of the picture's height, so a place for a picture `h` high with its reflection is `h * 130 / 100` high. An older app draws the picture flat. |
+| `ui::slide_pictures(dx, ms)` | Slides every place of the tile `dx` pixels sideways over `ms` (300 by default) and keeps them there until the tile's next picture is here, then they are back in their places with it, in one frame. Call it beside the `set_picture` calls of a change, in a call of the tile (`on_tap`, `on_tick`), so a row of posters that turns shows which way at once. |
 
 Where a picture may come from, checked by the app for every address:
 
@@ -360,10 +362,43 @@ Where a picture may come from, checked by the app for every address:
   app's own token.
 
 The manifest's `pictures` of the tile says how many places it has at most ([MANIFEST.md](MANIFEST.md), "Tiles"); the
-app paints no more. A place that lies outside the card, or has no size, gets no picture. Pictures count in nothing the
+app paints no more. A place that lies outside the card, or has no size, gets no picture.
+
+**Places may overlap.** They are the layers of the card: a place made later lies over one made earlier, and the app
+paints them in that order, so a rounded corner or the transparent part of a turned picture shows what lies under it.
+Make the places from the back to the front (the outermost covers of a cover flow first, the middle one last). Another
+address keeps the picture a place shows until the next one is there, so a row of posters turns without a flash of
+blocks. Pictures count in nothing the
 layout memory counts: the screen keeps them in its picture store, within the same budget as the covers and cameras,
 and a tile of eight posters is one picture there. A frame whose picture did not come stays the card's colour, and the
 screen asks again later, each time after a longer while.
+
+## Memory
+
+A screen has two kinds of memory. Inside the chip there are a few tens of kilobytes, shared with Wi-Fi and the network
+stack, and when they run out the screen loses Wi-Fi or restarts. A board with PSRAM (every board that shows pictures)
+has megabytes beside it. A plain `std::string`, `std::vector` or `new` always takes the memory inside the chip: the
+boards are built so that only what asks for PSRAM gets it.
+
+So from plugin API 0.10:
+
+- **Your tile and card objects are in PSRAM by themselves.** `tessera::Tile` and `tessera::Card` take PSRAM in their
+  `operator new`, so what they hold directly (numbers, `char` arrays, pointers, a `Film films[16]`) is there already.
+- **Keep texts and lists a tile holds as `tessera::Text` and `tessera::List<T>`.** They work as a `std::string` and a
+  `std::vector` (`data()`, `size()`, `c_str()`, `+=`, `push_back`, `==` against another `Text` or a quoted text) and take
+  PSRAM first, the memory inside the chip on a board without it. `roomy::plain(text)` makes a `std::string` of one for
+  `ui::set_text`, `roomy::text(s)` the other way, `roomy::same(a, b)` compares the two kinds.
+- **A short text you build to show is fine as a `std::string`** in a function: it is gone when the function returns.
+- The core keeps your tile's options and data, and parses them for `on_state`, in PSRAM as well.
+
+```cpp
+struct Film { char title[52]; char poster[48]; float rating; };   // fixed fields: one block for the whole list
+tessera::List<Film> films_;     // PSRAM
+tessera::Text wait_;            // PSRAM
+```
+
+`tools/check.py` says so (a hint, not a failure) when a component of a plugin of API 0.10 or later keeps a member as a
+`std::string` or `std::vector`. A plugin of an older API keeps building as it is.
 
 ## Drawing: `tessera::ui`
 
@@ -383,7 +418,7 @@ The screen's look is the same on every tile, so a plugin draws with the core's s
 | `ui::tone_color(Tone, Role)` (0.9) | A tone's colour in this look, for a part the two above do not reach. |
 | `ui::text(parent, Font, Role)` | A label of several lines (0.10): wraps at its width, ends in dots at its height (two lines to start with; set your own). For a description, a title that may take two lines. |
 | `ui::block(parent, Role)` | A rounded block with the radius of a key (a badge, a bar). |
-| `ui::picture(parent)`, `ui::set_picture(place, url, fit)`, `ui::pictures()` | Pictures on a tile (0.10), above. |
+| `ui::picture(parent)`, `ui::set_picture(place, url, fit)`, `ui::pictures()`, `ui::slide_pictures(dx, ms)` | Pictures on a tile (0.10), above. |
 | `ui::color(Role)` | A colour by its role. |
 | `ui::icon(codepoint)` | An icon of Tessera's set as text, for a label in `Font::ICON` or `ICON_SMALL`. |
 
@@ -525,7 +560,7 @@ brought:
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
 | 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
-| 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines; `tessera::tap_point()`, where a tile was tapped. |
+| 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, `Turn` and a reflection, places that overlap, `ui::slide_pictures`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines; `tessera::tap_point()`, where a tile was tapped; memory in PSRAM: `tessera::Text`, `tessera::List`, and tiles and cards made there. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
 knows it ([MANIFEST.md](MANIFEST.md), "Which minor brought a field").

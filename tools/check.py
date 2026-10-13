@@ -54,6 +54,10 @@ SCREEN_RULES = [
 SCREEN_CODE = re.compile(r'plugin_api\.h|\btessera::|\blv_')
 # Parts of the C++ API by the minor that brought them (docs/FIRMWARE_API.md, "Versions"): a plugin that uses one names
 # at least that minor in `api`, or a core before it stops its build with a compiler error.
+# A member a tile or a card keeps as a std::string or a std::vector (a name ending in _, the plugins' own way): it lives in
+# the memory inside the chip, which Wi-Fi needs, where tessera::Text and tessera::List keep it in PSRAM (plugin API 0.10,
+# docs/FIRMWARE_API.md, "Memory"). A hint, not a failure: a short word costs little.
+KEPT_IN_CHIP = re.compile(r'^\s+(?:const\s+)?std::(?:string|vector<[^;]*>)\s+\w+_\s*(?:[;={]|,)', re.M)
 API_PARTS = [((0, 9), re.compile(r'Font::DIGITS|\bui::covers\s*\(|Tone::GOOD|\bui::set_fill\s*\(|\bui::tone_color\s*\('),
                'Font::DIGITS, ui::covers, Tone::GOOD, ui::set_fill and ui::tone_color')]
 
@@ -680,6 +684,24 @@ def read_transfers():
     return out
 
 
+def kept_in_chip(folder):
+    """The first member a component of the plugin API keeps as a std::string or a std::vector, as `file:line`, or None.
+    A driver beside it that never touches the screen is not asked (its buffers are its own business)."""
+    components = Path(folder) / 'components'
+    if not components.is_dir():
+        return None
+    for path in sorted(components.rglob('*')):
+        if path.suffix not in ('.h', '.cpp', '.hpp'):
+            continue
+        raw = path.read_text(encoding='utf-8', errors='replace')
+        if not SCREEN_CODE.search(raw):
+            continue
+        for number, line in enumerate(raw.splitlines(), 1):
+            if not line.lstrip().startswith('//') and KEPT_IN_CHIP.match(line):
+                return f'{path.relative_to(folder)}:{number}'
+    return None
+
+
 def main():
     folders = [Path(arg) for arg in sys.argv[1:]] or [
         *(f for f in sorted((ROOT / 'plugins').iterdir()) if (f / 'tessera-plugin.yaml').is_file()), ROOT / 'template']
@@ -691,6 +713,11 @@ def main():
         template = Path(folder).resolve() == (ROOT / 'template').resolve()
         hint = '' if template or (Path(folder) / STORE_IMAGE).is_file() else \
             f' (no {STORE_IMAGE} yet: python3 tools/store_image.py {folder} makes its picture on the Plugins page)'
+        # Text and List came with plugin API 0.10: an older plugin keeps building on released screens as it is.
+        kept = kept_in_chip(folder) if tuple(int(n) for n in str(manifest['api']).split('.')) >= (0, 10) else None
+        if kept:
+            hint += (f' (keeps {kept} in the memory inside the chip: tessera::Text and tessera::List keep it in PSRAM, '
+                     'docs/FIRMWARE_API.md "Memory")')
         print(f'{folder.name}: ok{hint}')
     # What the plugins need, against the index as it would be: the community plugins of the committed index.json, this
     # repository's own plugins, and the folders checked (the template needs nothing and brings nothing).

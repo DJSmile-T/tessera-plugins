@@ -28,20 +28,20 @@ class PictureTile : public tessera::Tile {
     lv_obj_set_width(label_, c.width);
     lv_obj_set_pos(label_, 0, place_ ? c.height - ui::line_height(Font::BODY) : (c.height - ui::line_height(Font::BODY)) / 2);
     if (!place_) lv_obj_set_style_text_align(label_, LV_TEXT_ALIGN_CENTER, 0);
-    ui::set_text(label_, place_ ? (caption_ ? name_ : "") : plugin_->text("no_picture"));
+    ui::set_text(label_, place_ ? (caption_ ? roomy::plain(name_) : "") : plugin_->text("no_picture"));
   }
 
   void on_state(JsonObjectConst data) override {
     // The entity's own picture, when the tile has an entity and no address of its own.
     const std::string own = data["attributes"]["entity_picture"] | "";
-    if (place_) ui::set_picture(place_, url_.empty() ? own : url_, contain_ ? tessera::Fit::CONTAIN : tessera::Fit::COVER);
+    if (place_) ui::set_picture(place_, url_.empty() ? own : roomy::plain(url_), contain_ ? tessera::Fit::CONTAIN : tessera::Fit::COVER);
   }
 
   void on_theme() override { ui::set_color(label_, place_ ? theme::INK : theme::MUTED); }
 
  private:
   const tessera::Plugin *plugin_;
-  std::string url_, name_;
+  tessera::Text url_, name_;   // kept as long as the card: PSRAM first (docs/FIRMWARE_API.md, "Memory")
   bool contain_ = false, caption_ = true;
   lv_obj_t *place_{}, *label_{};
 };

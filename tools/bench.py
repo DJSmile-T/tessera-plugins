@@ -593,9 +593,24 @@ class Bench(run.Run):
         if call.service == 'esphome.screen_plugin':
             asyncio.get_running_loop().create_task(self.answer(call.data))
         elif call.service == 'esphome.screen_camera' and core.plugin_tile(str(call.data.get('tiles') or '')):
-            asyncio.get_running_loop().create_task(self.answer_pictures(dict(call.data)))
+            job = asyncio.get_running_loop().create_task(self.answer_pictures(dict(call.data)))
+            self.picture_jobs = getattr(self, 'picture_jobs', set())
+            self.picture_jobs.add(job)
+            job.add_done_callback(self.picture_jobs.discard)
+            self.last_ask = time.monotonic()
         elif not call.service.startswith('esphome.'):
             self.actions.append(f'{call.service} {dict(call.data)}')
+
+    async def pictures_settled(self, timeout=8.0):
+        """Until the pictures the screen asked for are answered (and a moment for their download and drawing), so a
+        snapshot shows the posters, not the blocks before them: no question open, none new for 0.8 s."""
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            if not getattr(self, 'picture_jobs', None) and time.monotonic() - getattr(self, 'last_ask', 0) > 0.8:
+                break
+            await asyncio.sleep(0.1)
+        if getattr(self, 'last_ask', 0):
+            await asyncio.sleep(0.6)
 
     async def answer_pictures(self, data):
         """The pictures of a plugin tile's places, as the app would answer (server.answer_plugin_pictures): the frames of
@@ -628,8 +643,13 @@ class Bench(run.Run):
                 else:
                     self.find('info', 'pictures', f'preview.yaml names no picture for {url[:80]}: a drawn one stands in')
                     raws.append(media_art.png(sum(map(ord, url)) + n, 320))
-            body = tile_art.encode(raws, [question.ground] * len(raws), question.atlas,
-                                   [('fill' if fit == 'cover' else 'within', False) for fit in question.fits], compact=True)
+            # As the app paints them (plugin_pictures.Pictures.atlas): layers in their order, turned and mirrored as asked.
+            paint = getattr(tile_art, 'layers', None)
+            if paint and hasattr(question, 'styles'):
+                body = paint(raws, question.ground, question.atlas, question.styles(), compact=True)
+            else:   # a Tessera from before layers
+                body = tile_art.encode(raws, [question.ground] * len(raws), question.atlas,
+                                       [('fill' if fit == 'cover' else 'within', False) for fit in question.fits], compact=True)
             reply['u'] = self.pictures.url(f'{self.screen.key}-pictures-{view}.bmp', body)
         for attempt in range(8):
             try:
@@ -775,6 +795,7 @@ class Bench(run.Run):
                 await self.call('render_page', page=page)
                 await self.page_done(page)
                 await asyncio.sleep(1.2 if theme == 'light' else 0.3)   # the plugin's first ticks
+                await self.pictures_settled()
                 shot = f'page-{page + 1}-{theme}'
                 image = await self.render(shot, keep=False)
                 image.save(out / f'{shot}.png')
@@ -874,6 +895,7 @@ class Bench(run.Run):
             heard = len(self.actions)
             await self.tap(*centre)
             await asyncio.sleep(0.6)
+            await self.pictures_settled()
             after = await self.render('_after', keep=False)
             example, span = origins[i]
             did = self.actions[heard:]

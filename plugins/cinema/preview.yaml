@@ -1,0 +1,38 @@
+# What tools/preview.py shows (docs/PREVIEW.md): a week of films in TMDB's own shape, with drawn posters (made up, no
+# real film's). Moments come from the time of the run, so "Tomorrow" stays tomorrow.
+tiles:
+  - tile: films
+    name: Tonight
+    options: { country: NL, language: nl-NL }
+    sizes: [2x2, 3x2, 4x2, 1x2]
+  - tile: films
+    name: One film
+    sizes: [1x1, 2x1, 3x1]
+  - tile: films
+    name: Coming soon
+    options: { list: upcoming }
+    sizes: [2x2]
+
+answers:
+  films:
+    dates: { maximum: "{now+1d}", minimum: "{now-30d}" }
+    page: 1
+    results:
+      - { title: "Night Shift at the Lighthouse", poster_path: /night.jpg, genre_ids: [53, 9648], release_date: "{now-3d}", vote_average: 7.6, vote_count: 412 }
+      - { title: "Low Tide", poster_path: /tide.jpg, genre_ids: [18], release_date: "{now-10d}", vote_average: 6.9, vote_count: 128 }
+      - { title: "Ember", poster_path: /ember.jpg, genre_ids: [28, 53], release_date: "{now}", vote_average: 8.1, vote_count: 51 }
+      - { title: "The Long Orbit Home", poster_path: /orbit.jpg, genre_ids: [878, 12], release_date: "{now+1d}", vote_average: 0, vote_count: 0 }
+      - { title: "Meadow", poster_path: /meadow.jpg, genre_ids: [10749, 35], release_date: "{now-17d}", vote_average: 7.2, vote_count: 980 }
+      - { title: "Glass Houses", poster_path: /glass.jpg, genre_ids: [80, 18], release_date: "{now-24d}", vote_average: 5.8, vote_count: 77 }
+      - { title: "Dune Road", poster_path: /dune.jpg, genre_ids: [12, 28], release_date: "{now+4d}", vote_average: 0, vote_count: 3 }
+    total_pages: 1
+    total_results: 7
+
+pictures:
+  "https://image.tmdb.org/t/p/w342/night.jpg": preview/night.jpg
+  "https://image.tmdb.org/t/p/w342/tide.jpg": preview/tide.jpg
+  "https://image.tmdb.org/t/p/w342/ember.jpg": preview/ember.jpg
+  "https://image.tmdb.org/t/p/w342/orbit.jpg": preview/orbit.jpg
+  "https://image.tmdb.org/t/p/w342/meadow.jpg": preview/meadow.jpg
+  "https://image.tmdb.org/t/p/w342/glass.jpg": preview/glass.jpg
+  "https://image.tmdb.org/t/p/w342/dune.jpg": preview/dune.jpg
