@@ -87,7 +87,7 @@ fetch:
       label: [LinePublicNumber, DestinationName50]
 ```
 
-It names `api: "0.7"` and builds on today's core, which offers plugin API 0.9: no minor after 0.7 changed a name
+It names `api: "0.7"` and builds on today's core, which offers plugin API 0.10: no minor after 0.7 changed a name
 ([FIRMWARE_API.md](FIRMWARE_API.md), "Versions"). The fetch is plain `http` because OVapi offers nothing else and the
 fetch carries no secret.
 
@@ -109,7 +109,7 @@ fetch carries no secret.
 |---|---|---|
 | `id` | yes | The plugin's id. Unique in the index, the same as its folder and its component, and never changed. |
 | `version` | yes | Three numbers, `1.0.0`. Raise it for every change that reaches screens, and give it a `## 1.0.0` heading with its lines at the top of `CHANGELOG.md` ([MAKING_A_PLUGIN.md](MAKING_A_PLUGIN.md#the-changelog)). |
-| `api` | yes | The plugin API it was written for, as major and minor in quotes: `"0.8"`; the plugin API 0.9 is the one the core offers now (on Tessera's dev until its next release). Without quotes YAML reads a number, which the check refuses. It builds on a core with the same major and at least that minor, unless a minor after its own up to the core's changed a name (0.4 did); `tools/check.py` refuses an `api` newer than the core it checks against, and one from before such a minor ([FIRMWARE_API.md](FIRMWARE_API.md), "Versions"). |
+| `api` | yes | The plugin API it was written for, as major and minor in quotes: `"0.8"`; the plugin API 0.10 is the one the core offers now (on Tessera's dev until its next release). Without quotes YAML reads a number, which the check refuses. It builds on a core with the same major and at least that minor, unless a minor after its own up to the core's changed a name (0.4 did); `tools/check.py` refuses an `api` newer than the core it checks against, and one from before such a minor ([FIRMWARE_API.md](FIRMWARE_API.md), "Versions"). |
 | `icon` | yes | <a id="icon"></a>A Material Design Icons name from Tessera's icon set (`screen_manager/app/tile_icons.py` in the Tessera repository, such as `bus`, `train`, `calendar`, `thermometer`, `lightbulb`). The screen's icon font holds only that set. Tiles and top bar items take it when they name no icon of their own. |
 | `maintainer` | yes | The GitHub name of whoever looks after the plugin, 1 to 39 characters. `tools/check.py` refuses the template's `your-github-name` in any folder but `template/`. |
 | `license` | yes | An SPDX name that goes with AGPL-3.0: `MIT`, `Apache-2.0`, `BSD-2-Clause`, `BSD-3-Clause`, `ISC`, `MPL-2.0`, `LGPL-2.1-or-later`, `LGPL-3.0-or-later`, `GPL-3.0-or-later`, `GPL-3.0-only`, `AGPL-3.0-or-later`, `AGPL-3.0-only`, `Unlicense`, `0BSD`, `CC0-1.0`. |
@@ -278,6 +278,7 @@ At most 8.
 yet to offer the sensors of one `device_class` (every CO2 sensor), so a common attribute such as `unit_of_measurement`
 still offers every sensor that has one. Only the list: the tile keeps its entity when an attribute is gone for a while (an entity that is unavailable has none). |
 | `data` | no | The id of the fetch whose answer the tile gets in `on_state`. |
+| `pictures` | no | Places for pictures on the tile (0.10), 1 to 8: how many the tile makes at most with `ui::picture` ([FIRMWARE_API.md](FIRMWARE_API.md), "Pictures on a tile"). The app paints a picture only for a tile that has this, at most this many, and only from a host of `permissions.network` or, for a tile with `domains`, Home Assistant's own pictures of its entity (`entity_picture`). A plugin whose pictures come from a host names it in `permissions.network`, which gives it the attribute `cloud` and asks for a `privacy` link. Default: 0, no pictures. |
 | `example` | no | Text key: a line the editor shows on the tile's placeholder. |
 | `preview` | no | How the editor draws the tile from its data, so the page in the editor looks like the glass (it cannot run your C++). Only with `data` or `domains`. Any of `badge`, `title`, `value` and `countdown`, each a text of 1 to 64 characters. `badge`, `title` and `value` are templates of the first item's fields (`"{line}"`, `"{to}"`; for a tile of an entity `{state}`, `{name}`, its `attributes` and its `fields`), and every `{name}` in them must be such a field. `countdown` names a field with `as: epoch` (for a tile of an entity also an attribute named `..._at`, `..._time` or `...date`), and the editor counts down to it in whole minutes (the editor's clock moves every 30 seconds). `value` or `countdown`, not both. Without a preview the editor shows the icon, the name and `example`. |
 | `options` | no | At most 12 options the inspector shows, below. |
@@ -491,6 +492,7 @@ These are the fields whose minor the core records:
 | 0.6 | Settings of kind text and button, a button's `status`, settings found by their name in the entity registry |
 | 0.7 | `topics`, `provides`, `requires.features`, a part's `features`, plugins of `requires.plugins` that come along |
 | 0.8 | The features `camera` and `camera_sensor` |
+| 0.10 | A tile's `pictures` |
 
 What each minor brought to the C++ is in [FIRMWARE_API.md](FIRMWARE_API.md), "Versions".
 
@@ -514,6 +516,7 @@ What each minor brought to the C++ is in [FIRMWARE_API.md](FIRMWARE_API.md), "Ve
 | A tile's size | 9 x 9 cells |
 | A tile's `memory` | 64 to 16384 bytes |
 | A tile's `domains` | 8 |
+| A tile's `pictures` | 8, each from an address of at most 512 characters, at most 2 MB |
 | Attributes of a tile's entity | 16, and 8 `fields`, 8 `has_attributes` |
 | A text of a `preview` | 64 characters |
 | Options per tile | 12 |

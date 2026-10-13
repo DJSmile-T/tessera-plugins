@@ -1,0 +1,40 @@
+# Picture frame: a tile that shows one picture, an entity's own (a person's photo, an image entity, what a player
+# plays) or a picture at an address you give it. The smallest plugin with pictures on a tile (plugin API 0.10,
+# docs/FIRMWARE_API.md "Pictures on a tile"): a place, an address, cover or contain, the name over it.
+id: picture_frame
+version: 0.1.0
+api: "0.10"
+icon: image
+maintainer: MaxGramser
+license: MIT
+stage: example
+topics: [photos, media]
+requires:
+  esphome: 2026.6.2
+boards: any
+flash_kb: 6
+
+permissions:
+  # The hosts an address you give may be on: film posters from The Movie Database, photos from Unsplash.
+  network: [image.tmdb.org, images.unsplash.com]
+attributes: [cloud]
+privacy: https://github.com/MaxGramser/tessera-plugins/tree/main/plugins/picture_frame#privacy
+
+tiles:
+  - id: picture
+    name: tile_name
+    icon: image
+    sizes: { min: 1x1, max: 4x4 }
+    memory: 500
+    # One place for one picture (plugin API 0.10).
+    pictures: 1
+    # The entity whose picture it shows when no address is given: a person, an image entity, a media player.
+    domains: [person, image, media_player]
+    attributes: [entity_picture]
+    example: tile_example
+    preview: { title: "{name}" }
+    options:
+      - { id: url, kind: text, label: url, hint: url_hint }
+      - { id: fit, kind: choice, label: fit, hint: fit_hint, default: cover,
+          choices: [{ value: cover, label: fit_cover }, { value: contain, label: fit_contain }] }
+      - { id: caption, kind: toggle, label: caption, hint: caption_hint, default: true }

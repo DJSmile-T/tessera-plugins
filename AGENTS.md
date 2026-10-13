@@ -15,13 +15,13 @@ plugin is done.
    carries out the plugin's `fetch` (JSON from a web service) with its own code.
 4. A tile of a plugin is `plugin:<plugin id>.<tile id>` in a screen's layout. The core gives it a card's drawing area
    while its page is on the glass, hands it the data the app sent (`on_state`), and ticks it once a second (`on_tick`).
-5. The plugin API is 0.9 on Tessera's dev branch (the release has 0.8 until the next one). A manifest names the lowest
-   minor whose parts it uses: `api: "0.8"`, or `"0.9"` for `Font::DIGITS`, `ui::covers`, `Tone::GOOD`,
-   `ui::set_fill` and `ui::tone_color`. A plugin of `"0.9"` builds
+5. The plugin API is 0.10 on Tessera's dev branch (the release has 0.8 until the next one). A manifest names the lowest
+   minor whose parts it uses: `api: "0.8"`, `"0.9"` for `Font::DIGITS`, `ui::covers`, `Tone::GOOD`,
+   `ui::set_fill` and `ui::tone_color`, `"0.10"` for pictures on a tile and `ui::text`. A plugin of `"0.9"` or `"0.10"` builds
    on no screen with the released firmware until that release: for a plugin a person wants on their screen today, stay
    on `"0.8"`. A plugin builds on a core with the same major and at
    least its minor, unless a minor after its own changed a name: while the major is 0 that may happen, and the core
-   lists those minors (only 0.4 so far). So a plugin of 0.7 builds on a core of 0.9, one of 0.3 does not
+   lists those minors (only 0.4 so far). So a plugin of 0.7 builds on a core of 0.10, one of 0.3 does not
    (`docs/FIRMWARE_API.md`, "Versions").
 
 ## Where each kind of thing lives
@@ -30,6 +30,7 @@ plugin is done.
 |---|---|---|
 | Data from a web service | A `fetch` the app carries out, mapped to fields | docs/FETCH.md |
 | Data Home Assistant already has (a sensor, a calendar, prices in attributes) | A tile of an entity: `domains`, `attributes`, `fields`, `has_attributes` | docs/MANIFEST.md, "Tiles" |
+| Pictures on a tile (posters, a photo, a logo) | `ui::picture` and `ui::set_picture` with the tile's `pictures` in the manifest; the app fetches them from a host of `permissions.network` or from Home Assistant | docs/FIRMWARE_API.md, "Pictures on a tile" |
 | The answer of a Home Assistant action (`calendar.get_events`, `nordpool.get_prices_for_date`) | `permissions.ha_commands`, `tessera::send`, and `answers` to map it | docs/MANIFEST.md, "Answers"; docs/FIRMWARE_API.md |
 | To do something in Home Assistant | `tessera::action`, named in `permissions.home_assistant_actions` | docs/FIRMWARE_API.md |
 | A setting a person changes | An ESPHome entity in `plugin.yaml`, named in `settings` | docs/MANIFEST.md, "Settings a person changes" |
@@ -55,7 +56,9 @@ The two plugins to copy from: [`template/`](template) (a tile without data, the 
 countdown). For the other parts: [`plugins/waste_collection/`](plugins/waste_collection) (a tile of an entity, a card,
 a tap action, a top bar item, settings), [`plugins/voice_assist/`](plugins/voice_assist) (features it needs, sounds of
 its own, ESPHome components of its own, a top bar item in colour) and [`plugins/screen_camera/`](plugins/screen_camera)
-(a board's hardware through a feature only a board brings, and a driver beside the plugin's own component).
+(a board's hardware through a feature only a board brings, and a driver beside the plugin's own component) and
+[`plugins/picture_frame/`](plugins/picture_frame) (pictures on a tile: an entity's own picture or an address, cover or
+contain, with the name over it).
 
 ## Rules that are never optional
 
@@ -79,7 +82,8 @@ its own, ESPHome components of its own, a top bar item in colour) and [`plugins/
 - **Draw like the rest of the screen**: sizes with `tessera::ui::mm()` / `ui::px()`, colours with a theme role
   (`theme::INK`, `theme::MUTED`, `theme::ACCENT`, ...), only the screen's fonts (`tessera::Font`). Never a colour as a
   number, never a font of your own, never an LVGL click handler (use `Tile::on_tap`), never a timer or task (use
-  `on_tick`), never a network connection from the screen (data comes through `fetch`).
+  `on_tick`), never a network connection from the screen (data comes through `fetch`, a picture through
+  `ui::set_picture`: the app fetches both).
 - **Nothing exists off the glass.** Make every LVGL object in `create()` inside `context.parent`. The core deletes them;
   a destructor only frees your own memory.
 - **Paint, do not rebuild.** `on_state` and `on_tick` set texts and positions with `ui::set_text`, `ui::set_font`,

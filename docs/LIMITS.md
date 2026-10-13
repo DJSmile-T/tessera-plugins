@@ -13,6 +13,7 @@
 | Waking the screen when someone stands in front of it | A plugin with a radar sensor and `on_interval`. |
 | Settings a person changes in the editor, a test with its result ("Heard: Okay Nabu") | ESPHome entities in `plugin.yaml` named in `settings`; a button with a `status`. |
 | Talking to an AI model or a voice assistant | Home Assistant's Assist and its conversation agents (OpenAI, Anthropic); the plugin picks the assistant, the key stays in Home Assistant. |
+| Tonight's films with their posters, a person's photo, a logo on a tile | Places for pictures on the tile (`ui::picture`, the manifest's `pictures`, plugin API 0.10): the app fetches each picture from a host the manifest names, or Home Assistant's own, and the screen shows them ([FIRMWARE_API.md](FIRMWARE_API.md), "Pictures on a tile"). |
 
 ## Works with a way around
 
@@ -31,18 +32,19 @@
 | Block taps (a child lock) or scroll freely | Touch and navigation stay with the core. |
 | Run code in the Tessera app or the editor | The app holds the key to all of Home Assistant; it runs only its own code. |
 | Reach your home network through the app | A fetch goes only to public hosts the manifest names. |
-| Fetch from the screen itself | The app does it once for every screen, without holding up drawing. |
+| Fetch from the screen itself | The app does it once for every screen, without holding up drawing. A picture too: the screen names its address, the app fetches it. |
 | Set the screen's Wi-Fi, API, updates or log, or open a port on it | They belong to the core and the screen's own YAML (below, "plugin.yaml"). |
 | Change without a build | A plugin is part of the firmware: every change builds the screen. |
 
 ## Cannot, yet
 
-Not in the plugin API so far: a picture or video drawn on a plugin's tile or card (pictures and live cameras reach a
-screen through Tessera's own camera tiles), a message to the app other than a Home Assistant command its manifest names
-(`permissions.ha_commands`), and a Python part of a plugin in the app (the app runs only its own code, see above). A
-settings page on the screen, a card, top bar items, tap actions, tiles of an entity, questions to the app, sounds on
-the screen's speaker and a camera of the screen's own for Home Assistant (the features `camera` and `camera_sensor`)
-are all there ([FIRMWARE_API.md](FIRMWARE_API.md)).
+Not in the plugin API so far: a picture on a plugin's card over the page (a tile has places for pictures since 0.10,
+a card not yet), video on a plugin's tile (live cameras reach a screen through Tessera's own camera tiles), a message to
+the app other than a Home Assistant command its manifest names (`permissions.ha_commands`), and a Python part of a
+plugin in the app (the app runs only its own code, see above). A settings page on the screen, a card, top bar items,
+tap actions, tiles of an entity, pictures on a tile, questions to the app, sounds on the screen's speaker and a camera
+of the screen's own for Home Assistant (the features `camera` and `camera_sensor`) are all there
+([FIRMWARE_API.md](FIRMWARE_API.md)).
 
 ## plugin.yaml
 

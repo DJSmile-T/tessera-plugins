@@ -1,0 +1,20 @@
+{
+  "_meta": { "name": "English" },
+  "screen": {
+    "no_picture": "No picture"
+  },
+  "app": {
+    "name": "Picture frame",
+    "summary": "A picture on a tile: a person's photo, an image entity, what plays, or any picture at an address.",
+    "tile_name": "Picture",
+    "tile_example": "A photo in a frame",
+    "url": "Address",
+    "url_hint": "The address of a picture on image.tmdb.org or images.unsplash.com. Leave it empty to show the entity's own picture.",
+    "fit": "Fit",
+    "fit_hint": "Cover fills the tile and cuts away what is over; contain shows the whole picture.",
+    "fit_cover": "Cover",
+    "fit_contain": "Contain",
+    "caption": "Name over the picture",
+    "caption_hint": "The tile's name in the corner of the picture."
+  }
+}

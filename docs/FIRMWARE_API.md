@@ -1,4 +1,4 @@
-# The firmware API (plugin API 0.9)
+# The firmware API (plugin API 0.10)
 
 A plugin's code runs on the screen as an ESPHome component. It talks to Tessera's core through one header:
 
@@ -9,7 +9,7 @@ A plugin's code runs on the screen as an ESPHome component. It talks to Tessera'
 The header lives in the Tessera repository at `components/smart_display/plugin_api.h`; it is the reference, and this
 page explains it. Everything is in namespace `tessera`.
 
-A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"` for the parts 0.9 brought; the plugin API 0.9 is the one the core offers now (on Tessera's dev until its next release). Which cores
+A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"` or `"0.10"` for the parts those brought; the plugin API 0.10 is the one the core offers now (on Tessera's dev until its next release). Which cores
 a plugin builds on is under "Versions" at the end of this page.
 
 ## The component: `__init__.py`
@@ -226,7 +226,8 @@ An item that is not shown takes no room. A screen without the plugin draws nothi
 
 **Its colour (0.8).** `item.tone` colours the icon by what it means, and the core picks the colour in both looks:
 `Tone::NORMAL` the bar's own grey, `Tone::ACCENT` the screen's blue (it listens, it is on), `Tone::BUSY` Home
-Assistant's amber (it works on something), `Tone::ALERT` its red (a camera that streams, something that went wrong).
+Assistant's amber (it works on something), `Tone::ALERT` its red (a camera that streams, something that went wrong),
+`Tone::GOOD` its green (0.9: a level that is fine, a full battery).
 The words keep the bar's colour. `ui::set_tone(label, tone, role)` gives a tile's icon the same colours (`role` for
 `NORMAL`).
 
@@ -319,6 +320,49 @@ void on_touch() override { sounds_.play(tick_); }
 sound follows the screen's volume. On a board whose microphone and speaker share one bus (`AUDIO_HALF_DUPLEX`), a sound
 waits while something listens, and the player drops it when the speaker took nothing of it for a second.
 
+## Pictures on a tile
+
+A tile can show pictures (0.10): a film's poster beside its title, a person's photo, a logo. The plugin lays out places
+and names an address for each; the screen never fetches anything itself. Tessera's app fetches each picture once, cuts
+or fits it to its place, and sends all the places of a tile as one picture, the way a camera tile or an album cover
+reaches the screen; the screen keeps it as long as the tile is there and draws each place its part.
+
+```cpp
+void create(const tessera::TileContext &c) override {
+  if (!ui::pictures()) return;                 // a board without the memory for pictures (the CYD) shows none
+  for (int i = 0; i < 4; ++i) {
+    poster_[i] = ui::picture(c.parent);        // a soft block until the picture is there
+    lv_obj_set_size(poster_[i], w, h);
+    lv_obj_set_pos(poster_[i], i * (w + gap), 0);
+  }
+}
+void on_state(JsonObjectConst data) override {
+  JsonArrayConst posters = data["posters"];    // the addresses, next to the titles
+  for (int i = 0; i < 4; ++i)
+    if (poster_[i]) ui::set_picture(poster_[i], posters[i] | "", tessera::Fit::COVER);
+}
+```
+
+| Function | What |
+|---|---|
+| `ui::pictures()` | Whether this screen shows pictures at all. A board without the memory for them (the CYD, the Waveshare 3.5-inch, the Hosyond 4-inch) shows none: lay the tile out without the places then, as you would without a picture. |
+| `ui::picture(parent)` | A place for a picture, sized and placed by you as any object (`lv_obj_set_size`, `lv_obj_set_pos`), in `create()`. A soft block (`theme::TRACK`) until its picture is there. Its corners are a key's; a radius of your own (`lv_obj_set_style_radius`) is taken over by the picture. |
+| `ui::set_picture(place, url, fit)` | The picture a place shows. `Fit::COVER` fills the place and cuts away what is over (a poster in a poster's frame); `Fit::CONTAIN` shows the whole picture within it, on the card's own colour (a logo). The same address again does nothing, so call it on every `on_state`; another address asks the app again; `""` takes the picture away. |
+
+Where a picture may come from, checked by the app for every address:
+
+- a host the manifest names under `permissions.network` (`image.tmdb.org`), over https or http, as a fetch: public
+  hosts only, no redirects, at most 2 MB a picture;
+- for a tile of an entity (`domains`), a picture of Home Assistant's own: the entity's `entity_picture` when it starts
+  with `/api/image/serve/`, `/api/image_proxy/` or `/local/` (a person's photo, an image entity), fetched with the
+  app's own token.
+
+The manifest's `pictures` of the tile says how many places it has at most ([MANIFEST.md](MANIFEST.md), "Tiles"); the
+app paints no more. A place that lies outside the card, or has no size, gets no picture. Pictures count in nothing the
+layout memory counts: the screen keeps them in its picture store, within the same budget as the covers and cameras,
+and a tile of eight posters is one picture there. A frame whose picture did not come stays the card's colour, and the
+screen asks again later, each time after a longer while.
+
 ## Drawing: `tessera::ui`
 
 The screen's look is the same on every tile, so a plugin draws with the core's sizes, colours and fonts.
@@ -335,7 +379,9 @@ The screen's look is the same on every tile, so a plugin draws with the core's s
 | `ui::set_text(label, text)`, `ui::set_font(label, Font)`, `ui::set_color(label, Role)`, `ui::set_tone(label, Tone, Role)` | Change it only when it differs: call them on every tick for free. |
 | `ui::set_fill(block, Tone, Role)` (0.9) | A block's fill (a bar, a dot) in a tone's colour, or the role for `NORMAL`; only when it differs. |
 | `ui::tone_color(Tone, Role)` (0.9) | A tone's colour in this look, for a part the two above do not reach. |
+| `ui::text(parent, Font, Role)` | A label of several lines (0.10): wraps at its width, ends in dots at its height (two lines to start with; set your own). For a description, a title that may take two lines. |
 | `ui::block(parent, Role)` | A rounded block with the radius of a key (a badge, a bar). |
+| `ui::picture(parent)`, `ui::set_picture(place, url, fit)`, `ui::pictures()` | Pictures on a tile (0.10), above. |
 | `ui::color(Role)` | A colour by its role. |
 | `ui::icon(codepoint)` | An icon of Tessera's set as text, for a label in `Font::ICON` or `ICON_SMALL`. |
 
@@ -426,15 +472,14 @@ number. Before 0.9 a block has no colour by meaning: `TRACK` and `ACCENT`, or th
 
 ## Not in the API yet
 
-A plugin's own messages beyond Home Assistant commands, and a picture drawn on a tile or a card. A plugin can bring a
-camera (0.8): the feature `camera`, an ESPHome `esp_video_camera` with the id `ts_camera` that Home Assistant shows as
-any ESPHome camera, made from a board's camera sensor (the feature `camera_sensor`), as
-[`plugins/screen_camera/`](../plugins/screen_camera) does. What the API has no part for yet is drawing a picture
-itself. Each will raise the minor.
+A plugin's own messages beyond Home Assistant commands, and pictures on a plugin's card over the page (places exist on
+tiles, 0.10). A plugin can bring a camera (0.8): the feature `camera`, an ESPHome `esp_video_camera` with the id
+`ts_camera` that Home Assistant shows as any ESPHome camera, made from a board's camera sensor (the feature
+`camera_sensor`), as [`plugins/screen_camera/`](../plugins/screen_camera) does. Each will raise the minor.
 
 ## Versions
 
-A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"`; the plugin API 0.9 is the one the core offers now. When a
+A manifest names the plugin API it was written for: `api: "0.8"`, `"0.9"` or `"0.10"`; the plugin API 0.10 is the one the core offers now. When a
 screen is built, `smart_display.register_plugin()` compares it with the core's and stops the build with one sentence
 when it does not fit. A plugin fits a core when all three hold:
 
@@ -447,15 +492,16 @@ when it does not fit. A plugin fits a core when all three hold:
 **While the major is 0** a minor may still change a name or a signature as the API settles. The core lists those
 minors in `PLUGIN_API_BREAKS`, in `screen_manager/app/plugin_manifest.py` and in `components/smart_display/__init__.py`
 (a test keeps the two equal). Today the list holds one: 0.4, where `Plugin::on_tick` became `on_interval`. So with a
-core of 0.9:
+core of 0.10:
 
 | The manifest says | Builds? | Why |
 |---|---|---|
-| `api: "0.9"` | Yes | The core's own. |
+| `api: "0.10"` | Yes | The core's own. |
+| `api: "0.9"` | Yes | Same major, an older minor, and no break after 0.9. |
 | `api: "0.8"` | Yes | Same major, an older minor, and no break after 0.8. |
 | `api: "0.7"` | Yes | Same major, an older minor, and no break after 0.7. |
 | `api: "0.3"` | No | 0.4 changed a name it may use; the build says so in one sentence and asks to update the plugin. |
-| `api: "0.10"` | No | Newer than the core; the build asks to update the plugin or the screen's firmware. |
+| `api: "0.11"` | No | Newer than the core; the build asks to update the plugin or the screen's firmware. |
 | `api: "1.0"` | No | Another major. |
 
 `tools/check.py` applies the same rules against the core it checks with (`api_fits` of `plugin_manifest.py`), so a
@@ -476,6 +522,7 @@ brought:
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
 | 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
+| 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
 knows it ([MANIFEST.md](MANIFEST.md), "Which minor brought a field").
