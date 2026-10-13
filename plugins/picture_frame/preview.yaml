@@ -1,0 +1,23 @@
+# What tools/preview.py shows (docs/PREVIEW.md): a poster at an address, cover and contain, and a person's own picture.
+# The pictures come from the files below, never from the internet.
+tiles:
+  - tile: picture
+    name: Tonight
+    options: { url: "https://image.tmdb.org/t/p/w342/poster.jpg" }
+  - tile: picture
+    name: Whole poster
+    options: { url: "https://image.tmdb.org/t/p/w342/poster.jpg", fit: contain }
+    sizes: [2x2]
+  - tile: picture
+    name: Alex
+    entity: person.alex
+    sizes: [1x1, 2x2]
+
+states:
+  person.alex:
+    state: home
+    attributes: { friendly_name: Alex, entity_picture: /api/image/serve/abc123/512x512 }
+
+pictures:
+  "https://image.tmdb.org/t/p/w342/poster.jpg": preview/poster.jpg
+  "/api/image/serve/abc123/512x512": preview/poster.jpg

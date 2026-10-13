@@ -187,6 +187,9 @@ commands:                      # answers to the questions of permissions.ha_comm
 cards:                         # the entity and title a card opens with, when the manifest's card needs one
   - { card: upcoming, entity: calendar.waste }
 
+pictures:                      # the pictures of a tile's places (plugin API 0.10): a file beside this one per address
+  "https://image.tmdb.org/t/p/w342/poster.jpg": preview/poster.jpg
+
 time_zone: Europe/Amsterdam    # the zone of the moments below (default Europe/Amsterdam)
 ```
 
@@ -198,6 +201,11 @@ time_zone: Europe/Amsterdam    # the zone of the moments below (default Europe/A
   five minutes as text (`2026-10-11T15:20:00`), `"{now-1d}"` a day ago, `"{epoch+2h}"` in two hours as seconds since
   1970 (a number when it is the whole value). Units: `s`, `m`, `h`, `d`.
 - A tile's `data:` gives what the screen gets as it is, past the map: `data: { wait: failed }` shows its failed state.
+- **Pictures** (plugin API 0.10, [FIRMWARE_API.md](FIRMWARE_API.md), "Pictures on a tile"): the bench answers a tile's
+  question for its places as the app would, with the file `pictures` names for each address, relative to the plugin's
+  folder (a small JPEG or PNG; nothing is fetched from the internet). An address without a file gets a drawn picture,
+  with a note. The app's own checks hold here too: a tile without `pictures` in the manifest, or an address on a host
+  `permissions.network` does not name, gets a warning and no picture.
 - Never put a secret here: the file is shared with your plugin.
 
 [`plugins/ov_departures/preview.yaml`](../plugins/ov_departures/preview.yaml) (a fetch) and

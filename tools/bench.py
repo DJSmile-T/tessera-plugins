@@ -344,8 +344,8 @@ def read_preview(folder):
     if not path.is_file():
         return {}
     spec = yaml.safe_load(path.read_text(encoding='utf-8')) or {}
-    if not isinstance(spec, dict) or set(spec) - {'tiles', 'answers', 'states', 'commands', 'cards', 'time_zone'}:
-        raise SystemExit(f'{path}: a mapping of tiles, answers, states, commands, cards and time_zone (docs/PREVIEW.md)')
+    if not isinstance(spec, dict) or set(spec) - {'tiles', 'answers', 'states', 'commands', 'cards', 'time_zone', 'pictures'}:
+        raise SystemExit(f'{path}: a mapping of tiles, answers, states, commands, cards, pictures and time_zone (docs/PREVIEW.md)')
     return spec
 
 
@@ -588,11 +588,57 @@ class Bench(run.Run):
         self.client.send_home_assistant_state(entity, attribute, text)
 
     def heard(self, call):
-        """A call of the screen to Home Assistant: a plugin's question (answered from preview.yaml) or an action."""
+        """A call of the screen to Home Assistant: a plugin's question (answered from preview.yaml), a plugin tile's
+        question for its pictures (answered from preview.yaml's pictures, plugin API 0.10) or an action."""
         if call.service == 'esphome.screen_plugin':
             asyncio.get_running_loop().create_task(self.answer(call.data))
+        elif call.service == 'esphome.screen_camera' and core.plugin_tile(str(call.data.get('tiles') or '')):
+            asyncio.get_running_loop().create_task(self.answer_pictures(dict(call.data)))
         elif not call.service.startswith('esphome.'):
             self.actions.append(f'{call.service} {dict(call.data)}')
+
+    async def answer_pictures(self, data):
+        """The pictures of a plugin tile's places, as the app would answer (server.answer_plugin_pictures): the frames of
+        the question painted with the files preview.yaml's `pictures` names for each address (relative to the plugin's
+        folder), a drawn stand-in for an address it does not name, and the checks the app makes (the manifest's
+        `pictures`, where a picture may come from)."""
+        import plugin_pictures
+        import tile_art
+        import media_art
+        question = plugin_pictures.parse(data, (self.screen.width, self.screen.height))
+        reply = {'v': 1, 'op': 'camera', 't': 'live', 'e': data.get('tiles', ''), 'u': ''}
+        try:
+            view = int(data.get('view', 0))
+        except (TypeError, ValueError):
+            view = 0
+        if not question:
+            self.find('warning', 'pictures', f'a tile asked for pictures in a way the app does not take: {data}')
+            return
+        kind = self.entry.tile(question.tile)
+        problem = plugin_pictures.refused(question, self.entry.manifest, kind)
+        if problem:
+            self.find('warning', 'pictures', f'{question.entity} asked for pictures the app refuses: {problem}')
+        else:
+            named = self.spec.get('pictures') or {}
+            raws = []
+            for n, url in enumerate(question.sources):
+                file = named.get(url) if isinstance(named, dict) else None
+                if file:
+                    raws.append((self.args.plugin.resolve() / str(file)).read_bytes())
+                else:
+                    self.find('info', 'pictures', f'preview.yaml names no picture for {url[:80]}: a drawn one stands in')
+                    raws.append(media_art.png(sum(map(ord, url)) + n, 320))
+            body = tile_art.encode(raws, [question.ground] * len(raws), question.atlas,
+                                   [('fill' if fit == 'cover' else 'within', False) for fit in question.fits], compact=True)
+            reply['u'] = self.pictures.url(f'{self.screen.key}-pictures-{view}.bmp', body)
+        for attempt in range(8):
+            try:
+                await self.send({**reply, 'view': view})
+                return
+            except Exception as error:
+                if attempt == 7:
+                    self.find('warning', 'pictures', f'the pictures of {question.entity} did not reach the screen: {error}')
+                await asyncio.sleep(0.5)
 
     async def answer(self, data):
         try:
