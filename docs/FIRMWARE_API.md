@@ -9,7 +9,7 @@ A plugin's code runs on the screen as an ESPHome component. It talks to Tessera'
 The header lives in the Tessera repository at `components/smart_display/plugin_api.h`; it is the reference, and this
 page explains it. Everything is in namespace `tessera`.
 
-A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"` or `"0.10"` for the parts those brought; the plugin API 0.10 is the one the core offers now (on Tessera's dev until its next release). Which cores
+A manifest names the plugin API it was written for: `api: "0.8"`, or `"0.9"` or `"0.10"` for the parts those brought; the plugin API 0.10 is the one the core offers now. Which cores
 a plugin builds on is under "Versions" at the end of this page.
 
 ## The component: `__init__.py`
@@ -122,7 +122,7 @@ A change of the tile's size or options makes a new object: `create()` never has 
 | `width`, `height` | Its size in pixels, the card's padding already off. |
 | `columns`, `rows` | The grid cells the tile covers (1x1, 2x1, ...). |
 | `name` | The name the tile got in the editor, `""` for none. Valid during `create()` only: copy it. |
-| `entity` | The Home Assistant entity the tile belongs to (a manifest tile with `domains`), `""` for none. Copy it. |
+| `entity` | The Home Assistant entity the tile belongs to (a manifest tile with `domains`), `""` for none. Copy it. An entity of a domain Tessera draws no tile for needs the firmware after 0.56.0 ("A tile of an entity"). |
 | `tile` | The tile's index in the layout: pass it to `tessera::open_card` so the card follows the tile. |
 | `options` | The tile's options, the manifest's defaults filled in. Read with ArduinoJson: `c.options["walk"] \| 0`. |
 
@@ -172,6 +172,12 @@ tessera::action("climate.set_temperature", entity_, "temperature", "21");
 
 The screen must be allowed to perform actions, and the manifest names each action under
 `permissions.home_assistant_actions`.
+
+An entity of a domain Tessera draws no tile for (`plant`, `todo`, `calendar`, ...) works the same, with the firmware
+after 0.56.0: up to 0.56.0 the tile gets that entity's state, name and attributes but an empty `entity`, and
+`tessera::action` on it returns false. The fix is on Tessera's dev branch until its next release. To try it now, build
+the preview with `TESSERA_REF=dev` ([PREVIEW.md](PREVIEW.md)) and a screen from the dev app (the repository URL with
+`#dev` at the end). `tessera::send` to the app works with any entity on every firmware.
 
 ## A card
 
@@ -559,7 +565,7 @@ brought:
 | 0.6 | The app's side only: settings of kind text and button, a button's `status`, settings found by their name in the entity registry, and each plugin's settings in its details on the screen's Plugins tab. |
 | 0.7 | The manifest's side only: `topics`, features (`provides`, `requires.features`), parts that need a feature, and plugins that come along with the one that needs them. |
 | 0.8 | The features `camera` (`ts_camera`) and `camera_sensor`, the first feature only a board brings; a top bar item's `tone` and `ui::set_tone`; sounds of a plugin's own (`plugin_sound.h`, `smart_display.sound()`). |
-| 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. On Tessera's dev branch until its next release: a plugin that names it builds only on a screen with that firmware. |
+| 0.9 | `Font::DIGITS`, the large digits of a climate card's setpoint, and `ui::covers()`; `Tone::GOOD`, `ui::set_fill()` and `ui::tone_color()`, the tones for a block; `ui::label` one line high. |
 | 0.10 | Pictures on a tile: `ui::picture`, `ui::set_picture`, `ui::pictures`, `Fit`, `Turn` and a reflection, places that overlap, `ui::slide_pictures`, and the manifest's `pictures` of a tile; `ui::text`, a label of several lines; `tessera::tap_point()`, where a tile was tapped; memory in PSRAM: `tessera::Text`, `tessera::List`, and tiles and cards made there. |
 
 A minor of the app's or the manifest's side only still counts: a plugin that uses what it brought needs an app that
