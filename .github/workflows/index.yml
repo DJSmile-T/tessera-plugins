@@ -30,6 +30,8 @@ jobs:
       - run: python3 tools/build_index.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # GitHub's API (releases, repository ids) without its hourly limit
+          # Each index is checked against the Tessera its app builds: main's against the released core, dev's against dev.
+          TESSERA_REF: ${{ github.ref_name == 'dev' && 'dev' || 'main' }}
       - run: python3 tools/build_likes.py
       - name: Commit index.json and likes.json when they changed
         run: |

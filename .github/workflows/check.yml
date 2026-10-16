@@ -11,6 +11,9 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      # Each branch is checked against the Tessera its app builds: main against the released core, dev against dev.
+      TESSERA_REF: ${{ (github.base_ref || github.ref_name) == 'dev' && 'dev' || 'main' }}
     steps:
       - uses: actions/checkout@v4
         with:
